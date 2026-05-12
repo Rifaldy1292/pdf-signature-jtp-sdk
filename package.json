@@ -1,0 +1,62 @@
+{
+  "name": "pdf-signature-jtp-sdk",
+  "version": "1.0.0",
+  "description": "A framework-agnostic PDF Viewer + Signature SDK. Works with Vanilla JS, Vue 3, and React.",
+  "type": "module",
+  "main": "./dist/pdf-signature-sdk.umd.cjs",
+  "module": "./dist/pdf-signature-sdk.js",
+  "exports": {
+    ".": {
+      "import": "./dist/pdf-signature-sdk.js",
+      "require": "./dist/pdf-signature-sdk.umd.cjs"
+    },
+    "./vue": {
+      "import": "./dist/vue.js",
+      "require": "./dist/vue.umd.cjs"
+    },
+    "./react": {
+      "import": "./dist/react.js",
+      "require": "./dist/react.umd.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "src",
+    "index.js",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "demo": "vite --open demo/index.html"
+  },
+  "keywords": [
+    "pdf",
+    "viewer",
+    "signature",
+    "pdf.js",
+    "e-materai",
+    "document",
+    "sdk"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "pdfjs-dist": "^4.10.38"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0",
+    "vue": ">=3.0.0"
+  },
+  "peerDependenciesOptional": {
+    "react": true,
+    "react-dom": true,
+    "vue": true
+  }
+}

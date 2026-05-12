@@ -1,0 +1,502 @@
+/**
+ * signature.js — Signature & E-Materai overlay layer for pdf-signature-sdk
+ *
+ * Manages an overlay canvas on top of the main PDF canvas.
+ * Supports:
+ *   - Click-to-capture coordinates
+ *   - Draggable signature placeholder (native pointer events)
+ *   - E-Materai stamp placement
+ *   - Multi-page tracking (only shows signatures for current page)
+ */
+
+export class SignatureManager {
+  /**
+   * @param {import('./events').EventEmitter} eventBus
+   */
+  constructor(eventBus) {
+    this._bus = eventBus;
+    /** @type {Map<number, HTMLCanvasElement>} */
+    this._overlayCanvases = new Map();
+    /** @type {Map<number, CanvasRenderingContext2D>} */
+    this._ctxs = new Map();
+    /** @type {Map<number, object>} */
+    this._handlers = new Map();
+    
+    /** @type {number} */
+    this._currentPage = 1;
+    /**
+     * All placed items across all pages.
+     * @type {Array<{id:string, type:'signature'|'estamp', x:number, y:number, page:number, width:number, height:number, label:string, image:string, imgElement:HTMLImageElement, isDragging:boolean}>}
+     */
+    this._items = [];
+    /** @type {string|null} — ID of item being dragged */
+    this._draggingId = null;
+    this._dragOffset = { x: 0, y: 0 };
+    /** @type {string|null} — ID of item being resized */
+    this._resizingId = null;
+    this._resizeStart = { w: 0, h: 0, px: 0, py: 0 };
+  }
+
+  /**
+   * Attach to the overlay canvas element for a specific page.
+   * @param {number} page
+   * @param {HTMLCanvasElement} overlayCanvas
+   */
+  attach(page, overlayCanvas) {
+    this._overlayCanvases.set(page, overlayCanvas);
+    this._ctxs.set(page, overlayCanvas.getContext('2d'));
+    
+    const onDown = (e) => this._onPointerDown(e, page);
+    const onMove = (e) => this._onPointerMove(e, page);
+    const onUp = (e) => this._onPointerUp(e, page);
+    
+    this._handlers.set(page, { onDown, onMove, onUp });
+
+    overlayCanvas.addEventListener('pointerdown', onDown);
+    overlayCanvas.addEventListener('pointermove', onMove);
+    overlayCanvas.addEventListener('pointerup', onUp);
+    overlayCanvas.addEventListener('pointerleave', onUp);
+  }
+
+  /**
+   * Sync overlay canvas dimensions with the main canvas for a specific page.
+   * @param {number} page
+   * @param {number} width
+   * @param {number} height
+   */
+  syncSize(page, width, height) {
+    const canvas = this._overlayCanvases.get(page);
+    if (!canvas) return;
+    canvas.width = width;
+    canvas.height = height;
+    this._redrawPage(page);
+  }
+
+  /** @param {number} page */
+  setPage(page) {
+    this._currentPage = page;
+  }
+
+  // ─── Mode Control ────────────────────────────────────────────────────────────
+  // Modes are removed as items are placed directly and dragging is always active if items exist.
+
+  // ─── Placement API ───────────────────────────────────────────────────────────
+
+  /**
+   * Programmatically place a signature at given canvas coords.
+   * @param {{x:number, y:number, page?:number, label?:string, image?:string}} opts
+   */
+  placeSignature({ x, y, page = this._currentPage, label, image } = {}) {
+    const finalLabel = label || 'Signature';
+    const item = this._createItem('signature', x, y, page, finalLabel, image);
+    this._items.push(item);
+    this._redrawPage(page);
+    this._bus.emit('signaturePlaced', this._publicItem(item));
+    return item.id;
+  }
+
+  /**
+   * Programmatically place an e-materai stamp at given canvas coords.
+   * @param {{x:number, y:number, page?:number, image?:string}} opts
+   */
+  placeEStamp({ x, y, page = this._currentPage, image } = {}) {
+    const item = this._createItem('estamp', x, y, page, 'E-Materai', image);
+    this._items.push(item);
+    this._redrawPage(page);
+    this._bus.emit('eStampPlaced', this._publicItem(item));
+    return item.id;
+  }
+
+  /**
+   * Remove a specific item by ID.
+   * @param {string} id
+   */
+  removeItem(id) {
+    const item = this._items.find((i) => i.id === id);
+    if (!item) return;
+    this._items = this._items.filter((i) => i.id !== id);
+    this._redrawPage(item.page);
+    this._bus.emit('signatureRemoved', { id });
+  }
+
+  /** Clear all signatures and stamps. */
+  clearAll() {
+    this._items = [];
+    this._redrawAll();
+  }
+
+  /**
+   * Get all placed items (all pages).
+   * @returns {Array<object>}
+   */
+  getAll() {
+    return this._items.map((i) => this._publicItem(i));
+  }
+
+  /**
+   * Get items for a specific page.
+   * @param {number} [page]
+   */
+  getByPage(page = this._currentPage) {
+    return this._items.filter((i) => i.page === page).map((i) => this._publicItem(i));
+  }
+
+  // ─── Internal ────────────────────────────────────────────────────────────────
+
+  /** @private */
+  _createItem(type, x, y, page, label, imageUrl) {
+    const item = {
+      id: `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      type,
+      x,
+      y,
+      page,
+      label,
+      image: imageUrl,
+      imgElement: null,
+      width: type === 'estamp' ? 80 : 160,
+      height: type === 'estamp' ? 80 : 48,
+      isDragging: false,
+    };
+    
+    if (imageUrl) {
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = () => {
+        item.imgElement = img;
+        this._redrawPage(page); // re-draw when image is loaded
+      };
+    }
+    
+    return item;
+  }
+
+  /** @private */
+  _publicItem(item) {
+    return {
+      id: item.id,
+      type: item.type,
+      x: item.x,
+      y: item.y,
+      page: item.page,
+      label: item.label,
+      width: item.width,
+      height: item.height,
+    };
+  }
+
+  /** @private */
+  _getCanvasCoords(e, page) {
+    const canvas = this._overlayCanvases.get(page);
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
+  }
+
+  /** @private — hit testing for components: 'delete', 'resize', 'body' */
+  _hitTest(x, y, page) {
+    const pageItems = this._items.filter((i) => i.page === page);
+    // Iterate in reverse so topmost items are hit first
+    for (let i = pageItems.length - 1; i >= 0; i--) {
+      const item = pageItems[i];
+      
+      // Delete handle bounds (top right)
+      const dx = item.x + item.width;
+      const dy = item.y;
+      if (Math.hypot(x - dx, y - dy) <= 24) { // 24px radius for hit area
+        return { item, part: 'delete' };
+      }
+      
+      // Resize handle bounds (bottom right)
+      const rx = item.x + item.width;
+      const ry = item.y + item.height;
+      if (x >= rx - 15 && x <= rx + 10 && y >= ry - 15 && y <= ry + 10) {
+        return { item, part: 'resize' };
+      }
+      
+      // Body bounds
+      if (
+        x >= item.x &&
+        x <= item.x + item.width &&
+        y >= item.y &&
+        y <= item.y + item.height
+      ) {
+        return { item, part: 'body' };
+      }
+    }
+    return null;
+  }
+
+  /** @private */
+  _onPointerDown(e, page) {
+    if (e.button !== 0) return;
+    const { x, y } = this._getCanvasCoords(e, page);
+    const hit = this._hitTest(x, y, page);
+    const canvas = this._overlayCanvases.get(page);
+
+    if (hit && canvas) {
+      if (hit.part === 'delete') {
+        this.removeItem(hit.item.id);
+        return;
+      }
+      
+      if (hit.part === 'resize') {
+        this._resizingId = hit.item.id;
+        this._resizeStart = {
+          w: hit.item.width,
+          h: hit.item.height,
+          px: x,
+          py: y
+        };
+        canvas.setPointerCapture(e.pointerId);
+        return;
+      }
+      
+      // Begin drag on existing item
+      this._draggingId = hit.item.id;
+      this._dragOffset = { x: x - hit.item.x, y: y - hit.item.y };
+      canvas.setPointerCapture(e.pointerId);
+      canvas.style.cursor = 'grabbing';
+    }
+  }
+
+  /** @private */
+  _onPointerMove(e, page) {
+    const { x, y } = this._getCanvasCoords(e, page);
+    const canvas = this._overlayCanvases.get(page);
+    if (!canvas) return;
+    
+    // Update cursor based on hover
+    if (!this._draggingId && !this._resizingId) {
+      const hit = this._hitTest(x, y, page);
+      if (hit) {
+        if (hit.part === 'delete') canvas.style.cursor = 'pointer';
+        else if (hit.part === 'resize') canvas.style.cursor = 'nwse-resize';
+        else canvas.style.cursor = 'grab';
+      } else {
+        canvas.style.cursor = 'default';
+      }
+      return;
+    }
+
+    if (this._resizingId) {
+      const item = this._items.find((i) => i.id === this._resizingId);
+      if (item && item.page === page) {
+        const dx = x - this._resizeStart.px;
+        const dy = y - this._resizeStart.py;
+        item.width = Math.max(30, this._resizeStart.w + dx);
+        item.height = Math.max(30, this._resizeStart.h + dy);
+        this._redrawPage(page);
+      }
+      return;
+    }
+
+    if (this._draggingId) {
+      const item = this._items.find((i) => i.id === this._draggingId);
+      if (item && item.page === page) {
+        // Constrain to canvas boundaries
+        item.x = Math.max(0, Math.min(canvas.width - item.width, x - this._dragOffset.x));
+        item.y = Math.max(0, Math.min(canvas.height - item.height, y - this._dragOffset.y));
+        this._redrawPage(page);
+      }
+    }
+  }
+
+  /** @private */
+  _onPointerUp(e, page) {
+    const canvas = this._overlayCanvases.get(page);
+    if (this._draggingId || this._resizingId) {
+      const id = this._draggingId || this._resizingId;
+      const item = this._items.find((i) => i.id === id);
+      if (item) {
+        this._bus.emit('signatureMoved', this._publicItem(item));
+      }
+    }
+    this._draggingId = null;
+    this._resizingId = null;
+    if (canvas) canvas.style.cursor = 'default';
+  }
+
+  /** @private — Redraw all items for all pages */
+  _redrawAll() {
+    for (const page of this._overlayCanvases.keys()) {
+      this._redrawPage(page);
+    }
+  }
+
+  /** @private — Redraw items for a specific page */
+  _redrawPage(page) {
+    const ctx = this._ctxs.get(page);
+    const canvas = this._overlayCanvases.get(page);
+    if (!ctx || !canvas) return;
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const pageItems = this._items.filter((i) => i.page === page);
+    
+    if (pageItems.length > 0) {
+      canvas.classList.add('psdk-overlay--active');
+    } else {
+      canvas.classList.remove('psdk-overlay--active');
+    }
+
+    for (const item of pageItems) {
+      if (item.type === 'estamp') {
+        this._drawEStamp(ctx, item);
+      } else {
+        this._drawSignature(ctx, item);
+      }
+    }
+  }
+
+  /** @private */
+  _drawSignature(ctx, item) {
+    const { x, y, width, height, label, imgElement } = item;
+    const radius = 6;
+
+    // Draw Image if loaded
+    if (imgElement && imgElement.complete) {
+      ctx.drawImage(imgElement, x, y, width, height);
+    } else {
+      // Fallback
+      ctx.shadowColor = 'rgba(99,102,241,0.4)';
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = 'rgba(99, 102, 241, 0.12)';
+      this._roundRect(ctx, x, y, width, height, radius);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      
+      ctx.strokeStyle = 'rgba(99, 102, 241, 0.9)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 3]);
+      this._roundRect(ctx, x, y, width, height, radius);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      // Label
+      ctx.fillStyle = 'rgba(99, 102, 241, 1)';
+      ctx.font = '600 11px "Inter", system-ui, sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x + 10, y + height / 2);
+    }
+
+    // Always draw border to indicate interactivity
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.lineWidth = 1;
+    this._roundRect(ctx, x, y, width, height, radius);
+    ctx.stroke();
+
+    this._drawDeleteHandle(ctx, x + width, y);
+    this._drawResizeHandle(ctx, x + width, y + height);
+  }
+
+  /** @private */
+  _drawEStamp(ctx, item) {
+    const { x, y, width, height, label, imgElement } = item;
+    
+    if (imgElement && imgElement.complete) {
+      ctx.drawImage(imgElement, x, y, width, height);
+    } else {
+      const cx = x + width / 2;
+      const cy = y + height / 2;
+      const r = Math.min(width, height) / 2 - 4;
+
+      ctx.shadowColor = 'rgba(239,68,68,0.4)';
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(239,68,68,0.9)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(239,68,68,0.08)';
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      
+      ctx.fillStyle = 'rgba(239,68,68,0.9)';
+      ctx.font = 'bold 8px "Inter", system-ui, sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center';
+      ctx.fillText('E-MATERAI', cx, cy);
+      ctx.textAlign = 'left';
+    }
+
+    // Border
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, width, height);
+
+    this._drawDeleteHandle(ctx, x + width, y);
+    this._drawResizeHandle(ctx, x + width, y + height);
+  }
+
+  /** @private */
+  _drawResizeHandle(ctx, x, y) {
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = '#666';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Draw tiny arrows
+    ctx.strokeStyle = '#333';
+    ctx.beginPath();
+    ctx.moveTo(x - 2, y + 2);
+    ctx.lineTo(x + 2, y - 2);
+    ctx.stroke();
+  }
+
+  /** @private */
+  _drawDeleteHandle(ctx, x, y) {
+    ctx.fillStyle = 'rgba(239,68,68,0.8)';
+    ctx.beginPath();
+    ctx.arc(x, y, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x - 3, y - 3);
+    ctx.lineTo(x + 3, y + 3);
+    ctx.moveTo(x + 3, y - 3);
+    ctx.lineTo(x - 3, y + 3);
+    ctx.stroke();
+  }
+
+  /** @private — helper for rounded rect path */
+  _roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  /** Clean up all event listeners and state. */
+  destroy() {
+    this._items = [];
+    for (const [page, canvas] of this._overlayCanvases.entries()) {
+      const handlers = this._handlers.get(page);
+      if (handlers) {
+        canvas.removeEventListener('pointerdown', handlers.onDown);
+        canvas.removeEventListener('pointermove', handlers.onMove);
+        canvas.removeEventListener('pointerup', handlers.onUp);
+        canvas.removeEventListener('pointerleave', handlers.onUp);
+      }
+    }
+    this._overlayCanvases.clear();
+    this._ctxs.clear();
+    this._handlers.clear();
+  }
+}
