@@ -37,11 +37,6 @@ export class SignatureManager {
     this._resizeStart = { w: 0, h: 0, px: 0, py: 0 };
   }
 
-  /**
-   * Attach to the overlay canvas element for a specific page.
-   * @param {number} page
-   * @param {HTMLCanvasElement} overlayCanvas
-   */
   attach(page, overlayCanvas) {
     this._overlayCanvases.set(page, overlayCanvas);
     this._ctxs.set(page, overlayCanvas.getContext('2d'));
@@ -49,13 +44,31 @@ export class SignatureManager {
     const onDown = (e) => this._onPointerDown(e, page);
     const onMove = (e) => this._onPointerMove(e, page);
     const onUp = (e) => this._onPointerUp(e, page);
+
+    // Conditionally prevent native touch actions (scrolling) when touching a draggable item
+    const onTouchStart = (e) => {
+      if (e.touches.length !== 1) return;
+      const { x, y } = this._getCanvasCoords(e.touches[0], page);
+      if (this._hitTest(x, y, page)) {
+        e.preventDefault();
+      }
+    };
+
+    // Also prevent scroll during active drag (for some mobile browsers like Safari)
+    const onTouchMove = (e) => {
+      if (this._draggingId || this._resizingId) {
+        e.preventDefault();
+      }
+    };
     
-    this._handlers.set(page, { onDown, onMove, onUp });
+    this._handlers.set(page, { onDown, onMove, onUp, onTouchStart, onTouchMove });
 
     overlayCanvas.addEventListener('pointerdown', onDown);
     overlayCanvas.addEventListener('pointermove', onMove);
     overlayCanvas.addEventListener('pointerup', onUp);
     overlayCanvas.addEventListener('pointerleave', onUp);
+    overlayCanvas.addEventListener('touchstart', onTouchStart, { passive: false });
+    overlayCanvas.addEventListener('touchmove', onTouchMove, { passive: false });
   }
 
   /**
@@ -67,6 +80,28 @@ export class SignatureManager {
   syncSize(page, width, height) {
     const canvas = this._overlayCanvases.get(page);
     if (!canvas) return;
+
+    if (!this._pageDimensions) {
+      this._pageDimensions = new Map();
+    }
+
+    const oldDim = this._pageDimensions.get(page);
+    if (oldDim && oldDim.w > 0 && oldDim.h > 0) {
+      const scaleX = width / oldDim.w;
+      const scaleY = height / oldDim.h;
+      
+      if (scaleX !== 1 || scaleY !== 1) {
+        const pageItems = this._items.filter((i) => i.page === page);
+        for (const item of pageItems) {
+          item.x *= scaleX;
+          item.y *= scaleY;
+          item.width *= scaleX;
+          item.height *= scaleY;
+        }
+      }
+    }
+
+    this._pageDimensions.set(page, { w: width, h: height });
     canvas.width = width;
     canvas.height = height;
     this._redrawPage(page);
@@ -289,8 +324,8 @@ export class SignatureManager {
       if (item && item.page === page) {
         const dx = x - this._resizeStart.px;
         const dy = y - this._resizeStart.py;
-        item.width = Math.max(30, this._resizeStart.w + dx);
-        item.height = Math.max(30, this._resizeStart.h + dy);
+        item.width = Math.min(canvas.width - item.x, Math.max(30, this._resizeStart.w + dx));
+        item.height = Math.min(canvas.height - item.y, Math.max(30, this._resizeStart.h + dy));
         this._redrawPage(page);
       }
       return;
@@ -486,6 +521,9 @@ export class SignatureManager {
   /** Clean up all event listeners and state. */
   destroy() {
     this._items = [];
+    if (this._pageDimensions) {
+      this._pageDimensions.clear();
+    }
     for (const [page, canvas] of this._overlayCanvases.entries()) {
       const handlers = this._handlers.get(page);
       if (handlers) {
@@ -493,6 +531,8 @@ export class SignatureManager {
         canvas.removeEventListener('pointermove', handlers.onMove);
         canvas.removeEventListener('pointerup', handlers.onUp);
         canvas.removeEventListener('pointerleave', handlers.onUp);
+        canvas.removeEventListener('touchstart', handlers.onTouchStart);
+        canvas.removeEventListener('touchmove', handlers.onTouchMove);
       }
     }
     this._overlayCanvases.clear();

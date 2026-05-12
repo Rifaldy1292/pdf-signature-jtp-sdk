@@ -287,6 +287,33 @@
       flex: 1;
       overflow: hidden;
     }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      html, body {
+        height: auto;
+        overflow-x: hidden;
+      }
+      .demo-layout {
+        flex-direction: column;
+        height: auto;
+      }
+      .demo-config {
+        width: 100%;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .demo-viewer-area {
+        height: 80vh; /* Provide a fixed height constraint for the PDF viewer */
+        flex: none;
+      }
+      .demo-header__badge {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -372,6 +399,17 @@
 
       <div class="demo-toggle-row">
         <div>
+          <div class="demo-toggle-label">Allow Page Input</div>
+          <div class="demo-toggle-sub">ui.topbar.paginationInput</div>
+        </div>
+        <label class="demo-toggle">
+          <input type="checkbox" id="toggle-pagination-input" checked />
+          <div class="demo-toggle__track"></div>
+        </label>
+      </div>
+
+      <div class="demo-toggle-row">
+        <div>
           <div class="demo-toggle-label">Zoom Controls</div>
           <div class="demo-toggle-sub">ui.topbar.zoom</div>
         </div>
@@ -402,6 +440,34 @@
           <div class="demo-toggle__track"></div>
         </label>
       </div>
+
+      <div class="demo-toggle-row">
+        <div>
+          <div class="demo-toggle-label">Upload Label</div>
+        </div>
+        <input type="text" id="cfg-lbl-upload" value="Open PDF" style="width: 100px; padding: 2px 4px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 4px;" />
+      </div>
+
+      <div class="demo-toggle-row">
+        <div>
+          <div class="demo-toggle-label">Signature Label</div>
+        </div>
+        <input type="text" id="cfg-lbl-sig" value="Add Signature" style="width: 100px; padding: 2px 4px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 4px;" />
+      </div>
+
+      <div class="demo-toggle-row">
+        <div>
+          <div class="demo-toggle-label">Sig Modal Title</div>
+        </div>
+        <input type="text" id="cfg-lbl-sig-modal" value="Select Signature Role" style="width: 100px; padding: 2px 4px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 4px;" />
+      </div>
+
+      <div class="demo-toggle-row">
+        <div>
+          <div class="demo-toggle-label">Materai Modal Title</div>
+        </div>
+        <input type="text" id="cfg-lbl-estamp-modal" value="Select E-Materai" style="width: 100px; padding: 2px 4px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 4px;" />
+      </div>
     </div>
 
     <!-- Global State -->
@@ -426,6 +492,17 @@
         </div>
         <label class="demo-toggle">
           <input type="checkbox" id="cfg-lock-pagination" />
+          <div class="demo-toggle__track"></div>
+        </label>
+      </div>
+
+      <div class="demo-toggle-row">
+        <div>
+          <div class="demo-toggle-label">Disable Page # Input</div>
+          <div class="demo-toggle-sub">ui.topbar.paginationInput: false</div>
+        </div>
+        <label class="demo-toggle">
+          <input type="checkbox" id="cfg-disable-page-input" />
           <div class="demo-toggle__track"></div>
         </label>
       </div>
@@ -554,14 +631,19 @@
       signature: document.getElementById('toggle-signature').checked,
       eStamp: document.getElementById('toggle-estamp').checked,
       pagination: document.getElementById('toggle-pagination').checked,
+      paginationInput: !document.getElementById('cfg-disable-page-input').checked,
       zoom: document.getElementById('toggle-zoom').checked,
       themeToggle: document.getElementById('toggle-theme-btn').checked,
       customComp: document.getElementById('toggle-custom-comp').checked,
       disabled: document.getElementById('cfg-disabled').checked,
+      lblUpload: document.getElementById('cfg-lbl-upload').value,
+      lblSig: document.getElementById('cfg-lbl-sig').value,
+      lblSigModal: document.getElementById('cfg-lbl-sig-modal').value,
+      lblEstampModal: document.getElementById('cfg-lbl-estamp-modal').value,
     };
   }
 
-  ['toggle-thumbnails','toggle-upload','toggle-signature','toggle-estamp','toggle-pagination','toggle-zoom', 'toggle-theme-btn', 'toggle-custom-comp', 'cfg-disabled', 'cfg-lock-pagination'].forEach(id => {
+  ['toggle-thumbnails','toggle-upload','toggle-signature','toggle-estamp','toggle-pagination', 'toggle-pagination-input', 'toggle-zoom', 'toggle-theme-btn', 'toggle-custom-comp', 'cfg-disabled', 'cfg-lock-pagination', 'cfg-disable-page-input', 'cfg-lbl-upload', 'cfg-lbl-sig', 'cfg-lbl-sig-modal', 'cfg-lbl-estamp-modal'].forEach(id => {
     document.getElementById(id).addEventListener('change', () => {
       const t = getToggles();
       
@@ -584,12 +666,19 @@
             signature: t.signature,
             eStamp: t.eStamp,
             pagination: t.pagination,
+            paginationInput: t.paginationInput,
             zoom: t.zoom,
             themeToggle: t.themeToggle,
             customComponent: customHTML,
           },
           sidebar: { thumbnails: t.thumbnails },
         },
+        labels: {
+          uploadBtn: t.lblUpload,
+          signatureBtn: t.lblSig,
+          signatureModalTitle: t.lblSigModal,
+          estampModalTitle: t.lblEstampModal,
+        }
       });
       logEvent('', `config updated`);
     });

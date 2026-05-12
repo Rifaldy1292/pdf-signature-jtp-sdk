@@ -76,6 +76,13 @@ export function createViewer(userConfig = {}) {
             const mainCanvas = pageMainCanvases.get(page);
             docManager.renderPage(page, mainCanvas, config.scale).then(() => {
               sigManager.syncSize(page, mainCanvas.width, mainCanvas.height);
+              
+              // Remove the fallback minimums so the wrapper perfectly hugs the actual canvas size
+              const wrap = document.getElementById(`psdk-page-${page}`);
+              if (wrap) {
+                wrap.style.minWidth = `${mainCanvas.width}px`;
+                wrap.style.minHeight = `${mainCanvas.height}px`;
+              }
             });
           }
         } else {

@@ -5,7 +5,7 @@ export default defineConfig({
   root: './demo',
   publicDir: '../public',
   server: {
-    port: 3000,
+    port: 12000,
     open: true,
   },
   build: {

@@ -12,12 +12,21 @@ export const DEFAULT_CONFIG = {
   disabled: false, // global interactive disable
   signatureOptions: [],
   estampOptions: [],
+  labels: {
+    uploadBtn: 'Open PDF',
+    signatureBtn: 'Add Signature',
+    estampBtn: 'E-Materai',
+    clearBtn: 'Clear All',
+    signatureModalTitle: 'Select Signature Role',
+    estampModalTitle: 'Select E-Materai'
+  },
   ui: {
     topbar: {
       upload: true,
       signature: true,
       eStamp: true,
       pagination: true,
+      paginationInput: true,
       zoom: true,
       themeToggle: true,
       customComponent: null, // string or HTMLElement

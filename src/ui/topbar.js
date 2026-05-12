@@ -72,7 +72,7 @@ export function buildTopbar(topbarEl, config, viewer) {
 
   // ── Upload button
   if (uiCfg.upload !== false) {
-    btnUpload = makeBtn('psdk-btn-upload', ICONS.upload, 'Open PDF', ['psdk-btn', 'psdk-tooltip'], 'Open PDF file');
+    btnUpload = makeBtn('psdk-btn-upload', ICONS.upload, config.labels?.uploadBtn || 'Open PDF', ['psdk-btn', 'psdk-tooltip'], 'Open PDF file');
     btnUpload.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => {
       const file = /** @type {HTMLInputElement} */(e.target).files?.[0];
@@ -90,7 +90,7 @@ export function buildTopbar(topbarEl, config, viewer) {
 
   // ── Signature button
   if (uiCfg.signature !== false) {
-    btnSig = makeBtn('psdk-btn-signature', ICONS.signature, 'Add Signature', ['psdk-btn', 'psdk-btn--accent', 'psdk-tooltip'], 'Add a signature');
+    btnSig = makeBtn('psdk-btn-signature', ICONS.signature, config.labels?.signatureBtn || 'Add Signature', ['psdk-btn', 'psdk-btn--accent', 'psdk-tooltip'], 'Add a signature');
     btnSig.addEventListener('click', () => {
       viewer.openSignatureModal();
     });
@@ -99,7 +99,7 @@ export function buildTopbar(topbarEl, config, viewer) {
 
   // ── E-Materai button
   if (uiCfg.eStamp !== false) {
-    btnEStamp = makeBtn('psdk-btn-estamp', ICONS.estamp, 'E-Materai', ['psdk-btn', 'psdk-btn--danger', 'psdk-tooltip'], 'Add E-Materai stamp');
+    btnEStamp = makeBtn('psdk-btn-estamp', ICONS.estamp, config.labels?.estampBtn || 'E-Materai', ['psdk-btn', 'psdk-btn--danger', 'psdk-tooltip'], 'Add E-Materai stamp');
     btnEStamp.addEventListener('click', () => {
       viewer.openEStampModal();
     });
@@ -107,7 +107,7 @@ export function buildTopbar(topbarEl, config, viewer) {
   }
 
   // ── Clear signatures button (always in DOM, shown when there are sigs)
-  const btnClear = makeBtn('psdk-btn-clear', ICONS.clear, 'Clear All', ['psdk-btn', 'psdk-btn--ghost', 'psdk-tooltip'], 'Clear all signatures');
+  const btnClear = makeBtn('psdk-btn-clear', ICONS.clear, config.labels?.clearBtn || 'Clear All', ['psdk-btn', 'psdk-btn--ghost', 'psdk-tooltip'], 'Clear all signatures');
   btnClear.style.display = 'none';
   btnClear.addEventListener('click', () => {
     viewer.clearSignatures();
@@ -270,7 +270,8 @@ export function buildTopbar(topbarEl, config, viewer) {
   }
 
   function setPaginationLocked(locked) {
-    if (pageCurrentEl) pageCurrentEl.disabled = locked;
+    const isInputDisabled = config.ui?.topbar?.paginationInput === false;
+    if (pageCurrentEl) pageCurrentEl.disabled = locked || isInputDisabled;
     if (btnPrev) btnPrev.disabled = locked || viewer.currentPage <= 1;
     if (btnNext) btnNext.disabled = locked || viewer.currentPage >= viewer.totalPages;
   }
@@ -305,6 +306,18 @@ export function buildTopbar(topbarEl, config, viewer) {
     setVisible(dividerZoom, tb.zoom !== false);
     setVisible(pagWrap, tb.pagination !== false);
     setVisible(btnTheme, tb.themeToggle !== false);
+
+    if (pageCurrentEl) {
+      pageCurrentEl.disabled = tb.paginationInput === false || viewer.isPaginationLocked;
+    }
+
+    // Update labels dynamically
+    if (cfg.labels) {
+      if (btnUpload) { const span = btnUpload.querySelector('span'); if (span) span.textContent = cfg.labels.uploadBtn || 'Open PDF'; }
+      if (btnSig) { const span = btnSig.querySelector('span'); if (span) span.textContent = cfg.labels.signatureBtn || 'Add Signature'; }
+      if (btnEStamp) { const span = btnEStamp.querySelector('span'); if (span) span.textContent = cfg.labels.estampBtn || 'E-Materai'; }
+      if (btnClear) { const span = btnClear.querySelector('span'); if (span) span.textContent = cfg.labels.clearBtn || 'Clear All'; }
+    }
 
     // Update custom component if changed
     let hasCustom = false;

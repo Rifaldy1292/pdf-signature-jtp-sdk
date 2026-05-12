@@ -29,7 +29,9 @@ export function buildSignatureModal(overlayEl, config, viewer) {
     const isSig = type === 'signature';
     const options = isSig ? (config.signatureOptions || []) : (config.estampOptions || []);
     
-    title.textContent = isSig ? 'Select Signature Role' : 'Select E-Materai';
+    title.textContent = isSig 
+      ? (config.labels?.signatureModalTitle || 'Select Signature Role') 
+      : (config.labels?.estampModalTitle || 'Select E-Materai');
     
     if (!options || options.length === 0) {
       // Fallback if no options: directly place default item at center
