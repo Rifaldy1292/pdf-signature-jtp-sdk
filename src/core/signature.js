@@ -37,6 +37,7 @@ export class SignatureManager {
     this._resizeStart = { w: 0, h: 0, px: 0, py: 0 };
   }
 
+  /** Pasang overlay canvas ke halaman tertentu dan daftarkan event handler pointer/touch. */
   attach(page, overlayCanvas) {
     this._overlayCanvases.set(page, overlayCanvas);
     this._ctxs.set(page, overlayCanvas.getContext('2d'));
@@ -107,7 +108,7 @@ export class SignatureManager {
     this._redrawPage(page);
   }
 
-  /** @param {number} page */
+  /** Set halaman aktif (dipakai untuk filtering item per halaman). */
   setPage(page) {
     this._currentPage = page;
   }

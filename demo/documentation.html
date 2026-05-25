@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Signature SDK — Dokumentasi Lengkap</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Highlight.js Tokyo Night Dark theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              950: '#09090b',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* Custom scrollbars for dark mode style */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col antialiased">
+
+  <!-- Header Banner -->
+  <header class="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <i data-lucide="file-signature" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-violet-400">PDF Signature SDK</span>
+          <span class="ml-2 text-xs px-2 py-0.5 rounded-full bg-indigo-900/30 text-indigo-400 border border-indigo-500/30">v1.0.0</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="#quickstart" class="text-sm font-semibold text-zinc-300 hover:text-white transition">Quick Start</a>
+        <a href="#api" class="text-sm font-semibold text-zinc-300 hover:text-white transition">API Reference</a>
+        <span class="text-xs px-2.5 py-1 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">Framework-Agnostic</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container -->
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex gap-8 my-8">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 shrink-0 hidden md:block sticky top-24 self-start max-h-[calc(100vh-8rem)] overflow-y-auto pr-4">
+      <nav class="space-y-6">
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-2">
+            <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-400"></i> Memulai
+          </h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#pengenalan" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">Pengenalan</a></li>
+            <li><a href="#fitur" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">Fitur Utama</a></li>
+            <li><a href="#instalasi" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">Instalasi</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-2">
+            <i data-lucide="terminal" class="w-3.5 h-3.5 text-indigo-400"></i> Panduan Integrasi
+          </h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#integration-html" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">HTML / Vanilla JS</a></li>
+            <li><a href="#integration-vue" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">Vue.js (Vue 3)</a></li>
+            <li><a href="#integration-react" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">React / Next.js</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-2">
+            <i data-lucide="sliders" class="w-3.5 h-3.5 text-indigo-400"></i> Referensi
+          </h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#konfigurasi" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">Skema Konfigurasi</a></li>
+            <li><a href="#api" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">Instance Methods</a></li>
+            <li><a href="#getters" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">Getter Properties</a></li>
+            <li><a href="#events" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">Event Bus System</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 min-w-0 space-y-16 pb-24">
+      
+      <!-- Pengenalan -->
+      <section id="pengenalan" class="scroll-mt-24 space-y-4">
+        <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Dokumentasi PDF Signature SDK</h1>
+        <p class="text-lg text-zinc-400 leading-relaxed">
+          <strong>pdf-signature-jtp-sdk</strong> adalah pustaka rendering PDF dan penempatan tanda tangan elektronik (dan E-Materai) yang performan dan <strong>framework-agnostic</strong>. SDK ini dirancang agar mudah digunakan secara langsung di HTML murni menggunakan Vanilla JS, maupun menggunakan framework modern seperti Vue 3, React, dan Next.js.
+        </p>
+        <div class="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-200 text-sm flex gap-3">
+          <i data-lucide="info" class="w-5 h-5 text-indigo-400 shrink-0"></i>
+          <div>
+            <strong>Info Arsitektur:</strong> Pustaka ini membagi rendering halaman menjadi dua layer: layer dasar statis digambar dengan PDF.js ke Canvas, dan layer atas (overlay) interaktif dikelola langsung dengan HTML5 Canvas API murni untuk interaksi tanda tangan yang responsif tanpa library berat lainnya.
+          </div>
+        </div>
+      </section>
+
+      <!-- Fitur Utama -->
+      <section id="fitur" class="scroll-mt-24 space-y-6">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i data-lucide="sparkles" class="w-6 h-6 text-indigo-400"></i> Fitur Utama
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 transition">
+            <h3 class="font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="eye" class="w-4 h-4 text-emerald-400"></i> Rendering PDF.js Cepat</h3>
+            <p class="text-sm text-zinc-400">Menggunakan library standar industri PDF.js untuk kualitas render visual dokumen yang tajam dengan lazy-loading berbasis IntersectionObserver.</p>
+          </div>
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 transition">
+            <h3 class="font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="mouse-pointer" class="w-4 h-4 text-violet-400"></i> Tanda Tangan Interaktif</h3>
+            <p class="text-sm text-zinc-400">Pengguna dapat meletakkan, menyeret (drag & drop), serta mengubah ukuran (resize) placeholder tanda tangan secara intuitif di atas dokumen.</p>
+          </div>
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 transition">
+            <h3 class="font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-red-400"></i> E-Materai Support</h3>
+            <p class="text-sm text-zinc-400">Dukungan bawaan untuk pembubuhan E-Materai elektronik dengan aspek rasio tetap (square) secara visual sesuai regulasi.</p>
+          </div>
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 transition">
+            <h3 class="font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="settings" class="w-4 h-4 text-amber-400"></i> Kustomisasi UI Penuh</h3>
+            <p class="text-sm text-zinc-400">Tampilkan atau sembunyikan topbar, tombol, sidebar thumbnail, kontrol zoom, atau ganti label tombol teks lewat satu objek config.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Instalasi -->
+      <section id="instalasi" class="scroll-mt-24 space-y-4">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i data-lucide="download" class="w-6 h-6 text-indigo-400"></i> Instalasi
+        </h2>
+        <p class="text-zinc-400 text-sm">Instal SDK ke dalam project Anda menggunakan package manager:</p>
+        <div class="relative">
+          <pre class="rounded-xl overflow-hidden"><code class="language-bash">npm install pdf-signature-jtp-sdk</code></pre>
+          <button onclick="copyToClipboard('npm install pdf-signature-jtp-sdk')" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white" title="Salin kode">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Panduan Integrasi -->
+      <section class="scroll-mt-24 space-y-8">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i data-lucide="code-2" class="w-6 h-6 text-indigo-400"></i> Panduan Integrasi Framework
+        </h2>
+
+        <!-- TABS CONTAINER -->
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+          <div class="flex border-b border-zinc-800 bg-zinc-900/50 px-4">
+            <button onclick="switchTab('html')" id="tab-btn-html" class="tab-btn px-4 py-3 text-sm font-semibold border-b-2 border-indigo-500 text-indigo-400 transition">HTML Murni (Vanilla)</button>
+            <button onclick="switchTab('vue')" id="tab-btn-vue" class="tab-btn px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 transition">Vue.js 3</button>
+            <button onclick="switchTab('react')" id="tab-btn-react" class="tab-btn px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 transition">React / Next.js</button>
+          </div>
+
+          <!-- Tab HTML -->
+          <div id="tab-content-html" class="tab-content p-6 space-y-4">
+            <p class="text-sm text-zinc-400">Untuk penggunaan dasar menggunakan file HTML murni atau JS script standard, import fungsi pembuat viewer dan panggil dengan container CSS Selector.</p>
+            <div class="relative">
+              <pre class="rounded-xl overflow-hidden"><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Demo PDF Signature SDK&lt;/title&gt;
+  &lt;!-- Import CSS default SDK --&gt;
+  &lt;link rel="stylesheet" href="node_modules/pdf-signature-jtp-sdk/dist/style.css"&gt;
+&lt;/head&gt;
+&lt;body class="bg-slate-900"&gt;
+  
+  &lt;!-- Wadah tempat viewer akan dirender --&gt;
+  &lt;div id="my-pdf-container" style="width: 100%; height: 750px;"&gt;&lt;/div&gt;
+
+  &lt;script type="module"&gt;
+    import { createViewer } from './node_modules/pdf-signature-jtp-sdk/dist/pdf-signature-sdk.js';
+
+    // Inisialisasi Viewer
+    const viewer = createViewer({
+      container: '#my-pdf-container',
+      file: 'https://example.com/dokumen.pdf', // URL, File, Blob, atau ArrayBuffer
+      scale: 1.5,
+      theme: 'dark',
+      signatureOptions: [
+        { id: 'dir', label: 'Direktur Utama', image: 'https://example.com/sig-dir.png' },
+        { id: 'emp', label: 'Karyawan', image: 'https://example.com/sig-emp.png' }
+      ],
+      estampOptions: [
+        { id: 'estamp1', label: 'E-Materai Resmi', image: 'https://example.com/estamp.png' }
+      ]
+    });
+
+    // Mendengarkan Event penempatan tanda tangan
+    viewer.on('signaturePlaced', (sig) =&gt; {
+      console.log('Tanda tangan ditempatkan pada koordinat:', sig.x, sig.y, 'halaman', sig.page);
+    });
+
+    // Mendengarkan Event perubahan halaman
+    viewer.on('pageChanged', ({ page, total }) =&gt; {
+      console.log(`Berpindah ke halaman ${page} dari total ${total}`);
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+              <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
+                <i data-lucide="copy" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab Vue -->
+          <div id="tab-content-vue" class="tab-content p-6 space-y-4 hidden">
+            <p class="text-sm text-zinc-400">Pustaka menyediakan adapter Vue 3 bawaan yang dapat langsung diimpor dari <code class="text-indigo-400 font-mono">pdf-signature-jtp-sdk/vue</code>.</p>
+            <div class="relative">
+              <pre class="rounded-xl overflow-hidden"><code class="language-vue">&lt;script setup&gt;
+import { ref } from 'vue';
+import { PdfViewer } from 'pdf-signature-jtp-sdk/vue';
+import 'pdf-signature-jtp-sdk/style.css';
+
+const pdfFile = ref('https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf');
+const scale = ref(1.5);
+const theme = ref('dark');
+
+const signatures = [
+  { id: 'ceo', label: 'CEO Approval', image: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Signature_of_John_Hancock.svg' }
+];
+
+const viewerRef = ref(null);
+
+function onSigPlaced(sig) {
+  console.log('Tanda tangan ditambahkan:', sig);
+}
+
+function handleGetSigs() {
+  if (viewerRef.value) {
+    const allPlaced = viewerRef.value.getSignatures();
+    console.log('Semua tanda tangan yang ditempatkan:', allPlaced);
+  }
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="p-6 bg-zinc-950 min-h-screen text-white"&gt;
+    &lt;div class="mb-4 flex gap-3"&gt;
+      &lt;button @click="handleGetSigs" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm"&gt;
+        Ambil Hasil Koordinat
+      &lt;/button&gt;
+      &lt;button @click="() =&gt; viewerRef?.clearSignatures()" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm"&gt;
+        Hapus Semua
+      &lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;PdfViewer
+      ref="viewerRef"
+      :file="pdfFile"
+      :scale="scale"
+      :theme="theme"
+      :signature-options="signatures"
+      :container-style="{ width: '100%', height: '700px' }"
+      @signature-placed="onSigPlaced"
+    /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</code></pre>
+              <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
+                <i data-lucide="copy" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab React -->
+          <div id="tab-content-react" class="tab-content p-6 space-y-4 hidden">
+            <p class="text-sm text-zinc-400">Pustaka menyediakan component dan hook React bawaan yang dapat langsung diimpor dari <code class="text-indigo-400 font-mono">pdf-signature-jtp-sdk/react</code>.</p>
+            
+            <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm">
+              <strong>Peringatan Next.js SSR:</strong> Karena SDK ini mengakses DOM, Canvas API, dan variabel global browser (<code class="text-amber-400 font-mono">window</code>), Anda harus me-render komponen ini secara Client-Side saja di Next.js dengan mematikan SSR.
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400">1. Buat Komponen Wrapper Client (misal: Components/MyPdfViewer.jsx)</h4>
+              <div class="relative">
+                <pre class="rounded-xl overflow-hidden"><code class="language-jsx">"use client";
+
+import { useRef } from 'react';
+import { PdfViewer } from 'pdf-signature-jtp-sdk/react';
+import 'pdf-signature-jtp-sdk/style.css';
+
+export default function MyPdfViewer() {
+  const viewerRef = useRef(null);
+
+  const signatureOptions = [
+    { id: 'dir-1', label: 'Direktur Utama', image: 'https://example.com/sig.png' }
+  ];
+
+  const handleLogSigs = () =&gt; {
+    if (viewerRef.current) {
+      console.log('Signatures:', viewerRef.current.getSignatures());
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;div className="flex gap-2 mb-4"&gt;
+        &lt;button onClick={handleLogSigs} className="bg-indigo-600 px-4 py-2 rounded text-sm text-white"&gt;Log Signatures&lt;/button&gt;
+        &lt;button onClick={() =&gt; viewerRef.current?.clearSignatures()} className="bg-zinc-700 px-4 py-2 rounded text-sm text-white"&gt;Clear All&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;PdfViewer
+        viewerRef={viewerRef}
+        file="https://example.com/sample.pdf"
+        scale={1.5}
+        theme="dark"
+        signatureOptions={signatureOptions}
+        style={{ width: '100%', height: '700px' }}
+        onSignaturePlaced={(sig) =&gt; console.log('Placed:', sig)}
+        onPageChanged={({ page, total }) =&gt; console.log(`Halaman: ${page}/${total}`)}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+                <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400">2. Panggil Dengan Dynamic Import Di Halaman (misal: App/Page.jsx)</h4>
+              <div class="relative">
+                <pre class="rounded-xl overflow-hidden"><code class="language-jsx">"use client";
+
+import dynamic from 'next/dynamic';
+
+// Nonaktifkan Server-Side Rendering (SSR) untuk Komponen PDF Viewer
+const PDFViewerDynamic = dynamic(
+  () =&gt; import('../components/MyPdfViewer'),
+  { ssr: false }
+);
+
+export default function Page() {
+  return (
+    &lt;main className="min-h-screen bg-zinc-950 p-12 text-white"&gt;
+      &lt;h1 className="text-2xl font-bold mb-6"&gt;Dokumen Approval&lt;/h1&gt;
+      &lt;div className="border border-zinc-800 rounded-xl p-4 bg-zinc-900/40"&gt;
+        &lt;PDFViewerDynamic /&gt;
+      &lt;/div&gt;
+    &lt;/main&gt;
+  );
+}</code></pre>
+                <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Konfigurasi Lengkap -->
+      <section id="konfigurasi" class="scroll-mt-24 space-y-6">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i data-lucide="sliders" class="w-6 h-6 text-indigo-400"></i> Skema Konfigurasi SDK
+        </h2>
+        <p class="text-zinc-400 text-sm">Opsi konfigurasi lengkap saat memanggil fungsi <code class="text-indigo-400 font-mono">createViewer(config)</code> atau pada component props.</p>
+
+        <div class="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-900/30">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-zinc-900 border-b border-zinc-800 text-zinc-300 font-semibold">
+                <th class="p-4">Properti</th>
+                <th class="p-4">Tipe Data</th>
+                <th class="p-4">Default</th>
+                <th class="p-4">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-800 text-zinc-400">
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">container</td>
+                <td class="p-4 font-mono text-zinc-300">string | HTMLElement</td>
+                <td class="p-4 font-mono">null</td>
+                <td class="p-4">Selector CSS (misal: '#app') atau Node HTML langsung sebagai wadah render.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">file</td>
+                <td class="p-4 font-mono text-zinc-300">File | Blob | string | ArrayBuffer</td>
+                <td class="p-4 font-mono">null</td>
+                <td class="p-4">Sumber dokumen PDF yang akan langsung dimuat secara otomatis.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">scale</td>
+                <td class="p-4 font-mono text-zinc-300">number</td>
+                <td class="p-4 font-mono">1.5</td>
+                <td class="p-4">Rasio pembesaran render awal (Zoom). Rentang yang diizinkan: 0.25 hingga 4.0.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">theme</td>
+                <td class="p-4 font-mono text-zinc-300">'light' | 'dark'</td>
+                <td class="p-4 font-mono">'light'</td>
+                <td class="p-4">Mode tema visual bawaan viewer. Dapat dirubah secara dinamis.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">disabled</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">false</td>
+                <td class="p-4">Mengunci / menonaktifkan seluruh tombol aksi dan kemampuan seret/tarik item.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">signatureOptions</td>
+                <td class="p-4 font-mono text-zinc-300">Array&lt;object&gt;</td>
+                <td class="p-4 font-mono">[]</td>
+                <td class="p-4">Opsi tanda tangan yang muncul di modal, berisi: <code class="text-zinc-200">{ id, label, image }</code>.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">estampOptions</td>
+                <td class="p-4 font-mono text-zinc-300">Array&lt;object&gt;</td>
+                <td class="p-4 font-mono">[]</td>
+                <td class="p-4">Opsi E-Materai yang muncul di modal, berisi: <code class="text-zinc-200">{ id, label, image }</code>.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">labels</td>
+                <td class="p-4 font-mono text-zinc-300">object</td>
+                <td class="p-4 font-mono text-xs">{...}</td>
+                <td class="p-4">Kustomisasi teks label UI: <code class="text-zinc-300">uploadBtn</code>, <code class="text-zinc-300">signatureBtn</code>, <code class="text-zinc-300">estampBtn</code>, dll.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.upload</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">true</td>
+                <td class="p-4">Tampilkan tombol unggah file di topbar.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.signature</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">true</td>
+                <td class="p-4">Tampilkan tombol 'Add Signature' di topbar.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.eStamp</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">true</td>
+                <td class="p-4">Tampilkan tombol 'E-Materai' di topbar.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.pagination</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">true</td>
+                <td class="p-4">Tampilkan tombol Halaman Sebelumnya/Berikutnya dan indikator halaman.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.paginationInput</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">true</td>
+                <td class="p-4">Izinkan mengetik langsung nomor halaman pada indikator pagination.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.zoom</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">true</td>
+                <td class="p-4">Tampilkan kontrol zoom in, zoom out, dan fit-to-screen di topbar.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.themeToggle</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">true</td>
+                <td class="p-4">Tampilkan tombol beralih tema siang/malam di topbar.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.customComponent</td>
+                <td class="p-4 font-mono text-zinc-300">string | HTMLElement</td>
+                <td class="p-4 font-mono">null</td>
+                <td class="p-4">Elemen khusus (custom HTML string atau DOM Element) yang dimasukkan di sisi kanan topbar.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.sidebar.thumbnails</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">true</td>
+                <td class="p-4">Tampilkan panel sidebar sebelah kiri berisi daftar thumbnail halaman PDF.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Referensi API (Instance Methods) -->
+      <section id="api" class="scroll-mt-24 space-y-6">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i data-lucide="cpu" class="w-6 h-6 text-indigo-400"></i> Referensi API (Instance Methods)
+        </h2>
+        <p class="text-zinc-400 text-sm">Metode imperatif yang diekspos oleh objek instance viewer yang dikembalikan oleh <code class="text-indigo-400 font-mono">createViewer()</code>, atau melalui React Ref / Vue Ref.</p>
+
+        <div class="space-y-4">
+          
+          <!-- loadDocument -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="font-mono text-md font-bold text-white">loadDocument(source)</h3>
+              <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-emerald-400 border border-zinc-700">Async</span>
+            </div>
+            <p class="text-sm text-zinc-400">Memuat berkas PDF baru secara dinamis. Metode ini otomatis me-reset halaman aktif, menghapus tanda tangan yang ada, dan memperbarui panel thumbnail sidebar.</p>
+            <div class="text-xs text-zinc-500">
+              <strong class="text-zinc-400">Parameters:</strong>
+              <code class="text-indigo-300">source</code> (File | Blob | String URL | ArrayBuffer) — Objek/Path file PDF.
+            </div>
+          </div>
+
+          <!-- Navigation Methods -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">nextPage() / prevPage()</h3>
+            <p class="text-sm text-zinc-400">Berpindah ke satu halaman berikutnya atau halaman sebelumnya jika tersedia.</p>
+          </div>
+
+          <!-- goToPage -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">goToPage(n)</h3>
+            <p class="text-sm text-zinc-400">Berpindah ke halaman tertentu berdasarkan nomor indeks halaman (indeks dimulai dari 1).</p>
+            <div class="text-xs text-zinc-500">
+              <strong class="text-zinc-400">Parameters:</strong>
+              <code class="text-indigo-300">n</code> (number) — Nomor halaman target.
+            </div>
+            <div class="text-xs text-zinc-500">
+              <strong class="text-zinc-400">Returns:</strong>
+              <code class="text-emerald-400">boolean</code> — Mengembalikan <code class="text-emerald-400">true</code> jika perpindahan halaman berhasil, dan <code class="text-red-400">false</code> jika gagal (misal: nomor halaman di luar batas).
+            </div>
+          </div>
+
+          <!-- setScale -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="font-mono text-md font-bold text-white">setScale(scale)</h3>
+              <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-emerald-400 border border-zinc-700">Async</span>
+            </div>
+            <p class="text-sm text-zinc-400">Mengubah rasio pembesaran (zoom) dokumen secara dinamis dan me-render ulang halaman dokumen saat ini.</p>
+            <div class="text-xs text-zinc-500">
+              <strong class="text-zinc-400">Parameters:</strong>
+              <code class="text-indigo-300">scale</code> (number) — Rasio skala baru (misal: 1.5 = 150%). Rentang: 0.25 sampai 4.0.
+            </div>
+          </div>
+
+          <!-- fitToScreen -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="font-mono text-md font-bold text-white">fitToScreen()</h3>
+              <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-emerald-400 border border-zinc-700">Async</span>
+            </div>
+            <p class="text-sm text-zinc-400">Menghitung ukuran lebar dan tinggi wadah kontainer, lalu mengubah skala dokumen secara otomatis agar pas dengan ukuran layar.</p>
+            <div class="text-xs text-zinc-500">
+              <strong class="text-zinc-400">Returns:</strong>
+              <code class="text-zinc-300">number</code> — Mengembalikan rasio skala yang baru dihitung dan diterapkan.
+            </div>
+          </div>
+
+          <!-- Modals -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">openSignatureModal() / openEStampModal()</h3>
+            <p class="text-sm text-zinc-400">Membuka popup modal pemilihan peran tanda tangan atau modal pemilihan E-Materai secara terprogram.</p>
+          </div>
+
+          <!-- placeSignature -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">placeSignature(opts)</h3>
+            <p class="text-sm text-zinc-400">Menempatkan objek tanda tangan pada halaman secara langsung melalui kode.</p>
+            <div class="text-xs text-zinc-500 space-y-1">
+              <p><strong class="text-zinc-400">Parameters:</strong> <code class="text-indigo-300">opts</code> (object) — Opsi kustomisasi:</p>
+              <ul class="list-disc pl-5 space-y-0.5">
+                <li><code class="text-zinc-300">x</code> (number, opsional): Koordinat X piksel (default: tengah halaman).</li>
+                <li><code class="text-zinc-300">y</code> (number, opsional): Koordinat Y piksel (default: tengah halaman).</li>
+                <li><code class="text-zinc-300">page</code> (number, opsional): Nomor halaman target (default: halaman saat ini).</li>
+                <li><code class="text-zinc-300">label</code> (string, opsional): Teks yang akan ditampilkan pada tanda tangan.</li>
+                <li><code class="text-zinc-300">image</code> (string, opsional): URL atau Base64 gambar tanda tangan.</li>
+              </ul>
+            </div>
+            <div class="text-xs text-zinc-500">
+              <strong class="text-zinc-400">Returns:</strong>
+              <code class="text-indigo-300">string</code> — ID unik dari tanda tangan yang baru saja ditempatkan.
+            </div>
+          </div>
+
+          <!-- placeEStamp -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">placeEStamp(opts)</h3>
+            <p class="text-sm text-zinc-400">Menempatkan objek E-Materai secara programmatik di halaman.</p>
+            <div class="text-xs text-zinc-500 space-y-1">
+              <p><strong class="text-zinc-400">Parameters:</strong> <code class="text-indigo-300">opts</code> (object) — Opsi penempatan:</p>
+              <ul class="list-disc pl-5 space-y-0.5">
+                <li><code class="text-zinc-300">x</code>, <code class="text-zinc-300">y</code>, <code class="text-zinc-300">page</code> (opsional): Sama seperti tanda tangan.</li>
+                <li><code class="text-zinc-300">image</code> (string, opsional): Gambar khusus materai.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- removeSignature -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">removeSignature(id)</h3>
+            <p class="text-sm text-zinc-400">Menghapus satu objek tanda tangan atau E-Materai tertentu berdasarkan ID uniknya.</p>
+            <div class="text-xs text-zinc-500">
+              <strong class="text-zinc-400">Parameters:</strong>
+              <code class="text-indigo-300">id</code> (string) — ID objek yang ingin dihapus.
+            </div>
+          </div>
+
+          <!-- clearSignatures -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">clearSignatures()</h3>
+            <p class="text-sm text-zinc-400">Menghapus seluruh tanda tangan dan E-Materai yang telah ditempatkan di semua halaman dokumen.</p>
+          </div>
+
+          <!-- getSignatures / getSignaturesByPage -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">getSignatures() / getSignaturesByPage(page)</h3>
+            <p class="text-sm text-zinc-400">Mengambil data koordinat dari objek yang ditempatkan pengguna untuk dikirim ke backend proses penandatanganan.</p>
+            <div class="text-xs text-zinc-500">
+              <strong class="text-zinc-400">Returns:</strong>
+              <code class="text-indigo-300">Array&lt;object&gt;</code> — Array berisi objek: <code class="text-zinc-300">{ id, type, x, y, page, label, width, height }</code>.
+            </div>
+          </div>
+
+          <!-- setPaginationLocked -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">setPaginationLocked(locked)</h3>
+            <p class="text-sm text-zinc-400">Mengunci perpindahan halaman (membuat tombol prev/next dan input halaman tidak aktif).</p>
+            <div class="text-xs text-zinc-500">
+              <strong class="text-zinc-400">Parameters:</strong>
+              <code class="text-indigo-300">locked</code> (boolean) — Nilai <code class="text-zinc-200">true</code> untuk mengunci, <code class="text-zinc-200">false</code> untuk membuka.
+            </div>
+          </div>
+
+          <!-- on / off -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">on(event, fn) / off(event, fn)</h3>
+            <p class="text-sm text-zinc-400">Menambahkan atau menghapus listener untuk event internal SDK (Event Bus).</p>
+          </div>
+
+          <!-- updateConfig -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">updateConfig(partialConfig)</h3>
+            <p class="text-sm text-zinc-400">Memperbarui konfigurasi UI atau status interaktivitas secara dinamis (seperti merubah tema, bahasa, atau menyembunyikan tombol).</p>
+          </div>
+
+          <!-- getCanvas / getOverlayCanvas -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">getCanvas(page) / getOverlayCanvas(page)</h3>
+            <p class="text-sm text-zinc-400">Mengambil referensi element HTML Canvas utama PDF.js atau Canvas Overlay core SDK untuk operasi tingkat lanjut.</p>
+          </div>
+
+          <!-- destroy -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">destroy()</h3>
+            <p class="text-sm text-zinc-400">Menghancurkan instance viewer, menghapus seluruh event listener, memutus IntersectionObserver, dan membersihkan elemen DOM kontainer agar tidak terjadi kebocoran memori.</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Getter Properties -->
+      <section id="getters" class="scroll-mt-24 space-y-6">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i data-lucide="database" class="w-6 h-6 text-indigo-400"></i> Getter Properties (Status Reaktif)
+        </h2>
+        <p class="text-zinc-400 text-sm">Status reaktif yang dapat dibaca kapan saja langsung dari instance viewer:</p>
+
+        <div class="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-900/30">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-zinc-900 border-b border-zinc-800 text-zinc-300 font-semibold">
+                <th class="p-4">Property</th>
+                <th class="p-4">Tipe Data</th>
+                <th class="p-4">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-800 text-zinc-400 font-mono">
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 text-indigo-400">currentPage</td>
+                <td class="p-4 text-zinc-300">number</td>
+                <td class="p-4 text-zinc-400 font-sans">Menunjukkan indeks halaman aktif saat ini (1-indexed).</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 text-indigo-400">totalPages</td>
+                <td class="p-4 text-zinc-300">number</td>
+                <td class="p-4 text-zinc-400 font-sans">Total jumlah seluruh halaman dokumen PDF yang sedang dimuat.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 text-indigo-400">currentScale</td>
+                <td class="p-4 text-zinc-300">number</td>
+                <td class="p-4 text-zinc-400 font-sans">Skala perbesaran (zoom) aktif dokumen saat ini (misal: 1.5).</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 text-indigo-400">isPaginationLocked</td>
+                <td class="p-4 text-zinc-300">boolean</td>
+                <td class="p-4 text-zinc-400 font-sans">Menunjukkan apakah perpindahan halaman sedang dikunci atau tidak.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Event Bus System -->
+      <section id="events" class="scroll-mt-24 space-y-6">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i data-lucide="radio" class="w-6 h-6 text-indigo-400"></i> Sistem Event (Event Bus)
+        </h2>
+        <p class="text-zinc-400 text-sm">Event yang dipancarkan oleh SDK dan dapat didengarkan menggunakan metode <code class="text-indigo-400 font-mono">viewer.on(eventName, callback)</code>.</p>
+
+        <div class="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-900/30">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-zinc-900 border-b border-zinc-800 text-zinc-300 font-semibold">
+                <th class="p-4">Nama Event</th>
+                <th class="p-4">Payload (Parameter Callback)</th>
+                <th class="p-4">Deskripsi Event</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-800 text-zinc-400">
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">documentLoaded</td>
+                <td class="p-4 font-mono text-xs text-zinc-300">{ totalPages: number }</td>
+                <td class="p-4">Dipicu ketika dokumen PDF baru telah selesai diparsing dan siap ditampilkan.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">pageChanged</td>
+                <td class="p-4 font-mono text-xs text-zinc-300">{ page: number, total: number, source: string }</td>
+                <td class="p-4">Dipicu saat halaman aktif berubah. <code class="text-zinc-300">source</code> bernilai <code class="text-zinc-300">'scroll'</code> jika digulir atau <code class="text-zinc-300">'api'</code> jika dari navigasi.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">signaturePlaced</td>
+                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string, type: 'signature', x: number, y: number, page: number, label: string, width: number, height: number }</td>
+                <td class="p-4">Dipicu ketika tanda tangan berhasil ditaruh ke dalam dokumen (baik lewat modal atau programmatik).</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">eStampPlaced</td>
+                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string, type: 'estamp', x: number, y: number, page: number, label: string, width: number, height: number }</td>
+                <td class="p-4">Dipicu ketika E-Materai berhasil ditaruh ke dalam dokumen.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">signatureMoved</td>
+                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string, type: string, x: number, y: number, page: number, label: string, width: number, height: number }</td>
+                <td class="p-4">Dipicu ketika objek tanda tangan / E-Materai selesai diseret (drag) atau dirubah ukurannya (resize) oleh pengguna.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">signatureRemoved</td>
+                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string }</td>
+                <td class="p-4">Dipicu ketika tanda tangan / E-Materai dihapus secara spesifik dengan mengklik tanda silang merah.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Custom Styling -->
+      <section id="styling" class="scroll-mt-24 space-y-4">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i data-lucide="paint-bucket" class="w-6 h-6 text-indigo-400"></i> Isolasi Gaya & Kustomisasi CSS
+        </h2>
+        <p class="text-zinc-400 text-sm">
+          Semua style bawaan SDK dibungkus dalam namespace CSS class <code class="text-indigo-400 font-mono">.psdk-*</code> untuk menghindari bentrokan gaya dengan CSS global aplikasi Anda. Anda dapat meng-override warna dasar bertema menggunakan CSS Variable berikut pada root container Anda:
+        </p>
+        <div class="relative">
+          <pre class="rounded-xl overflow-hidden"><code class="language-css">/* Meng-override warna accent utama (indigo) dan background viewer */
+.my-container-class {
+  --psdk-accent: #10b981;       /* Emerald hijau sebagai warna aksen */
+  --psdk-accent-hover: #059669;
+  --psdk-bg-base: #18181b;      /* Zinc 900 background */
+  --psdk-border-color: rgba(255, 255, 255, 0.1);
+  --psdk-font-family: 'Outfit', sans-serif;
+}</code></pre>
+          <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-zinc-950 bg-zinc-950 py-8 text-center text-sm text-zinc-500 mt-auto">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>&copy; 2026 PDF Signature SDK. Dokumentasi Resmi.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+    // Initialize Highlight.js
+    hljs.highlightAll();
+
+    // Tab Switching Logic
+    function switchTab(framework) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      // Remove active tab styling
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('border-indigo-500', 'text-indigo-400');
+        el.classList.add('border-transparent', 'text-zinc-400');
+      });
+
+      // Show selected tab content
+      document.getElementById(`tab-content-${framework}`).classList.remove('hidden');
+      // Set active styling to clicked button
+      const activeBtn = document.getElementById(`tab-btn-${framework}`);
+      activeBtn.classList.remove('border-transparent', 'text-zinc-400');
+      activeBtn.classList.add('border-indigo-500', 'text-indigo-400');
+    }
+
+    // Scroll Spy active navigation state
+    window.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          const id = entry.target.getAttribute('id');
+          const navLink = document.querySelector(`.nav-link[href="#${id}"]`);
+          if (!navLink) return;
+
+          if (entry.intersectionRatio > 0) {
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('text-indigo-400', 'font-medium', 'pl-1'));
+            navLink.classList.add('text-indigo-400', 'font-medium', 'pl-1');
+          }
+        });
+      }, {
+        rootMargin: '-30% 0px -70% 0px'
+      });
+
+      // Track all sections that have an id of sidebar navigation
+      document.querySelectorAll('section[id]').forEach(section => {
+        observer.observe(section);
+      });
+    });
+
+    // Copy to clipboard helper
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Teks berhasil disalin ke clipboard!');
+      }).catch(err => {
+        console.error('Gagal menyalin: ', err);
+      });
+    }
+
+    function copyCode(btn) {
+      const pre = btn.previousElementSibling;
+      const code = pre.querySelector('code').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const icon = btn.querySelector('i');
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>';
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i>';
+          lucide.createIcons();
+        }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

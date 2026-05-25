@@ -55,6 +55,7 @@ export function createViewer(userConfig = {}) {
   /** @type {Map<number, HTMLCanvasElement>} */
   const pageOverlayCanvases = new Map();
 
+  // Buat semua elemen canvas (main + overlay) per halaman, lalu mulai observe untuk lazy render
   async function _buildPages(totalPages) {
     nodes.pagesContainer.innerHTML = '';
     pageMainCanvases.clear();
@@ -148,6 +149,7 @@ export function createViewer(userConfig = {}) {
 
   // ─── Event wiring ─────────────────────────────────────────────────────────
 
+  // Saat halaman berganti: scroll ke halaman tujuan (jika bukan dari scroll), update topbar & sidebar
   bus.on('pageChanged', ({ page, total, source }) => {
     // When page changes from sidebar or topbar, scroll to it
     if (source !== 'scroll') {
@@ -184,6 +186,7 @@ export function createViewer(userConfig = {}) {
     bus.emit('_pageReady', { page });
   });
 
+  // Saat dokumen selesai dimuat: tampilkan canvas, bangun halaman, dan perbarui UI
   bus.on('documentLoaded', async ({ totalPages }) => {
     // Hide empty state, show canvas container
     nodes.emptyState.style.display = 'none';

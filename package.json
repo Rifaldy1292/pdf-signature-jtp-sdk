@@ -22,8 +22,7 @@
   },
   "files": [
     "dist",
-    "src",
-    "index.js",
+   
     "README.md"
   ],
   "scripts": {

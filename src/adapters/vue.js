@@ -6,11 +6,54 @@
  *
  *   <PdfViewer
  *     :file="pdfFile"
- *     :ui="{ sidebar: { thumbnails: false } }"
- *     @signature-placed="onSignature"
- *     @page-changed="onPageChange"
+ *     :scale="1.5"
+ *     theme="dark"
+ *     :disabled="false"
+ *     :signature-options="[{ id: 'dir', label: 'Direktur', image: '...' }]"
+ *     :estamp-options="[{ id: 'ematerai', label: 'E-Materai Resmi', image: '...' }]"
+ *     :labels="{ uploadBtn: 'Open PDF', signatureBtn: 'Add Signature' }"
+ *     :ui="{
+ *       topbar: { upload: true, signature: true, eStamp: true,
+ *                 pagination: true, zoom: true, themeToggle: true },
+ *       sidebar: { thumbnails: true },
+ *     }"
  *     @document-loaded="onLoad"
+ *     @page-changed="onPageChange"
+ *     @signature-placed="onSig"
+ *     @e-stamp-placed="onEStamp"
+ *     @signature-moved="onMoved"
+ *     @signature-mode-changed="onModeChange"
+ *     @coordinate-capture="onCapture"
+ *     @ready="onReady"
  *   />
+ *
+ * Exposed API (via template ref):
+ *   const viewer = ref()
+ *   viewer.value.loadDocument(file)
+ *   viewer.value.nextPage()
+ *   viewer.value.prevPage()
+ *   viewer.value.goToPage(3)
+ *   viewer.value.setScale(2)
+ *   viewer.value.fitToScreen()
+ *   viewer.value.enableSignatureMode()
+ *   viewer.value.disableSignatureMode()
+ *   viewer.value.openSignatureModal()
+ *   viewer.value.openEStampModal()
+ *   viewer.value.placeSignature({ x, y, page })
+ *   viewer.value.placeEStamp({ x, y, page })
+ *   viewer.value.removeSignature(id)
+ *   viewer.value.clearSignatures()
+ *   viewer.value.getSignatures()
+ *   viewer.value.getSignaturesByPage(page)
+ *   viewer.value.getCanvas(page)
+ *   viewer.value.getOverlayCanvas(page)
+ *   viewer.value.setPaginationLocked(true)
+ *   viewer.value.updateConfig({ ... })
+ *   viewer.value.currentPage       // reactive getter
+ *   viewer.value.totalPages        // reactive getter
+ *   viewer.value.currentScale      // reactive getter
+ *   viewer.value.isSignatureModeActive // reactive getter
+ *   viewer.value.isPaginationLocked   // reactive getter
  */
 
 import { defineComponent, ref, onMounted, onUnmounted, watch, h } from 'vue';
@@ -22,25 +65,66 @@ export const PdfViewer = defineComponent({
   props: {
     /** PDF source: File, Blob, URL string, or ArrayBuffer */
     file: {
-      type: [File, String, Object], // Object covers Blob/ArrayBuffer
+      type: [File, String, Object], // Object covers Blob / ArrayBuffer
       default: null,
     },
-    /** Scale factor for rendering (default: 1.5) */
+
+    /** Render scale factor (default: 1.5) */
     scale: {
       type: Number,
       default: 1.5,
     },
-    /** UI configuration object */
+
+    /** Color theme: 'light' | 'dark' */
+    theme: {
+      type: String,
+      default: 'dark',
+      validator: (v) => ['light', 'dark'].includes(v),
+    },
+
+    /** Globally disable all interactive elements */
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+
+    /** Array of signature options shown in the modal */
+    signatureOptions: {
+      type: Array,
+      default: () => [],
+    },
+
+    /** Array of e-materai stamp options shown in the modal */
+    estampOptions: {
+      type: Array,
+      default: () => [],
+    },
+
+    /**
+     * Override button / modal labels.
+     * @example { uploadBtn: 'Open PDF', signatureBtn: 'Add Signature', signatureModalTitle: '...', estampModalTitle: '...' }
+     */
+    labels: {
+      type: Object,
+      default: () => ({}),
+    },
+
+    /**
+     * UI visibility config.
+     * @example { topbar: { upload, signature, eStamp, pagination, paginationInput, zoom, themeToggle, customComponent }, sidebar: { thumbnails } }
+     */
     ui: {
       type: Object,
       default: () => ({}),
     },
-    /** Additional container style */
-    style: {
+
+    /** Inline style applied to the container div */
+    containerStyle: {
       type: Object,
       default: () => ({ width: '100%', height: '600px' }),
     },
-    /** Additional class names */
+
+    /** CSS class applied to the container div */
     class: {
       type: String,
       default: '',
@@ -48,88 +132,173 @@ export const PdfViewer = defineComponent({
   },
 
   emits: [
+    /** Fired when a document finishes loading. Payload: { totalPages } */
     'documentLoaded',
+    /** Fired when the visible page changes. Payload: { page, total, source } */
     'pageChanged',
+    /** Fired when a signature is placed. Payload: signature object */
     'signaturePlaced',
+    /** Fired when an e-materai stamp is placed. Payload: stamp object */
     'eStampPlaced',
+    /** Fired when a signature/stamp is moved or resized. Payload: item object */
     'signatureMoved',
+    /** Fired when signature placement mode is toggled. Payload: { active } */
     'signatureModeChanged',
+    /** Fired on coordinate-capture click in signature mode. Payload: { x, y, page } */
     'coordinateCapture',
+    /** Fired after the viewer is fully initialized. Payload: viewer instance */
     'ready',
   ],
 
   setup(props, { emit, expose }) {
     const containerRef = ref(null);
-    /** @type {import('../core/viewer').ViewerInstance|null} */
-    let viewer = null;
 
+    /** @type {import('../core/viewer').ViewerInstance|null} */
+    let _viewer = null;
+
+    // ── Mount ─────────────────────────────────────────────────────────────────
     onMounted(() => {
-      viewer = createViewer({
+      _viewer = createViewer({
         container: containerRef.value,
         file: props.file,
         scale: props.scale,
+        theme: props.theme,
+        disabled: props.disabled,
+        signatureOptions: props.signatureOptions,
+        estampOptions: props.estampOptions,
+        labels: props.labels,
         ui: props.ui,
       });
 
-      // Wire events → emits
-      viewer.on('documentLoaded', (payload) => emit('documentLoaded', payload));
-      viewer.on('pageChanged', (payload) => emit('pageChanged', payload));
-      viewer.on('signaturePlaced', (payload) => emit('signaturePlaced', payload));
-      viewer.on('eStampPlaced', (payload) => emit('eStampPlaced', payload));
-      viewer.on('signatureMoved', (payload) => emit('signatureMoved', payload));
-      viewer.on('signatureModeChanged', (payload) => emit('signatureModeChanged', payload));
-      viewer.on('coordinateCapture', (payload) => emit('coordinateCapture', payload));
+      // Wire all SDK events → Vue emits
+      _viewer.on('documentLoaded',      (p) => emit('documentLoaded', p));
+      _viewer.on('pageChanged',         (p) => emit('pageChanged', p));
+      _viewer.on('signaturePlaced',     (p) => emit('signaturePlaced', p));
+      _viewer.on('eStampPlaced',        (p) => emit('eStampPlaced', p));
+      _viewer.on('signatureMoved',      (p) => emit('signatureMoved', p));
+      _viewer.on('signatureModeChanged',(p) => emit('signatureModeChanged', p));
+      _viewer.on('coordinateCapture',   (p) => emit('coordinateCapture', p));
 
-      emit('ready', viewer);
+      emit('ready', _viewer);
     });
 
-    // Watch for file changes → reload document
-    watch(
-      () => props.file,
-      (newFile) => {
-        if (newFile && viewer) {
-          viewer.loadDocument(newFile);
-        }
-      }
-    );
+    // ── Watchers ──────────────────────────────────────────────────────────────
 
-    // Watch for UI config changes → update config
+    // File source change → reload document
+    watch(() => props.file, (newFile) => {
+      if (newFile && _viewer) _viewer.loadDocument(newFile);
+    });
+
+    // Scale change → re-render
+    watch(() => props.scale, (newScale) => {
+      if (_viewer) _viewer.setScale(newScale);
+    });
+
+    // Full config changes (ui, theme, disabled, labels, signatureOptions, estampOptions)
+    // Use deep watch on each; batch into one updateConfig call
     watch(
-      () => props.ui,
-      (newUi) => {
-        if (viewer) viewer.updateConfig({ ui: newUi });
+      () => ({
+        ui:               props.ui,
+        theme:            props.theme,
+        disabled:         props.disabled,
+        labels:           props.labels,
+        signatureOptions: props.signatureOptions,
+        estampOptions:    props.estampOptions,
+      }),
+      (newCfg) => {
+        if (_viewer) _viewer.updateConfig(newCfg);
       },
       { deep: true }
     );
 
+    // ── Unmount ───────────────────────────────────────────────────────────────
     onUnmounted(() => {
-      if (viewer) {
-        viewer.destroy();
-        viewer = null;
+      if (_viewer) {
+        _viewer.destroy();
+        _viewer = null;
       }
     });
 
-    // Expose viewer API to parent via template ref
+    // ── Exposed imperative API ────────────────────────────────────────────────
     expose({
-      loadDocument: (file) => viewer?.loadDocument(file),
-      nextPage: () => viewer?.nextPage(),
-      prevPage: () => viewer?.prevPage(),
-      goToPage: (n) => viewer?.goToPage(n),
-      enableSignatureMode: () => viewer?.enableSignatureMode(),
-      disableSignatureMode: () => viewer?.disableSignatureMode(),
-      placeSignature: (opts) => viewer?.placeSignature(opts),
-      placeEStamp: (opts) => viewer?.placeEStamp(opts),
-      clearSignatures: () => viewer?.clearSignatures(),
-      getSignatures: () => viewer?.getSignatures(),
-      get currentPage() { return viewer?.currentPage; },
-      get totalPages() { return viewer?.totalPages; },
+      // ── Document ────────────────────────────────────────────────────────────
+      /** Load a new PDF (File, Blob, URL, ArrayBuffer). */
+      loadDocument: (src) => _viewer?.loadDocument(src),
+
+      // ── Navigation ──────────────────────────────────────────────────────────
+      /** Navigate to the next page. */
+      nextPage: () => _viewer?.nextPage(),
+      /** Navigate to the previous page. */
+      prevPage: () => _viewer?.prevPage(),
+      /** Navigate to a specific page (1-indexed). */
+      goToPage: (n) => _viewer?.goToPage(n),
+
+      // ── Zoom ────────────────────────────────────────────────────────────────
+      /** Set the render scale (e.g. 1.0 = 100%, 1.5 = 150%). */
+      setScale: (s) => _viewer?.setScale(s),
+      /** Fit the current page to the available container width/height. */
+      fitToScreen: () => _viewer?.fitToScreen(),
+
+      // ── Signature mode ───────────────────────────────────────────────────────
+      /** Enable click-to-place signature mode (opens modal first). */
+      enableSignatureMode: () => _viewer?.enableSignatureMode(),
+      /** Disable signature placement mode. */
+      disableSignatureMode: () => _viewer?.disableSignatureMode(),
+
+      // ── Modals ───────────────────────────────────────────────────────────────
+      /** Programmatically open the signature selection modal. */
+      openSignatureModal: () => _viewer?.openSignatureModal(),
+      /** Programmatically open the e-materai selection modal. */
+      openEStampModal: () => _viewer?.openEStampModal(),
+
+      // ── Placement ───────────────────────────────────────────────────────────
+      /**
+       * Place a signature at given coordinates.
+       * @param {{ x?: number, y?: number, page?: number, label?: string, image?: string }} opts
+       */
+      placeSignature: (opts) => _viewer?.placeSignature(opts),
+      /**
+       * Place an e-materai stamp at given coordinates.
+       * @param {{ x?: number, y?: number, page?: number, image?: string }} opts
+       */
+      placeEStamp: (opts) => _viewer?.placeEStamp(opts),
+      /** Remove a specific signature/stamp by ID. */
+      removeSignature: (id) => _viewer?.removeSignature(id),
+      /** Clear all placed signatures and stamps. */
+      clearSignatures: () => _viewer?.clearSignatures(),
+
+      // ── Getters ─────────────────────────────────────────────────────────────
+      /** Get all placed signatures/stamps across all pages. */
+      getSignatures: () => _viewer?.getSignatures(),
+      /** Get placed signatures/stamps for a specific page. */
+      getSignaturesByPage: (page) => _viewer?.getSignaturesByPage(page),
+      /** Get the main PDF canvas element for a given page. */
+      getCanvas: (page) => _viewer?.getCanvas(page),
+      /** Get the overlay canvas element for a given page. */
+      getOverlayCanvas: (page) => _viewer?.getOverlayCanvas(page),
+
+      // ── Pagination lock ──────────────────────────────────────────────────────
+      /** Lock or unlock page navigation. */
+      setPaginationLocked: (locked) => _viewer?.setPaginationLocked(locked),
+
+      // ── Config ───────────────────────────────────────────────────────────────
+      /** Dynamically update any config options. */
+      updateConfig: (cfg) => _viewer?.updateConfig(cfg),
+
+      // ── Reactive state getters ───────────────────────────────────────────────
+      get currentPage()          { return _viewer?.currentPage; },
+      get totalPages()           { return _viewer?.totalPages; },
+      get currentScale()         { return _viewer?.currentScale; },
+      get isSignatureModeActive(){ return _viewer?.isSignatureModeActive; },
+      get isPaginationLocked()   { return _viewer?.isPaginationLocked; },
     });
 
+    // ── Render ────────────────────────────────────────────────────────────────
     return () =>
       h('div', {
         ref: containerRef,
         class: props.class,
-        style: props.style,
+        style: props.containerStyle,
       });
   },
 });

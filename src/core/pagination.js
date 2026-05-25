@@ -13,6 +13,7 @@ export class PaginationManager {
     this._locked = false;
   }
 
+  /** Kunci/buka navigasi halaman. */
   setLocked(locked) {
     this._locked = locked;
   }
@@ -71,6 +72,7 @@ export class PaginationManager {
     return this._currentPage > 1;
   }
 
+  /** Reset state ke kondisi awal (dipakai saat destroy). */
   reset() {
     this._currentPage = 1;
     this._totalPages = 0;
