@@ -30,6 +30,9 @@ export const DEFAULT_CONFIG = {
       zoom: true,
       themeToggle: true,
       customComponent: null, // string or HTMLElement
+      logo: null,            // HTML/SVG string or image URL
+      brandText: null,       // Custom string (or false/"" to hide)
+      style: null,           // Key-value object for inline CSS overrides
     },
     sidebar: {
       thumbnails: true,

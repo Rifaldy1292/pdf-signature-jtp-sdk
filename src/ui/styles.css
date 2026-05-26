@@ -148,6 +148,14 @@
   box-shadow: var(--psdk-shadow-glow);
 }
 
+.psdk-topbar__brand-icon--custom {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
 .psdk-topbar__brand-icon svg {
   width: 16px;
   height: 16px;

@@ -31,16 +31,71 @@ export function buildTopbar(topbarEl, config, viewer) {
 
   // ── Brand
   const brand = el('div', ['psdk-topbar__brand']);
-  brand.innerHTML = `
-    <div class="psdk-topbar__brand-icon">
-      <svg viewBox="0 0 24 24" fill="white">
-        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/>
-        <path d="M14 2v6h6" opacity=".5"/>
-      </svg>
-    </div>
-    <span class="psdk-topbar__brand-text">PDF Viewer</span>
-  `;
+  const brandIcon = el('div', ['psdk-topbar__brand-icon']);
+  const brandTextEl = el('span', ['psdk-topbar__brand-text']);
+  brand.appendChild(brandIcon);
+  brand.appendChild(brandTextEl);
   topbarEl.appendChild(brand);
+
+  function updateLogo(logo) {
+    brandIcon.innerHTML = '';
+    if (logo) {
+      brandIcon.classList.add('psdk-topbar__brand-icon--custom');
+      if (typeof logo === 'string') {
+        const trimmed = logo.trim();
+        if (trimmed.startsWith('<')) {
+          brandIcon.innerHTML = trimmed;
+        } else {
+          // Render as image URL
+          const img = el('img', [], {
+            src: trimmed,
+            alt: 'Logo',
+            style: 'max-height: 28px; max-width: 120px; object-fit: contain; display: block;'
+          });
+          brandIcon.appendChild(img);
+        }
+      } else if (logo instanceof HTMLElement) {
+        brandIcon.appendChild(logo);
+      }
+    } else {
+      brandIcon.classList.remove('psdk-topbar__brand-icon--custom');
+      brandIcon.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="white">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/>
+          <path d="M14 2v6h6" opacity=".5"/>
+        </svg>
+      `;
+    }
+  }
+
+  function updateBrandText(text) {
+    if (text === false || text === '') {
+      brandTextEl.style.display = 'none';
+    } else {
+      brandTextEl.style.display = '';
+      brandTextEl.textContent = typeof text === 'string' ? text : 'PDF Viewer';
+    }
+  }
+
+  let appliedStyles = [];
+  function applyTopbarStyle(styleObj) {
+    for (const key of appliedStyles) {
+      topbarEl.style[key] = '';
+    }
+    appliedStyles = [];
+
+    if (styleObj && typeof styleObj === 'object') {
+      for (const [key, value] of Object.entries(styleObj)) {
+        topbarEl.style[key] = value;
+        appliedStyles.push(key);
+      }
+    }
+  }
+
+  // Initialize brand elements
+  updateLogo(uiCfg.logo);
+  updateBrandText(uiCfg.brandText);
+  applyTopbarStyle(uiCfg.style);
 
   // ── Secure document status badge
   const secureBadge = el('div', ['psdk-topbar__secure-badge', 'psdk-tooltip']);
@@ -311,6 +366,10 @@ export function buildTopbar(topbarEl, config, viewer) {
    */
   function applyConfig(cfg) {
     const tb = cfg.ui?.topbar || {};
+
+    updateLogo(tb.logo);
+    updateBrandText(tb.brandText);
+    applyTopbarStyle(tb.style);
 
     setVisible(btnUpload, tb.upload !== false);
     setVisible(btnSig, tb.signature !== false);
