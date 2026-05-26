@@ -1,6 +1,6 @@
 {
   "name": "pdf-signature-jtp-sdk",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "A framework-agnostic PDF Viewer + Signature SDK. Works with Vanilla JS, Vue 3, and React.",
   "type": "module",
   "main": "./dist/pdf-signature-sdk.umd.cjs",
@@ -17,12 +17,10 @@
     "./react": {
       "import": "./dist/react.js",
       "require": "./dist/react.umd.cjs"
-    },
-    "./style.css": "./dist/style.css"
+    }
   },
   "files": [
     "dist",
-   
     "README.md"
   ],
   "scripts": {
@@ -46,16 +44,8 @@
     "pdfjs-dist": "^4.10.38"
   },
   "devDependencies": {
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "vite-plugin-css-injected-by-js": "^3.5.2"
   },
-  "peerDependencies": {
-    "react": ">=17.0.0",
-    "react-dom": ">=17.0.0",
-    "vue": ">=3.0.0"
-  },
-  "peerDependenciesOptional": {
-    "react": true,
-    "react-dom": true,
-    "vue": true
-  }
+  "peerDependenciesOptional": {}
 }

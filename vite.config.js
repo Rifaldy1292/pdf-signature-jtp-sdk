@@ -1,9 +1,13 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
 export default defineConfig({
   root: './demo',
   publicDir: '../public',
+  plugins: [
+    cssInjectedByJsPlugin(),
+  ],
   server: {
     port: 12000,
     open: true,

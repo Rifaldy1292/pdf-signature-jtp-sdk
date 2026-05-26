@@ -108,7 +108,7 @@ export class SignatureManager {
     this._redrawPage(page);
   }
 
-  /** Set halaman aktif (dipakai untuk filtering item per halaman). */
+  /** @param {number} page */
   setPage(page) {
     this._currentPage = page;
   }

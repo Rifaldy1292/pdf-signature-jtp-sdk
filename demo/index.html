@@ -1,738 +1,870 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PDF Signature SDK — Live Demo</title>
-  <meta name="description" content="A framework-agnostic PDF Viewer and Signature SDK. Supports vanilla JS, Vue 3, and React." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    /* ── Demo page styles (not part of the SDK) ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Signature SDK — Live Demo</title>
+    <meta name="description" content="A framework-agnostic PDF Viewer and Signature SDK. Supports vanilla JS, Vue 3, and React." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      /* ── Demo page styles (not part of the SDK) ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    :root {
-      --page-bg: #08090f;
-      --surface: #11131d;
-      --border: rgba(255,255,255,0.07);
-      --accent: #6366f1;
-      --text: #f1f5f9;
-      --text-muted: #8b92a5;
-      --font: 'Inter', system-ui, sans-serif;
-    }
+      :root {
+        --page-bg: #08090f;
+        --surface: #11131d;
+        --border: rgba(255, 255, 255, 0.07);
+        --accent: #6366f1;
+        --text: #f1f5f9;
+        --text-muted: #8b92a5;
+        --font: "Inter", system-ui, sans-serif;
+      }
 
-    html, body {
-      height: 100%;
-      background: var(--page-bg);
-      color: var(--text);
-      font-family: var(--font);
-      overflow-x: hidden;
-    }
-
-    /* ── Header ── */
-    .demo-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 32px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .demo-header__logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .demo-header__logo-icon {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, #6366f1, #818cf8);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px rgba(99,102,241,0.4);
-    }
-
-    .demo-header__logo-icon svg {
-      width: 20px;
-      height: 20px;
-      fill: white;
-    }
-
-    .demo-header__title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    .demo-header__title span {
-      color: var(--accent);
-    }
-
-    .demo-header__badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      background: rgba(99,102,241,0.12);
-      border: 1px solid rgba(99,102,241,0.3);
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #818cf8;
-    }
-
-    .demo-header__badge::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      background: #22c55e;
-      border-radius: 50%;
-      animation: blink 1.5s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    /* ── Layout ── */
-    .demo-layout {
-      display: flex;
-      gap: 0;
-      height: calc(100vh - 65px);
-    }
-
-    /* ── Config panel ── */
-    .demo-config {
-      width: 280px;
-      flex-shrink: 0;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      overflow-y: auto;
-      padding: 20px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .demo-config::-webkit-scrollbar { width: 4px; }
-    .demo-config::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    .demo-config__section-title {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
-
-    .demo-toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .demo-toggle-row:last-child { border-bottom: none; }
-
-    .demo-toggle-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .demo-toggle-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    /* Toggle switch */
-    .demo-toggle {
-      position: relative;
-      width: 36px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    .demo-toggle input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .demo-toggle__track {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.1);
-      border-radius: 20px;
-      cursor: pointer;
-      transition: 150ms;
-    }
-
-    .demo-toggle__track::after {
-      content: "";
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: white;
-      transition: 150ms;
-    }
-
-    .demo-toggle input:checked + .demo-toggle__track {
-      background: var(--accent);
-    }
-
-    .demo-toggle input:checked + .demo-toggle__track::after {
-      left: 18px;
-    }
-
-    /* Event log */
-    .demo-event-log {
-      flex: 1;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 11px;
-      font-family: 'SF Mono', 'Cascadia Code', monospace;
-      overflow-y: auto;
-      min-height: 120px;
-      max-height: 220px;
-      color: var(--text-muted);
-      line-height: 1.7;
-    }
-
-    .demo-event-log__item { color: #22c55e; }
-    .demo-event-log__item--sig { color: #818cf8; }
-    .demo-event-log__item--page { color: #f59e0b; }
-
-    /* Code snippet */
-    .demo-code {
-      background: rgba(0,0,0,0.4);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 11px;
-      font-family: 'SF Mono', 'Cascadia Code', monospace;
-      color: #818cf8;
-      line-height: 1.8;
-      overflow-x: auto;
-    }
-
-    .demo-code .kw { color: #c084fc; }
-    .demo-code .fn { color: #60a5fa; }
-    .demo-code .str { color: #86efac; }
-    .demo-code .comment { color: #4b5563; }
-
-    /* Buttons */
-    .demo-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 8px 14px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 150ms;
-      width: 100%;
-    }
-
-    .demo-btn:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.15);
-    }
-
-    .demo-btn--accent {
-      background: rgba(99,102,241,0.15);
-      border-color: rgba(99,102,241,0.4);
-      color: #818cf8;
-    }
-
-    .demo-btn--accent:hover {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
-    }
-
-    /* ── Main viewer area ── */
-    .demo-viewer-area {
-      flex: 1;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #viewer-container {
-      flex: 1;
-      overflow: hidden;
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 768px) {
-      html, body {
-        height: auto;
+      html,
+      body {
+        height: 100%;
+        background: var(--page-bg);
+        color: var(--text);
+        font-family: var(--font);
         overflow-x: hidden;
       }
-      .demo-layout {
-        flex-direction: column;
-        height: auto;
+
+      /* ── Header ── */
+      .demo-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 32px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
       }
+
+      .demo-header__logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .demo-header__logo-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #6366f1, #818cf8);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      }
+
+      .demo-header__logo-icon svg {
+        width: 20px;
+        height: 20px;
+        fill: white;
+      }
+
+      .demo-header__title {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+
+      .demo-header__title span {
+        color: var(--accent);
+      }
+
+      .demo-header__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: rgba(99, 102, 241, 0.12);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #818cf8;
+      }
+
+      .demo-header__badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: blink 1.5s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* ── Layout ── */
+      .demo-layout {
+        display: flex;
+        gap: 0;
+        height: calc(100vh - 65px);
+      }
+
+      /* ── Config panel ── */
       .demo-config {
-        width: 100%;
-        height: auto;
-        max-height: none;
-        overflow-y: visible;
-        border-right: none;
+        width: 280px;
+        flex-shrink: 0;
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        overflow-y: auto;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .demo-config::-webkit-scrollbar {
+        width: 4px;
+      }
+      .demo-config::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      .demo-config__section-title {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        margin-bottom: 10px;
+      }
+
+      .demo-toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
         border-bottom: 1px solid var(--border);
       }
+
+      .demo-toggle-row:last-child {
+        border-bottom: none;
+      }
+
+      .demo-toggle-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      .demo-toggle-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+
+      /* Toggle switch */
+      .demo-toggle {
+        position: relative;
+        width: 36px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+
+      .demo-toggle input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .demo-toggle__track {
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: 150ms;
+      }
+
+      .demo-toggle__track::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: white;
+        transition: 150ms;
+      }
+
+      .demo-toggle input:checked + .demo-toggle__track {
+        background: var(--accent);
+      }
+
+      .demo-toggle input:checked + .demo-toggle__track::after {
+        left: 18px;
+      }
+
+      /* Event log */
+      .demo-event-log {
+        flex: 1;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 11px;
+        font-family: "SF Mono", "Cascadia Code", monospace;
+        overflow-y: auto;
+        min-height: 120px;
+        max-height: 220px;
+        color: var(--text-muted);
+        line-height: 1.7;
+      }
+
+      .demo-event-log__item {
+        color: #22c55e;
+      }
+      .demo-event-log__item--sig {
+        color: #818cf8;
+      }
+      .demo-event-log__item--page {
+        color: #f59e0b;
+      }
+
+      /* Code snippet */
+      .demo-code {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 11px;
+        font-family: "SF Mono", "Cascadia Code", monospace;
+        color: #818cf8;
+        line-height: 1.8;
+        overflow-x: auto;
+      }
+
+      .demo-code .kw {
+        color: #c084fc;
+      }
+      .demo-code .fn {
+        color: #60a5fa;
+      }
+      .demo-code .str {
+        color: #86efac;
+      }
+      .demo-code .comment {
+        color: #4b5563;
+      }
+
+      /* Buttons */
+      .demo-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 14px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 150ms;
+        width: 100%;
+      }
+
+      .demo-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+
+      .demo-btn--accent {
+        background: rgba(99, 102, 241, 0.15);
+        border-color: rgba(99, 102, 241, 0.4);
+        color: #818cf8;
+      }
+
+      .demo-btn--accent:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+
+      /* ── Main viewer area ── */
       .demo-viewer-area {
-        height: 80vh; /* Provide a fixed height constraint for the PDF viewer */
-        flex: none;
-      }
-      .demo-header__badge {
-        display: none;
-      }
-    }
-  </style>
-</head>
-<body>
-
-<!-- ── Header ─────────────────────────────────────────────────────────────── -->
-<header class="demo-header">
-  <div class="demo-header__logo">
-    <div class="demo-header__logo-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/>
-        <path d="M14 2v6h6" opacity=".6"/>
-      </svg>
-    </div>
-    <h1 class="demo-header__title">PDF <span>Signature</span> SDK</h1>
-  </div>
-  <div style="display: flex; align-items: center; gap: 12px;">
-    <a href="/documentation.html" target="_blank" style="text-decoration: none; font-size: 13px; font-weight: 600; color: #818cf8; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.3); padding: 6px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: all 150ms;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      Dokumentasi Lengkap
-    </a>
-    <div class="demo-header__badge">Live Demo</div>
-  </div>
-</header>
-
-<!-- ── Layout ─────────────────────────────────────────────────────────────── -->
-<div class="demo-layout">
-
-  <!-- Config Panel -->
-  <aside class="demo-config" aria-label="SDK Configuration Panel">
-
-    <!-- UI Toggles -->
-    <div>
-      <div class="demo-config__section-title">⚙️ UI Config</div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Sidebar Thumbnails</div>
-          <div class="demo-toggle-sub">ui.sidebar.thumbnails</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="toggle-thumbnails" checked />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Upload Button</div>
-          <div class="demo-toggle-sub">ui.topbar.upload</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="toggle-upload" checked />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Signature Button</div>
-          <div class="demo-toggle-sub">ui.topbar.signature</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="toggle-signature" checked />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">E-Materai Button</div>
-          <div class="demo-toggle-sub">ui.topbar.eStamp</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="toggle-estamp" checked />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Pagination</div>
-          <div class="demo-toggle-sub">ui.topbar.pagination</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="toggle-pagination" checked />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Allow Page Input</div>
-          <div class="demo-toggle-sub">ui.topbar.paginationInput</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="toggle-pagination-input" checked />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Zoom Controls</div>
-          <div class="demo-toggle-sub">ui.topbar.zoom</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="toggle-zoom" checked />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Theme Toggle</div>
-          <div class="demo-toggle-sub">ui.topbar.themeToggle</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="toggle-theme-btn" checked />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Custom Topbar Component</div>
-          <div class="demo-toggle-sub">ui.topbar.customComponent</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="toggle-custom-comp" />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Upload Label</div>
-        </div>
-        <input type="text" id="cfg-lbl-upload" value="Open PDF" style="width: 100px; padding: 2px 4px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 4px;" />
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Signature Label</div>
-        </div>
-        <input type="text" id="cfg-lbl-sig" value="Add Signature" style="width: 100px; padding: 2px 4px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 4px;" />
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Sig Modal Title</div>
-        </div>
-        <input type="text" id="cfg-lbl-sig-modal" value="Select Signature Role" style="width: 100px; padding: 2px 4px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 4px;" />
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Materai Modal Title</div>
-        </div>
-        <input type="text" id="cfg-lbl-estamp-modal" value="Select E-Materai" style="width: 100px; padding: 2px 4px; font-size: 11px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 4px;" />
-      </div>
-    </div>
-
-    <!-- Global State -->
-    <div>
-      <div class="demo-config__section-title">🌍 Global State</div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label" style="color:var(--demo-danger)">Disable All Interactions</div>
-          <div class="demo-toggle-sub">config.disabled</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="cfg-disabled" />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Lock Pagination</div>
-          <div class="demo-toggle-sub">viewer.setPaginationLocked(true)</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="cfg-lock-pagination" />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-
-      <div class="demo-toggle-row">
-        <div>
-          <div class="demo-toggle-label">Disable Page # Input</div>
-          <div class="demo-toggle-sub">ui.topbar.paginationInput: false</div>
-        </div>
-        <label class="demo-toggle">
-          <input type="checkbox" id="cfg-disable-page-input" />
-          <div class="demo-toggle__track"></div>
-        </label>
-      </div>
-    </div>
-
-    <!-- API Actions -->
-    <div>
-      <div class="demo-config__section-title">🚀 API Actions</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <button class="demo-btn demo-btn--accent" id="btn-api-sig">Enable Signature Mode</button>
-        <button class="demo-btn demo-btn--accent" id="btn-api-estamp">Place E-Materai (center)</button>
-        <button class="demo-btn" id="btn-api-clear">Clear All Signatures</button>
-        <button class="demo-btn" id="btn-api-log">Log Signatures to Console</button>
-        <button class="demo-btn" id="btn-api-prev">← Prev Page</button>
-        <button class="demo-btn" id="btn-api-next">Next Page →</button>
-      </div>
-    </div>
-
-    <!-- Event Log -->
-    <div>
-      <div class="demo-config__section-title">📡 Event Log</div>
-      <div class="demo-event-log" id="event-log" aria-live="polite" aria-label="Event log">
-        <div class="demo-event-log__item">— waiting for events —</div>
-      </div>
-    </div>
-
-    <!-- Usage snippet -->
-    <div>
-      <div class="demo-config__section-title">💡 Usage</div>
-      <div class="demo-code">
-        <span class="kw">import</span> { <span class="fn">createViewer</span> }<br>
-        &nbsp;&nbsp;<span class="kw">from</span> <span class="str">'pdf-signature-sdk'</span>;<br><br>
-        <span class="kw">const</span> viewer = <span class="fn">createViewer</span>({<br>
-        &nbsp;&nbsp;container: <span class="str">'#app'</span>,<br>
-        &nbsp;&nbsp;file: <span class="str">'doc.pdf'</span>,<br>
-        &nbsp;&nbsp;ui: { ... }<br>
-        });<br><br>
-        viewer.<span class="fn">on</span>(<span class="str">'signaturePlaced'</span>,<br>
-        &nbsp;&nbsp;(sig) => <span class="fn">console</span>.<span class="fn">log</span>(sig));<br>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Viewer -->
-  <div class="demo-viewer-area">
-    <div id="viewer-container"></div>
-  </div>
-</div>
-
-<!-- ── SDK Bootstrap ───────────────────────────────────────────────────────── -->
-<script type="module">
-  import { createViewer } from '../index.js';
-
-  // ── Create viewer
-  const viewer = createViewer({
-    container: '#viewer-container',
-    scale: 1.5,
-    signatureOptions: [
-      { id: 'dir', label: 'Direktur Utama', image: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Signature_of_John_Hancock.svg' },
-      { id: 'hrd', label: 'Manager HRD', image: 'https://upload.wikimedia.org/wikipedia/commons/7/75/Signature_of_George_Washington.svg' },
-      { id: 'emp', label: 'Karyawan', image: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Signature_of_Abraham_Lincoln.svg' }
-    ],
-    estampOptions: [
-      { id: 'ematerai', label: 'E-Materai Resmi', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Rubber_stamp_approved.svg/128px-Rubber_stamp_approved.svg.png' }
-    ],
-    ui: {
-      topbar: { upload: true, signature: true, eStamp: true, pagination: true, zoom: true },
-      sidebar: { thumbnails: true },
-    },
-  });
-
-  // ── Load a sample PDF from a public URL on first load
-  const SAMPLE_PDF = 'https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf';
-  viewer.loadDocument(SAMPLE_PDF).catch(() => {
-    // Fallback: show empty state naturally
-    console.info('[demo] Could not auto-load sample PDF — use the Upload button to load your own file.');
-  });
-
-  // ── Event log
-  const logEl = document.getElementById('event-log');
-  function logEvent(type, msg) {
-    const d = new Date();
-    const ts = `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
-    const item = document.createElement('div');
-    item.className = `demo-event-log__item demo-event-log__item--${type}`;
-    item.textContent = `[${ts}] ${msg}`;
-    logEl.prepend(item);
-    // Keep only 30 items
-    while (logEl.children.length > 30) logEl.removeChild(logEl.lastChild);
-  }
-
-  viewer.on('documentLoaded', ({ totalPages }) => {
-    logEvent('', `documentLoaded — ${totalPages} pages`);
-  });
-
-  viewer.on('pageChanged', ({ page, total }) => {
-    logEvent('page', `pageChanged — page ${page} / ${total}`);
-  });
-
-  viewer.on('signaturePlaced', (sig) => {
-    logEvent('sig', `signaturePlaced — page ${sig.page}  x:${Math.round(sig.x)} y:${Math.round(sig.y)}`);
-  });
-
-  viewer.on('eStampPlaced', (sig) => {
-    logEvent('sig', `eStampPlaced — page ${sig.page}  x:${Math.round(sig.x)} y:${Math.round(sig.y)}`);
-  });
-
-  viewer.on('signatureMoved', (sig) => {
-    logEvent('sig', `signatureMoved — id:${sig.id.slice(-6)}  x:${Math.round(sig.x)} y:${Math.round(sig.y)}`);
-    console.log('[Signature/E-Materai Updated]');
-    console.log(`- Coordinates : X: ${Math.round(sig.x)}, Y: ${Math.round(sig.y)}`);
-    console.log(`- Identity    : ID: ${sig.id}, Label: ${sig.label}`);
-    console.log(`- Size        : Width: ${Math.round(sig.width)}px, Height: ${Math.round(sig.height)}px`);
-    console.log(`- Raw Event   :`, sig);
-  });
-
-  viewer.on('coordinateCapture', ({ x, y, page }) => {
-    logEvent('sig', `coordinateCapture — page ${page}  x:${Math.round(x)} y:${Math.round(y)}`);
-  });
-
-  // ── UI Config toggles
-  function getToggles() {
-    return {
-      thumbnails: document.getElementById('toggle-thumbnails').checked,
-      upload: document.getElementById('toggle-upload').checked,
-      signature: document.getElementById('toggle-signature').checked,
-      eStamp: document.getElementById('toggle-estamp').checked,
-      pagination: document.getElementById('toggle-pagination').checked,
-      paginationInput: !document.getElementById('cfg-disable-page-input').checked,
-      zoom: document.getElementById('toggle-zoom').checked,
-      themeToggle: document.getElementById('toggle-theme-btn').checked,
-      customComp: document.getElementById('toggle-custom-comp').checked,
-      disabled: document.getElementById('cfg-disabled').checked,
-      lblUpload: document.getElementById('cfg-lbl-upload').value,
-      lblSig: document.getElementById('cfg-lbl-sig').value,
-      lblSigModal: document.getElementById('cfg-lbl-sig-modal').value,
-      lblEstampModal: document.getElementById('cfg-lbl-estamp-modal').value,
-    };
-  }
-
-  ['toggle-thumbnails','toggle-upload','toggle-signature','toggle-estamp','toggle-pagination', 'toggle-pagination-input', 'toggle-zoom', 'toggle-theme-btn', 'toggle-custom-comp', 'cfg-disabled', 'cfg-lock-pagination', 'cfg-disable-page-input', 'cfg-lbl-upload', 'cfg-lbl-sig', 'cfg-lbl-sig-modal', 'cfg-lbl-estamp-modal'].forEach(id => {
-    document.getElementById(id).addEventListener('change', () => {
-      const t = getToggles();
-      
-      let customHTML = null;
-      if (t.customComp) {
-        customHTML = `<button style="background:linear-gradient(to right, #ec4899, #8b5cf6); color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:12px; cursor:pointer;">✨ Custom Topbar Slot</button>`;
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
       }
 
-      if (id === 'cfg-lock-pagination') {
-        const isLocked = document.getElementById('cfg-lock-pagination').checked;
-        viewer.setPaginationLocked(isLocked);
-        logEvent('', `pagination locked: ${isLocked}`);
+      #viewer-container {
+        flex: 1;
+        overflow: hidden;
       }
 
-      viewer.updateConfig({
-        disabled: t.disabled,
-        ui: {
-          topbar: {
-            upload: t.upload,
-            signature: t.signature,
-            eStamp: t.eStamp,
-            pagination: t.pagination,
-            paginationInput: t.paginationInput,
-            zoom: t.zoom,
-            themeToggle: t.themeToggle,
-            customComponent: customHTML,
+      /* ── Responsive ── */
+      @media (max-width: 768px) {
+        html,
+        body {
+          height: auto;
+          overflow-x: hidden;
+        }
+        .demo-layout {
+          flex-direction: column;
+          height: auto;
+        }
+        .demo-config {
+          width: 100%;
+          height: auto;
+          max-height: none;
+          overflow-y: visible;
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+        }
+        .demo-viewer-area {
+          height: 80vh; /* Provide a fixed height constraint for the PDF viewer */
+          flex: none;
+        }
+        .demo-header__badge {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── Header ─────────────────────────────────────────────────────────────── -->
+    <header class="demo-header">
+      <div class="demo-header__logo">
+        <div class="demo-header__logo-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" />
+            <path d="M14 2v6h6" opacity=".6" />
+          </svg>
+        </div>
+        <h1 class="demo-header__title">PDF <span>Signature</span> SDK</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <a
+          href="/documentation.html"
+          target="_blank"
+          style="
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: #818cf8;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 150ms;
+          "
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="display: inline-block"
+          >
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </svg>
+          Dokumentasi Lengkap
+        </a>
+        <div class="demo-header__badge">Live Demo</div>
+      </div>
+    </header>
+
+    <!-- ── Layout ─────────────────────────────────────────────────────────────── -->
+    <div class="demo-layout">
+      <!-- Config Panel -->
+      <aside class="demo-config" aria-label="SDK Configuration Panel">
+        <!-- UI Toggles -->
+        <div>
+          <div class="demo-config__section-title">⚙️ UI Config</div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Sidebar Thumbnails</div>
+              <div class="demo-toggle-sub">ui.sidebar.thumbnails</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-thumbnails" checked />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Upload Button</div>
+              <div class="demo-toggle-sub">ui.topbar.upload</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-upload" checked />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Signature Button</div>
+              <div class="demo-toggle-sub">ui.topbar.signature</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-signature" checked />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">E-Materai Button</div>
+              <div class="demo-toggle-sub">ui.topbar.eStamp</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-estamp" checked />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Pagination</div>
+              <div class="demo-toggle-sub">ui.topbar.pagination</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-pagination" checked />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Allow Page Input</div>
+              <div class="demo-toggle-sub">ui.topbar.paginationInput</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-pagination-input" checked />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Zoom Controls</div>
+              <div class="demo-toggle-sub">ui.topbar.zoom</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-zoom" checked />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Theme Toggle</div>
+              <div class="demo-toggle-sub">ui.topbar.themeToggle</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-theme-btn" checked />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Custom Topbar Component</div>
+              <div class="demo-toggle-sub">ui.topbar.customComponent</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-custom-comp" />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Upload Label</div>
+            </div>
+            <input
+              type="text"
+              id="cfg-lbl-upload"
+              value="Open PDF"
+              style="
+                width: 100px;
+                padding: 2px 4px;
+                font-size: 11px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid var(--border);
+                color: white;
+                border-radius: 4px;
+              "
+            />
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Signature Label</div>
+            </div>
+            <input
+              type="text"
+              id="cfg-lbl-sig"
+              value="Add Signature"
+              style="
+                width: 100px;
+                padding: 2px 4px;
+                font-size: 11px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid var(--border);
+                color: white;
+                border-radius: 4px;
+              "
+            />
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Sig Modal Title</div>
+            </div>
+            <input
+              type="text"
+              id="cfg-lbl-sig-modal"
+              value="Select Signature Role"
+              style="
+                width: 100px;
+                padding: 2px 4px;
+                font-size: 11px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid var(--border);
+                color: white;
+                border-radius: 4px;
+              "
+            />
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
+              <div class="demo-toggle-label">Materai Modal Title</div>
+            </div>
+            <input
+              type="text"
+              id="cfg-lbl-estamp-modal"
+              value="Select E-Materai"
+              style="
+                width: 100px;
+                padding: 2px 4px;
+                font-size: 11px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid var(--border);
+                color: white;
+                border-radius: 4px;
+              "
+            />
+          </div>
+        </div>
+
+        <!-- Global State -->
+        <div>
+          <div class="demo-config__section-title">🌍 Global State</div>
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <div class="demo-toggle-row">
+              <div>
+                <div class="demo-toggle-label" style="color: var(--demo-danger)">Disable All Interactions</div>
+                <div class="demo-toggle-sub">config.disabled</div>
+              </div>
+              <label class="demo-toggle">
+                <input type="checkbox" id="cfg-disabled" />
+                <div class="demo-toggle__track"></div>
+              </label>
+            </div>
+
+            <div class="demo-toggle-row">
+              <div>
+                <div class="demo-toggle-label">Lock Pagination</div>
+                <div class="demo-toggle-sub">viewer.setPaginationLocked(true)</div>
+              </div>
+              <label class="demo-toggle">
+                <input type="checkbox" id="cfg-lock-pagination" />
+                <div class="demo-toggle__track"></div>
+              </label>
+            </div>
+
+            <div class="demo-toggle-row">
+              <div>
+                <div class="demo-toggle-label">Disable Page # Input</div>
+                <div class="demo-toggle-sub">ui.topbar.paginationInput: false</div>
+              </div>
+              <label class="demo-toggle">
+                <input type="checkbox" id="cfg-disable-page-input" />
+                <div class="demo-toggle__track"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <!-- API Actions -->
+        <div>
+          <div class="demo-config__section-title">🚀 API Actions</div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <button class="demo-btn demo-btn--accent" id="btn-api-sig">Enable Signature Mode</button>
+            <button class="demo-btn demo-btn--accent" id="btn-api-estamp">Place E-Materai (center)</button>
+            <button class="demo-btn" id="btn-api-clear">Clear All Signatures</button>
+            <button class="demo-btn" id="btn-api-log">Log Signatures to Console</button>
+            <button class="demo-btn" id="btn-api-prev">← Prev Page</button>
+            <button class="demo-btn" id="btn-api-next">Next Page →</button>
+          </div>
+        </div>
+
+        <!-- Event Log -->
+        <div>
+          <div class="demo-config__section-title">📡 Event Log</div>
+          <div class="demo-event-log" id="event-log" aria-live="polite" aria-label="Event log">
+            <div class="demo-event-log__item">— waiting for events —</div>
+          </div>
+        </div>
+
+        <!-- Usage snippet -->
+        <div>
+          <div class="demo-config__section-title">💡 Usage</div>
+          <div class="demo-code">
+            <span class="kw">import</span> { <span class="fn">createViewer</span> }<br />
+            &nbsp;&nbsp;<span class="kw">from</span> <span class="str">'pdf-signature-sdk'</span>;<br /><br />
+            <span class="kw">const</span> viewer = <span class="fn">createViewer</span>({<br />
+            &nbsp;&nbsp;container: <span class="str">'#app'</span>,<br />
+            &nbsp;&nbsp;file: <span class="str">'doc.pdf'</span>,<br />
+            &nbsp;&nbsp;ui: { ... }<br />
+            });<br /><br />
+            viewer.<span class="fn">on</span>(<span class="str">'signaturePlaced'</span>,<br />
+            &nbsp;&nbsp;(sig) => <span class="fn">console</span>.<span class="fn">log</span>(sig));<br />
+          </div>
+        </div>
+      </aside>
+
+      <!-- Viewer -->
+      <div class="demo-viewer-area">
+        <div id="viewer-container"></div>
+      </div>
+    </div>
+
+    <!-- ── SDK Bootstrap ───────────────────────────────────────────────────────── -->
+    <script type="module">
+      import { createViewer } from "../index.js";
+
+      // ── Create viewer
+      const viewer = createViewer({
+        container: "#viewer-container",
+        scale: 1.5,
+        signatureOptions: [
+          { id: "dir", label: "Direktur Utama", image: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Signature_of_John_Hancock.svg" },
+          { id: "hrd", label: "Manager HRD", image: "https://upload.wikimedia.org/wikipedia/commons/7/75/Signature_of_George_Washington.svg" },
+          { id: "emp", label: "Karyawan", image: "https://upload.wikimedia.org/wikipedia/commons/a/af/Signature_of_Abraham_Lincoln.svg" },
+        ],
+        estampOptions: [
+          {
+            id: "ematerai",
+            label: "E-Materai Resmi",
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Rubber_stamp_approved.svg/128px-Rubber_stamp_approved.svg.png",
           },
-          sidebar: { thumbnails: t.thumbnails },
+        ],
+        ui: {
+          topbar: { upload: true, signature: true, eStamp: true, pagination: true, zoom: true },
+          sidebar: { thumbnails: true },
         },
-        labels: {
-          uploadBtn: t.lblUpload,
-          signatureBtn: t.lblSig,
-          signatureModalTitle: t.lblSigModal,
-          estampModalTitle: t.lblEstampModal,
+      });
+
+      // ── Load a sample PDF from a public URL on first load
+      const SAMPLE_PDF = "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf";
+      viewer.loadDocument(SAMPLE_PDF).catch(() => {
+        // Fallback: show empty state naturally
+        console.info("[demo] Could not auto-load sample PDF — use the Upload button to load your own file.");
+      });
+
+      // ── Event log
+      const logEl = document.getElementById("event-log");
+      function logEvent(type, msg) {
+        const d = new Date();
+        const ts = `${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
+        const item = document.createElement("div");
+        item.className = `demo-event-log__item demo-event-log__item--${type}`;
+        item.textContent = `[${ts}] ${msg}`;
+        logEl.prepend(item);
+        // Keep only 30 items
+        while (logEl.children.length > 30) logEl.removeChild(logEl.lastChild);
+      }
+
+      viewer.on("documentLoaded", ({ totalPages }) => {
+        logEvent("", `documentLoaded — ${totalPages} pages`);
+      });
+
+      viewer.on("pageChanged", ({ page, total }) => {
+        logEvent("page", `pageChanged — page ${page} / ${total}`);
+      });
+
+      viewer.on("signaturePlaced", (sig) => {
+        logEvent("sig", `signaturePlaced — page ${sig.page}  x:${Math.round(sig.x)} y:${Math.round(sig.y)}`);
+      });
+
+      viewer.on("eStampPlaced", (sig) => {
+        logEvent("sig", `eStampPlaced — page ${sig.page}  x:${Math.round(sig.x)} y:${Math.round(sig.y)}`);
+      });
+
+      viewer.on("signatureMoved", (sig) => {
+        logEvent("sig", `signatureMoved — id:${sig.id.slice(-6)}  x:${Math.round(sig.x)} y:${Math.round(sig.y)}`);
+        console.log("[Signature/E-Materai Updated]");
+        console.log(`- Coordinates : X: ${Math.round(sig.x)}, Y: ${Math.round(sig.y)}`);
+        console.log(`- Identity    : ID: ${sig.id}, Label: ${sig.label}`);
+        console.log(`- Size        : Width: ${Math.round(sig.width)}px, Height: ${Math.round(sig.height)}px`);
+        console.log(`- Raw Event   :`, sig);
+      });
+
+      viewer.on("coordinateCapture", ({ x, y, page }) => {
+        logEvent("sig", `coordinateCapture — page ${page}  x:${Math.round(x)} y:${Math.round(y)}`);
+      });
+
+      // ── UI Config toggles
+      function getToggles() {
+        return {
+          thumbnails: document.getElementById("toggle-thumbnails").checked,
+          upload: document.getElementById("toggle-upload").checked,
+          signature: document.getElementById("toggle-signature").checked,
+          eStamp: document.getElementById("toggle-estamp").checked,
+          pagination: document.getElementById("toggle-pagination").checked,
+          paginationInput: !document.getElementById("cfg-disable-page-input").checked,
+          zoom: document.getElementById("toggle-zoom").checked,
+          themeToggle: document.getElementById("toggle-theme-btn").checked,
+          customComp: document.getElementById("toggle-custom-comp").checked,
+          disabled: document.getElementById("cfg-disabled").checked,
+          lblUpload: document.getElementById("cfg-lbl-upload").value,
+          lblSig: document.getElementById("cfg-lbl-sig").value,
+          lblSigModal: document.getElementById("cfg-lbl-sig-modal").value,
+          lblEstampModal: document.getElementById("cfg-lbl-estamp-modal").value,
+        };
+      }
+
+      [
+        "toggle-thumbnails",
+        "toggle-upload",
+        "toggle-signature",
+        "toggle-estamp",
+        "toggle-pagination",
+        "toggle-pagination-input",
+        "toggle-zoom",
+        "toggle-theme-btn",
+        "toggle-custom-comp",
+        "cfg-disabled",
+        "cfg-lock-pagination",
+        "cfg-disable-page-input",
+        "cfg-lbl-upload",
+        "cfg-lbl-sig",
+        "cfg-lbl-sig-modal",
+        "cfg-lbl-estamp-modal",
+      ].forEach((id) => {
+        document.getElementById(id).addEventListener("change", () => {
+          const t = getToggles();
+
+          let customHTML = null;
+          if (t.customComp) {
+            customHTML = `<button style="background:linear-gradient(to right, #ec4899, #8b5cf6); color:white; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:12px; cursor:pointer;">✨ Custom Topbar Slot</button>`;
+          }
+
+          if (id === "cfg-lock-pagination") {
+            const isLocked = document.getElementById("cfg-lock-pagination").checked;
+            viewer.setPaginationLocked(isLocked);
+            logEvent("", `pagination locked: ${isLocked}`);
+          }
+
+          viewer.updateConfig({
+            disabled: t.disabled,
+            ui: {
+              topbar: {
+                upload: t.upload,
+                signature: t.signature,
+                eStamp: t.eStamp,
+                pagination: t.pagination,
+                paginationInput: t.paginationInput,
+                zoom: t.zoom,
+                themeToggle: t.themeToggle,
+                customComponent: customHTML,
+              },
+              sidebar: { thumbnails: t.thumbnails },
+            },
+            labels: {
+              uploadBtn: t.lblUpload,
+              signatureBtn: t.lblSig,
+              signatureModalTitle: t.lblSigModal,
+              estampModalTitle: t.lblEstampModal,
+            },
+          });
+          logEvent("", `config updated`);
+        });
+      });
+
+      // ── API action buttons
+      document.getElementById("btn-api-sig").addEventListener("click", () => {
+        if (viewer.isSignatureModeActive) {
+          viewer.disableSignatureMode();
+          document.getElementById("btn-api-sig").textContent = "Enable Signature Mode";
+        } else {
+          viewer.enableSignatureMode();
+          document.getElementById("btn-api-sig").textContent = "Disable Signature Mode";
         }
       });
-      logEvent('', `config updated`);
-    });
-  });
 
-  // ── API action buttons
-  document.getElementById('btn-api-sig').addEventListener('click', () => {
-    if (viewer.isSignatureModeActive) {
-      viewer.disableSignatureMode();
-      document.getElementById('btn-api-sig').textContent = 'Enable Signature Mode';
-    } else {
-      viewer.enableSignatureMode();
-      document.getElementById('btn-api-sig').textContent = 'Disable Signature Mode';
-    }
-  });
+      viewer.on("signatureModeChanged", ({ active }) => {
+        document.getElementById("btn-api-sig").textContent = active ? "Disable Signature Mode" : "Enable Signature Mode";
+      });
 
-  viewer.on('signatureModeChanged', ({ active }) => {
-    document.getElementById('btn-api-sig').textContent = active
-      ? 'Disable Signature Mode'
-      : 'Enable Signature Mode';
-  });
+      document.getElementById("btn-api-estamp").addEventListener("click", () => {
+        const canvas = viewer.getCanvas();
+        if (!canvas.width) {
+          logEvent("", "No document loaded yet");
+          return;
+        }
+        viewer.placeEStamp({
+          x: canvas.width / 2 - 40,
+          y: canvas.height / 2 - 40,
+          page: viewer.currentPage,
+        });
+      });
 
-  document.getElementById('btn-api-estamp').addEventListener('click', () => {
-    const canvas = viewer.getCanvas();
-    if (!canvas.width) {
-      logEvent('', 'No document loaded yet');
-      return;
-    }
-    viewer.placeEStamp({
-      x: canvas.width / 2 - 40,
-      y: canvas.height / 2 - 40,
-      page: viewer.currentPage,
-    });
-  });
+      document.getElementById("btn-api-clear").addEventListener("click", () => {
+        viewer.clearSignatures();
+        logEvent("", "All signatures cleared");
+      });
 
-  document.getElementById('btn-api-clear').addEventListener('click', () => {
-    viewer.clearSignatures();
-    logEvent('', 'All signatures cleared');
-  });
+      document.getElementById("btn-api-log").addEventListener("click", () => {
+        const sigs = viewer.getSignatures();
+        console.table(sigs);
+        logEvent("", `Logged ${sigs.length} signature(s) to console`);
+      });
 
-  document.getElementById('btn-api-log').addEventListener('click', () => {
-    const sigs = viewer.getSignatures();
-    console.table(sigs);
-    logEvent('', `Logged ${sigs.length} signature(s) to console`);
-  });
-
-  document.getElementById('btn-api-prev').addEventListener('click', () => viewer.prevPage());
-  document.getElementById('btn-api-next').addEventListener('click', () => viewer.nextPage());
-</script>
-</body>
+      document.getElementById("btn-api-prev").addEventListener("click", () => viewer.prevPage());
+      document.getElementById("btn-api-next").addEventListener("click", () => viewer.nextPage());
+    </script>
+  </body>
 </html>

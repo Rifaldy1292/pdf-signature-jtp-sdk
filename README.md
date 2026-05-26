@@ -177,6 +177,98 @@ function App() {
 
 ---
 
+## Styling & Customization
+
+All SDK styles are scoped to `.psdk-root` using the `psdk-*` BEM namespace. You can customise appearance via **CSS Variables** (recommended) or **direct class overrides**.
+
+### CSS Variables (Recommended)
+
+Override on `.psdk-root` or any ancestor. **No `!important` needed.**
+
+```css
+.psdk-root {
+  --psdk-accent:        #ef4444;   /* Change accent to red */
+  --psdk-sidebar-width: 240px;     /* Wider sidebar */
+  --psdk-topbar-height: 64px;      /* Taller topbar */
+  --psdk-font:          'Roboto', sans-serif;
+}
+```
+
+| Variable | Default (dark) | Description |
+|---|---|---|
+| `--psdk-bg-base` | `#0f1117` | Outermost background |
+| `--psdk-bg-surface` | `#1a1d27` | Topbar / sidebar background |
+| `--psdk-bg-elevated` | `#22263a` | Button / badge background |
+| `--psdk-bg-hover` | `#2a2f45` | Hover state background |
+| `--psdk-accent` | `#6366f1` | Primary accent (buttons, active states) |
+| `--psdk-accent-hover` | `#4f52e0` | Accent hover color |
+| `--psdk-accent-glow` | `rgba(99,102,241,0.35)` | Accent shadow glow |
+| `--psdk-danger` | `#ef4444` | Danger / destructive color |
+| `--psdk-text-primary` | `#f1f5f9` | Main text color |
+| `--psdk-text-secondary` | `#8b92a5` | Secondary text color |
+| `--psdk-topbar-height` | `56px` | Topbar height |
+| `--psdk-sidebar-width` | `190px` | Sidebar width |
+| `--psdk-font` | `"Inter", system-ui` | Font family |
+| `--psdk-radius-sm/md/lg` | `6px / 10px / 14px` | Border radius scale |
+
+### Direct Class Override
+
+For fine-grained control, override specific BEM classes. Use `!important` since SDK styles are injected via JS.
+
+```css
+/* Override accent buttons only */
+.psdk-btn--accent {
+  background: #ef4444 !important;
+  border-color: #dc2626 !important;
+}
+
+/* Wider sidebar */
+.psdk-sidebar {
+  width: 260px !important;
+}
+```
+
+| Class | Component | Description |
+|---|---|---|
+| `.psdk-root` | Root | Main wrapper, scope all overrides here |
+| `.psdk-light` | Root | Light theme modifier |
+| `.psdk-topbar` | Topbar | Top toolbar bar |
+| `.psdk-btn` | Button | Base button class |
+| `.psdk-btn--accent` | Button | Primary CTA button |
+| `.psdk-btn--danger` | Button | Destructive action button |
+| `.psdk-btn--ghost` | Button | Transparent ghost button |
+| `.psdk-sidebar` | Sidebar | Left thumbnail sidebar |
+| `.psdk-thumb` | Sidebar | Single thumbnail item |
+| `.psdk-thumb--active` | Sidebar | Current page thumbnail |
+| `.psdk-viewer` | Viewer | Main viewer area |
+| `.psdk-canvas-wrap` | Viewer | Per-page canvas shadow wrapper |
+| `.psdk-modal` | Modal | Signature/stamp selection modal |
+
+### Programmatic Discovery (JS/TS)
+
+Import `SDK_CLASSES` and `SDK_VARIABLES` to get all names with IDE autocomplete:
+
+```js
+import { SDK_CLASSES, SDK_VARIABLES, SDK_VARIABLE_DEFAULTS } from 'pdf-signature-jtp-sdk';
+
+// Class names — no typos
+SDK_CLASSES.button.accent      // → 'psdk-btn--accent'
+SDK_CLASSES.sidebar.base       // → 'psdk-sidebar'
+
+// Variable names
+SDK_VARIABLES.accent           // → '--psdk-accent'
+SDK_VARIABLES.sidebarWidth     // → '--psdk-sidebar-width'
+
+// Default values
+SDK_VARIABLE_DEFAULTS['--psdk-accent']  // → '#6366f1'
+
+// Override via JS
+document.querySelector('.psdk-root')
+  .style.setProperty(SDK_VARIABLES.accent, '#ef4444');
+```
+
+---
+
 ## License
 
 JTP © 2026

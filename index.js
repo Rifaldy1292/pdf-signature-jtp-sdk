@@ -3,6 +3,9 @@
  * Re-exports the full public API.
  */
 
+// Styles — auto-injected into the DOM at runtime via vite-plugin-css-injected-by-js
+import './src/ui/styles.css';
+
 // Core factory
 export { createViewer } from './src/core/viewer.js';
 
@@ -14,3 +17,6 @@ export { SignatureManager } from './src/core/signature.js';
 
 // Config utility
 export { mergeConfig, DEFAULT_CONFIG } from './src/utils/config.js';
+
+// Style discoverability — class names & CSS variable names
+export { SDK_CLASSES, SDK_VARIABLES, SDK_VARIABLE_DEFAULTS } from './src/utils/styleRef.js';
