@@ -134,6 +134,10 @@ function App() {
 | `ui.topbar.eStamp` | boolean | `true` | E-Materai stamp button |
 | `ui.topbar.pagination` | boolean | `true` | Prev / Next / page indicator |
 | `ui.topbar.zoom` | boolean | `true` | Zoom in / out controls |
+| `ui.topbar.customComponent` | string \| HTMLElement | `null` | Custom element in topbar |
+| `ui.topbar.logo` | string \| HTMLElement | `null` | Custom brand logo SVG/HTML or image URL |
+| `ui.topbar.brandText` | string \| boolean | `null` | Custom brand text (or `false`/`""` to hide) |
+| `ui.topbar.style` | object | `null` | Key-value inline CSS override object for topbar |
 | `ui.sidebar.thumbnails` | boolean | `true` | Page thumbnail sidebar |
 
 ---
@@ -233,6 +237,7 @@ For fine-grained control, override specific BEM classes. Use `!important` since 
 | `.psdk-root` | Root | Main wrapper, scope all overrides here |
 | `.psdk-light` | Root | Light theme modifier |
 | `.psdk-topbar` | Topbar | Top toolbar bar |
+| `.psdk-topbar__brand-icon--custom` | Topbar | Custom logo container override style |
 | `.psdk-btn` | Button | Base button class |
 | `.psdk-btn--accent` | Button | Primary CTA button |
 | `.psdk-btn--danger` | Button | Destructive action button |

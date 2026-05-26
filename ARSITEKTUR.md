@@ -105,5 +105,7 @@ Modul yang menangani segala hal terkait objek manipulasi. Modul ini ditulis meng
 
 ---
 
-## Keamanan Tampilan (CSS Scoping)
+## Keamanan Tampilan & Kustomisasi (CSS Scoping)
 Untuk memastikan SDK tidak merusak CSS milik *website* pengguna, seluruh aturan CSS dibungkus ke dalam awalan `.psdk-` (contoh: `.psdk-btn`, `.psdk-root`, `.psdk-sidebar`). Variabel *theme* (`--psdk-accent`, `--psdk-bg-base`, dll) memungkinkan kustomisasi mudah tanpa benturan (*conflict*).
+
+Selain variabel CSS, SDK ini juga menyediakan kustomisasi brand dan topbar secara deklaratif lewat properti konfigurasi seperti `ui.topbar.logo`, `ui.topbar.brandText`, dan `ui.topbar.style` yang dapat diperbarui secara dinamis via `updateConfig()`.

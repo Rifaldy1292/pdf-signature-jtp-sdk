@@ -506,6 +506,24 @@ export default function Page() {
                 <td class="p-4">Elemen khusus (custom HTML string atau DOM Element) yang dimasukkan di sisi kanan topbar.</td>
               </tr>
               <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.logo</td>
+                <td class="p-4 font-mono text-zinc-300">string | HTMLElement</td>
+                <td class="p-4 font-mono">null</td>
+                <td class="p-4">Logo khusus (SVG/HTML string, image URL, atau DOM Element) untuk menggantikan icon dokumen default.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.brandText</td>
+                <td class="p-4 font-mono text-zinc-300">string | boolean</td>
+                <td class="p-4 font-mono">null</td>
+                <td class="p-4">Nama brand kustom. Atur ke <code class="text-zinc-200">false</code> atau string kosong untuk menyembunyikannya.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">ui.topbar.style</td>
+                <td class="p-4 font-mono text-zinc-300">object</td>
+                <td class="p-4 font-mono">null</td>
+                <td class="p-4">Object JavaScript yang berisi properti CSS inline override untuk wadah topbar.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
                 <td class="p-4 font-mono text-indigo-400">ui.sidebar.thumbnails</td>
                 <td class="p-4 font-mono text-zinc-300">boolean</td>
                 <td class="p-4 font-mono">true</td>

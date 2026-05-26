@@ -47,6 +47,8 @@ export const SDK_CLASSES = {
     base: 'psdk-topbar',
     brand: 'psdk-topbar__brand',
     brandIcon: 'psdk-topbar__brand-icon',
+    /** Custom brand icon modifier when custom logo is active */
+    brandIconCustom: 'psdk-topbar__brand-icon--custom',
     brandText: 'psdk-topbar__brand-text',
     divider: 'psdk-topbar__divider',
     spacer: 'psdk-topbar__spacer',
