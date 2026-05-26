@@ -17,6 +17,7 @@ export class DocumentManager {
     this._renderTasks = new Map();
     /** @type {import('../core/events').EventEmitter} */
     this._bus = eventBus;
+    this._isPasswordProtected = false;
   }
 
   /**
@@ -41,6 +42,18 @@ export class DocumentManager {
     const loadingTask = pdfjs.getDocument(
       typeof data === 'string' ? { url: data } : { data }
     );
+
+    loadingTask.onPassword = (updatePassword, reason) => {
+      this._isPasswordProtected = true;
+      const isIncorrect = (reason === (pdfjs.PasswordResponses?.INCORRECT_PASSWORD ?? 2));
+      this._bus.emit('passwordRequested', {
+        updatePassword,
+        isIncorrect,
+        cancel: () => {
+          loadingTask.destroy().catch(() => {});
+        }
+      });
+    };
 
     this._pdfDoc = await loadingTask.promise;
 
@@ -125,6 +138,11 @@ export class DocumentManager {
     await task.promise.catch(() => {});
   }
 
+  /** @returns {boolean} */
+  get isPasswordProtected() {
+    return this._isPasswordProtected;
+  }
+
   /** @returns {number} */
   get totalPages() {
     return this._pdfDoc ? this._pdfDoc.numPages : 0;
@@ -137,6 +155,7 @@ export class DocumentManager {
 
   /** Cancel any in-flight render and destroy the PDF document. */
   async _cleanup() {
+    this._isPasswordProtected = false;
     for (const [page, task] of this._renderTasks.entries()) {
       await task.cancel().catch(() => {});
     }

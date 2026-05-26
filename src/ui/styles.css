@@ -992,3 +992,119 @@
     flex-shrink: 0;
   }
 }
+
+/* ─── Password Modal Styles ──────────────────────────────────────────────── */
+.psdk-modal__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.psdk-modal__input {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  background: var(--psdk-bg-base);
+  border: 1px solid var(--psdk-border);
+  border-radius: var(--psdk-radius-md);
+  color: var(--psdk-text-primary);
+  font-family: var(--psdk-font);
+  font-size: 13px;
+  outline: none;
+  transition: all var(--psdk-transition);
+}
+
+.psdk-modal__input:focus {
+  border-color: var(--psdk-accent);
+  box-shadow: 0 0 0 3px var(--psdk-accent-subtle);
+}
+
+.psdk-root.psdk-light .psdk-modal__input {
+  background: var(--psdk-bg-elevated);
+}
+
+.psdk-modal__input-toggle {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--psdk-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--psdk-radius-sm);
+  transition: all var(--psdk-transition);
+}
+
+.psdk-modal__input-toggle:hover {
+  color: var(--psdk-text-primary);
+}
+
+.psdk-modal__input-toggle svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.psdk-modal__error {
+  color: var(--psdk-danger);
+  font-size: 12px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.psdk-modal__error svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.psdk-modal__buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+/* Hide duplicate browser password reveal button on Windows (Edge/IE) */
+.psdk-modal__input::-ms-reveal,
+.psdk-modal__input::-ms-clear {
+  display: none !important;
+}
+
+.psdk-topbar__secure-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--psdk-success);
+  border-radius: 50%;
+  transition: all var(--psdk-transition);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.2);
+}
+
+.psdk-root.psdk-light .psdk-topbar__secure-badge {
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.psdk-topbar__secure-badge svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+}
+

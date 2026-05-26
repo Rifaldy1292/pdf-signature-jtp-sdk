@@ -11,7 +11,7 @@ import { mergeConfig, deepMerge } from '../utils/config.js';
 import { buildLayout, resolveContainer } from '../ui/layout.js';
 import { buildTopbar } from '../ui/topbar.js';
 import { buildSidebar } from '../ui/sidebar.js';
-import { buildSignatureModal } from '../ui/modal.js';
+import { buildSignatureModal, buildPasswordModal } from '../ui/modal.js';
 
 // Inject styles once
 import '../ui/styles.css';
@@ -196,6 +196,7 @@ export function createViewer(userConfig = {}) {
     sigManager.clearAll();
     await _buildPages(totalPages);
     topbarController?.updatePageIndicator(1, totalPages);
+    topbarController?.updateSecureStatus(docManager.isPasswordProtected);
     await sidebarController?.rebuild(docManager, totalPages);
     bus.emit('_documentReady', { totalPages });
   });
@@ -213,6 +214,23 @@ export function createViewer(userConfig = {}) {
       container.classList.add('psdk-loading');
       try {
         await docManager.loadDocument(source);
+      } catch (err) {
+        // If loading fails or is cancelled, make sure the UI resets to empty state
+        nodes.pagesContainer.innerHTML = '';
+        nodes.pagesContainer.style.display = 'none';
+        nodes.emptyState.style.display = 'flex';
+        
+        pagination.setTotal(0);
+        sigManager.clearAll();
+        if (sidebarController) {
+          sidebarController.clearThumbnails();
+        }
+        if (topbarController) {
+          topbarController.updatePageIndicator(1, 0);
+          topbarController.updateSecureStatus(false);
+        }
+        
+        throw err;
       } finally {
         container.classList.remove('psdk-loading');
       }
@@ -245,6 +263,11 @@ export function createViewer(userConfig = {}) {
     /** @returns {number} */
     get totalPages() {
       return pagination.totalPages;
+    },
+
+    /** @returns {boolean} */
+    get isPasswordProtected() {
+      return docManager.isPasswordProtected;
     },
 
     /**
@@ -461,6 +484,11 @@ export function createViewer(userConfig = {}) {
 
   if (nodes.modalOverlay) {
     modalController = buildSignatureModal(nodes.modalOverlay, config, api);
+  }
+
+  let passwordModalController = null;
+  if (nodes.root) {
+    passwordModalController = buildPasswordModal(nodes.root, config, api);
   }
 
 

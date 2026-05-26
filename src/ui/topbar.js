@@ -42,6 +42,19 @@ export function buildTopbar(topbarEl, config, viewer) {
   `;
   topbarEl.appendChild(brand);
 
+  // ── Secure document status badge
+  const secureBadge = el('div', ['psdk-topbar__secure-badge', 'psdk-tooltip']);
+  secureBadge.setAttribute('data-tooltip', 'Password Protected (Encrypted)');
+  secureBadge.style.display = 'none';
+  secureBadge.style.marginLeft = '8px';
+  secureBadge.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+    </svg>
+  `;
+  brand.appendChild(secureBadge);
+
   // ── Hidden file input — appended to body for max browser compatibility
   const fileInput = /** @type {HTMLInputElement} */ (el('input', ['psdk-file-input'], {
     type: 'file',
@@ -351,7 +364,11 @@ export function buildTopbar(topbarEl, config, viewer) {
     elem.style.display = visible ? '' : 'none';
   }
 
-  return { updatePageIndicator, updateZoomBadge, applyConfig, setPaginationLocked };
+  function updateSecureStatus(isSecure) {
+    secureBadge.style.display = isSecure ? 'inline-flex' : 'none';
+  }
+
+  return { updatePageIndicator, updateZoomBadge, applyConfig, setPaginationLocked, updateSecureStatus };
 }
 
 /** @private */
