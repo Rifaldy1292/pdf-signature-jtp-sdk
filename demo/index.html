@@ -521,6 +521,17 @@
 
           <div class="demo-toggle-row">
             <div>
+              <div class="demo-toggle-label" style="color: #10b981;">Group by Category</div>
+              <div class="demo-toggle-sub">groupByCategory</div>
+            </div>
+            <label class="demo-toggle">
+              <input type="checkbox" id="toggle-groupby-category" />
+              <div class="demo-toggle__track"></div>
+            </label>
+          </div>
+
+          <div class="demo-toggle-row">
+            <div>
               <div class="demo-toggle-label">Upload Label</div>
             </div>
             <input
@@ -691,15 +702,23 @@
         container: "#viewer-container",
         scale: 1.5,
         signatureOptions: [
-          { id: "dir", label: "Direktur Utama", image: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Signature_of_John_Hancock.svg" },
-          { id: "hrd", label: "Manager HRD", image: "https://upload.wikimedia.org/wikipedia/commons/7/75/Signature_of_George_Washington.svg" },
-          { id: "emp", label: "Karyawan", image: "https://upload.wikimedia.org/wikipedia/commons/a/af/Signature_of_Abraham_Lincoln.svg" },
+          { id: "dir", label: "Direktur Utama", group: "Internal", image: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Signature_of_John_Hancock.svg" },
+          { id: "hrd", label: "Manager HRD", group: "Internal", image: "https://upload.wikimedia.org/wikipedia/commons/7/75/Signature_of_George_Washington.svg" },
+          { id: "emp", label: "Karyawan", group: "Staff", image: "https://upload.wikimedia.org/wikipedia/commons/a/af/Signature_of_Abraham_Lincoln.svg" },
+          { id: "guest", label: "Mitra / Tamu", group: "Eksternal", image: "https://upload.wikimedia.org/wikipedia/commons/d/dd/Signature_of_John_Adams.svg" },
         ],
         estampOptions: [
           {
             id: "ematerai",
             label: "E-Materai Resmi",
+            group: "Dokumen Resmi",
             image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Rubber_stamp_approved.svg/128px-Rubber_stamp_approved.svg.png",
+          },
+          {
+            id: "ematerai_draft",
+            label: "Materai Draft",
+            group: "Internal / Draft",
+            image: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Approved_stamp.png",
           },
         ],
         ui: {
@@ -770,6 +789,7 @@
           themeToggle: document.getElementById("toggle-theme-btn").checked,
           customComp: document.getElementById("toggle-custom-comp").checked,
           overrideLogoHeader: document.getElementById("toggle-override-logo-header").checked,
+          groupByCategory: document.getElementById("toggle-groupby-category").checked,
           disabled: document.getElementById("cfg-disabled").checked,
           lblUpload: document.getElementById("cfg-lbl-upload").value,
           lblSig: document.getElementById("cfg-lbl-sig").value,
@@ -789,6 +809,7 @@
         "toggle-theme-btn",
         "toggle-custom-comp",
         "toggle-override-logo-header",
+        "toggle-groupby-category",
         "cfg-disabled",
         "cfg-lock-pagination",
         "cfg-disable-page-input",
@@ -828,6 +849,7 @@
 
           viewer.updateConfig({
             disabled: t.disabled,
+            groupByCategory: t.groupByCategory,
             ui: {
               topbar: {
                 upload: t.upload,

@@ -12,6 +12,7 @@ export const DEFAULT_CONFIG = {
   disabled: false, // global interactive disable
   signatureOptions: [],
   estampOptions: [],
+  groupByCategory: false,
   labels: {
     uploadBtn: 'Open PDF',
     signatureBtn: 'Add Signature',

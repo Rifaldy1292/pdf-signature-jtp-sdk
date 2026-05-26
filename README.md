@@ -123,6 +123,21 @@ function App() {
 }
 ```
 
+## Configuration Options
+
+### Root Config Options
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `container` | string \| HTMLElement | `null` | Container element or CSS selector |
+| `file` | string \| File \| Blob \| ArrayBuffer | `null` | PDF source file |
+| `scale` | number | `1.5` | Initial zoom scale factor |
+| `theme` | `'light' \| 'dark'` | `'light'` | Color theme |
+| `disabled` | boolean | `false` | Disable all pointer interactions globally |
+| `signatureOptions` | array | `[]` | Array of signature choices `[{ id, label, image, group? }]` |
+| `estampOptions` | array | `[]` | Array of e-materai stamp choices `[{ id, label, image, group? }]` |
+| `groupByCategory` | boolean | `false` | Group choices by category in selection modal (requires `group` in options) |
+
 ---
 
 ## UI Config Reference

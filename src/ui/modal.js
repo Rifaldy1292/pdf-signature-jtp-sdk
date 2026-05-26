@@ -25,6 +25,77 @@ export function buildSignatureModal(overlayEl, config, viewer) {
   modal.appendChild(body);
   overlayEl.appendChild(modal);
 
+  function createOptionItem(opt, isSig) {
+    const item = el('button', ['psdk-modal__item']);
+    
+    const iconWrap = el('div', ['psdk-modal__item-icon']);
+    if (opt.image) {
+      iconWrap.classList.add('psdk-modal__item-icon--image');
+      iconWrap.innerHTML = `<img src="${opt.image}" alt="preview" />`;
+    } else {
+      iconWrap.innerHTML = isSig 
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>';
+    }
+    
+    const labelWrap = el('div', ['psdk-modal__item-label']);
+    labelWrap.textContent = opt.label || (isSig ? 'Signature' : 'E-Materai');
+    
+    item.appendChild(iconWrap);
+    item.appendChild(labelWrap);
+    
+    item.addEventListener('click', () => {
+      close();
+      if (isSig) {
+        viewer.placeSignature({ ...opt });
+      } else {
+        viewer.placeEStamp({ ...opt });
+      }
+    });
+    
+    return item;
+  }
+
+  function renderOptions(isSig, options, useGrouping) {
+    list.innerHTML = '';
+    
+    if (useGrouping) {
+      list.classList.remove('psdk-modal__grid');
+      
+      const groups = {};
+      const groupOrder = [];
+      options.forEach(opt => {
+        const g = opt.group || '';
+        if (!groups[g]) {
+          groups[g] = [];
+          groupOrder.push(g);
+        }
+        groups[g].push(opt);
+      });
+      
+      groupOrder.forEach(groupName => {
+        const section = el('div', ['psdk-modal__group-section']);
+        
+        const gTitle = el('div', ['psdk-modal__group-title']);
+        gTitle.textContent = groupName || (config.labels?.defaultGroup || 'Umum');
+        section.appendChild(gTitle);
+        
+        const grid = el('div', ['psdk-modal__grid']);
+        groups[groupName].forEach(opt => {
+          grid.appendChild(createOptionItem(opt, isSig));
+        });
+        
+        section.appendChild(grid);
+        list.appendChild(section);
+      });
+    } else {
+      list.classList.add('psdk-modal__grid');
+      options.forEach(opt => {
+        list.appendChild(createOptionItem(opt, isSig));
+      });
+    }
+  }
+
   function open(type = 'signature') {
     const isSig = type === 'signature';
     const options = isSig ? (config.signatureOptions || []) : (config.estampOptions || []);
@@ -34,46 +105,15 @@ export function buildSignatureModal(overlayEl, config, viewer) {
       : (config.labels?.estampModalTitle || 'Select E-Materai');
     
     if (!options || options.length === 0) {
-      // Fallback if no options: directly place default item at center
       if (isSig) viewer.placeSignature();
       else viewer.placeEStamp();
       return;
     }
 
-    list.innerHTML = '';
-    options.forEach(opt => {
-      const item = el('button', ['psdk-modal__item']);
-      
-      const iconWrap = el('div', ['psdk-modal__item-icon']);
-      if (opt.image) {
-        iconWrap.classList.add('psdk-modal__item-icon--image');
-        iconWrap.innerHTML = `<img src="${opt.image}" alt="preview" />`;
-      } else {
-        iconWrap.innerHTML = isSig 
-          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
-          : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>';
-      }
-      
-      const labelWrap = el('div', ['psdk-modal__item-label']);
-      labelWrap.textContent = opt.label || (isSig ? 'Signature' : 'E-Materai');
-      
-      item.appendChild(iconWrap);
-      item.appendChild(labelWrap);
-      
-      item.addEventListener('click', () => {
-        close();
-        if (isSig) {
-          viewer.placeSignature({ ...opt });
-        } else {
-          viewer.placeEStamp({ ...opt });
-        }
-      });
-      
-      list.appendChild(item);
-    });
+    const useGrouping = !!config.groupByCategory;
+    renderOptions(isSig, options, useGrouping);
     
     overlayEl.style.display = 'flex';
-    // Add small delay for CSS transition
     setTimeout(() => {
       overlayEl.classList.add('psdk-modal-overlay--active');
       modal.classList.add('psdk-modal--active');
@@ -83,7 +123,6 @@ export function buildSignatureModal(overlayEl, config, viewer) {
   function close() {
     overlayEl.classList.remove('psdk-modal-overlay--active');
     modal.classList.remove('psdk-modal--active');
-    // Hide overlay after animation completes
     setTimeout(() => {
       overlayEl.style.display = 'none';
     }, 200);

@@ -443,13 +443,19 @@ export default function Page() {
                 <td class="p-4 font-mono text-indigo-400">signatureOptions</td>
                 <td class="p-4 font-mono text-zinc-300">Array&lt;object&gt;</td>
                 <td class="p-4 font-mono">[]</td>
-                <td class="p-4">Opsi tanda tangan yang muncul di modal, berisi: <code class="text-zinc-200">{ id, label, image }</code>.</td>
+                <td class="p-4">Opsi tanda tangan yang muncul di modal, berisi: <code class="text-zinc-200">{ id, label, image, group }</code>.</td>
               </tr>
               <tr class="hover:bg-zinc-900/30 transition">
                 <td class="p-4 font-mono text-indigo-400">estampOptions</td>
                 <td class="p-4 font-mono text-zinc-300">Array&lt;object&gt;</td>
                 <td class="p-4 font-mono">[]</td>
-                <td class="p-4">Opsi E-Materai yang muncul di modal, berisi: <code class="text-zinc-200">{ id, label, image }</code>.</td>
+                <td class="p-4">Opsi E-Materai yang muncul di modal, berisi: <code class="text-zinc-200">{ id, label, image, group }</code>.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">groupByCategory</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">false</td>
+                <td class="p-4">Mengaktifkan pengelompokan pilihan tanda tangan dan e-materai secara visual di dalam modal berdasarkan kategori kelompok (membaca property <code class="text-zinc-200">group</code> pada setiap item opsi).</td>
               </tr>
               <tr class="hover:bg-zinc-900/30 transition">
                 <td class="p-4 font-mono text-indigo-400">labels</td>

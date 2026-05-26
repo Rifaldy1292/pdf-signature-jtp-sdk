@@ -100,6 +100,12 @@ export const PdfViewer = defineComponent({
       default: () => [],
     },
 
+    /** Group signature / e-materai options by category */
+    groupByCategory: {
+      type: Boolean,
+      default: false,
+    },
+
     /**
      * Override button / modal labels.
      * @example { uploadBtn: 'Open PDF', signatureBtn: 'Add Signature', signatureModalTitle: '...', estampModalTitle: '...' }
@@ -168,6 +174,7 @@ export const PdfViewer = defineComponent({
         estampOptions: props.estampOptions,
         labels: props.labels,
         ui: props.ui,
+        groupByCategory: props.groupByCategory,
       });
 
       // Wire all SDK events → Vue emits
@@ -204,6 +211,7 @@ export const PdfViewer = defineComponent({
         labels:           props.labels,
         signatureOptions: props.signatureOptions,
         estampOptions:    props.estampOptions,
+        groupByCategory:  props.groupByCategory,
       }),
       (newCfg) => {
         if (_viewer) _viewer.updateConfig(newCfg);

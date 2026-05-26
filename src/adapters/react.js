@@ -99,6 +99,7 @@ export function PdfViewer({
   // Signature & e-materai options
   signatureOptions = [],
   estampOptions = [],
+  groupByCategory = false,
 
   // Labels
   labels = {},
@@ -153,6 +154,7 @@ export function PdfViewer({
       estampOptions,
       labels,
       ui,
+      groupByCategory,
     });
 
     viewerRef.current = viewer;
@@ -192,10 +194,10 @@ export function PdfViewer({
 
   // ── Config change (ui, theme, disabled, labels, options) ──────────────────
   // Stringify the combined config to detect deep changes
-  const configKey = JSON.stringify({ ui, theme, disabled, labels, signatureOptions, estampOptions });
+  const configKey = JSON.stringify({ ui, theme, disabled, labels, signatureOptions, estampOptions, groupByCategory });
   useEffect(() => {
     if (viewerRef.current) {
-      viewerRef.current.updateConfig({ ui, theme, disabled, labels, signatureOptions, estampOptions });
+      viewerRef.current.updateConfig({ ui, theme, disabled, labels, signatureOptions, estampOptions, groupByCategory });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [configKey]);

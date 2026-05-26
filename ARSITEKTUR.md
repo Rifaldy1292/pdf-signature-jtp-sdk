@@ -73,6 +73,12 @@ Modul yang menangani segala hal terkait objek manipulasi. Modul ini ditulis meng
   - Memancarkan `pageChanged` ke *Event Bus* setiap kali *user* berganti halaman.
   - Mengelola status penguncian (`locked`) untuk mencegah perpindahan halaman saat diaktifkan.
 
+### 5. Modal Pemilihan (`src/ui/modal.js`)
+- **Tugas Utama:**
+  - Membuka modal dialog interaktif untuk memilih peran tanda tangan (*Signature*) atau jenis *E-Materai*.
+  - **Tampilan Luas & Kotak**: Modal diperbesar dengan lebar maksimal 550px dan menyusun pilihan dalam bentuk grid kartu kotak (`aspect-ratio: 1/1`) dengan gambar/icon besar untuk visibilitas optimal.
+  - **Pengelompokan (Grouping)**: Mengelompokkan pilihan secara visual ke dalam beberapa kategori jika properti `groupByCategory` diatur bernilai `true` pada konfigurasi (dikelompokkan berdasarkan field `group` pada tiap item opsi).
+
 ---
 
 ## Alur Kerja (Workflow)

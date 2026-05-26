@@ -1,4 +1,4 @@
-(function(){"use strict";try{if(typeof document<"u"){var r=document.createElement("style");r.appendChild(document.createTextNode(':root,.psdk-root{--psdk-bg-base: #0f1117;--psdk-bg-surface: #1a1d27;--psdk-bg-elevated: #22263a;--psdk-bg-hover: #2a2f45;--psdk-border: rgba(255, 255, 255, .08);--psdk-border-strong: rgba(255, 255, 255, .14);--psdk-accent: #6366f1;--psdk-accent-hover: #4f52e0;--psdk-accent-glow: rgba(99, 102, 241, .35);--psdk-accent-subtle: rgba(99, 102, 241, .12);--psdk-danger: #ef4444;--psdk-danger-subtle: rgba(239, 68, 68, .12);--psdk-success: #22c55e;--psdk-warning: #f59e0b;--psdk-text-primary: #f1f5f9;--psdk-text-secondary: #8b92a5;--psdk-text-muted: #5a6070;--psdk-topbar-height: 56px;--psdk-sidebar-width: 190px;--psdk-sidebar-thumb-scale: .22;--psdk-radius-sm: 6px;--psdk-radius-md: 10px;--psdk-radius-lg: 14px;--psdk-shadow-sm: 0 2px 8px rgba(0, 0, 0, .35);--psdk-shadow-md: 0 4px 20px rgba(0, 0, 0, .5);--psdk-shadow-glow: 0 0 20px var(--psdk-accent-glow);--psdk-transition: .15s cubic-bezier(.4, 0, .2, 1);--psdk-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif}.psdk-root.psdk-light{--psdk-bg-base: #f8fafc;--psdk-bg-surface: #ffffff;--psdk-bg-elevated: #f1f5f9;--psdk-bg-hover: #e2e8f0;--psdk-border: rgba(0, 0, 0, .08);--psdk-border-strong: rgba(0, 0, 0, .14);--psdk-text-primary: #0f172a;--psdk-text-secondary: #475569;--psdk-text-muted: #64748b;--psdk-shadow-sm: 0 2px 8px rgba(0, 0, 0, .05);--psdk-shadow-md: 0 4px 20px rgba(0, 0, 0, .08)}.psdk-root{font-family:var(--psdk-font);display:flex;flex-direction:column;width:100%;height:100%;min-height:400px;background:var(--psdk-bg-base);color:var(--psdk-text-primary);overflow:hidden;box-sizing:border-box;position:relative;border-radius:var(--psdk-radius-lg);box-shadow:var(--psdk-shadow-md)}.psdk-root *,.psdk-root *:before,.psdk-root *:after{box-sizing:border-box}.psdk-root.psdk-loading:after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;background:#0f1117a6;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:1000;border-radius:inherit}.psdk-root.psdk-loading:before{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border:3px solid var(--psdk-border);border-top-color:var(--psdk-accent);border-radius:50%;animation:psdk-spin .7s linear infinite;z-index:1001}@keyframes psdk-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}.psdk-topbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-height:var(--psdk-topbar-height);padding:8px 16px;background:var(--psdk-bg-surface);border-bottom:1px solid var(--psdk-border);flex-shrink:0;z-index:10;position:relative}.psdk-topbar__brand{display:flex;align-items:center;gap:8px;margin-right:8px;padding-right:16px;border-right:1px solid var(--psdk-border)}.psdk-topbar__brand-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--psdk-accent),#818cf8);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:var(--psdk-shadow-glow)}.psdk-topbar__brand-icon--custom{background:transparent!important;box-shadow:none!important;border-radius:0!important;width:auto!important;height:auto!important}.psdk-topbar__brand-icon svg{width:16px;height:16px;fill:#fff}.psdk-topbar__brand-text{font-size:13px;font-weight:700;color:var(--psdk-text-primary);letter-spacing:-.3px}.psdk-topbar__divider{width:1px;height:24px;background:var(--psdk-border);margin:0 4px}.psdk-topbar__spacer{flex:1}.psdk-topbar__custom{display:flex;align-items:center;gap:8px}.psdk-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-sm);background:var(--psdk-bg-elevated);color:var(--psdk-text-primary);font-family:var(--psdk-font);font-size:12px;font-weight:500;cursor:pointer;transition:all var(--psdk-transition);white-space:nowrap;line-height:1;-webkit-user-select:none;user-select:none}@media (hover: hover) and (pointer: fine){.psdk-btn:hover{background:var(--psdk-bg-hover);border-color:var(--psdk-border-strong);transform:translateY(-1px);box-shadow:var(--psdk-shadow-sm)}}.psdk-btn:active{transform:translateY(0);box-shadow:none}.psdk-btn svg{width:14px;height:14px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.psdk-btn--accent{background:var(--psdk-accent);border-color:var(--psdk-accent);color:#fff;box-shadow:0 2px 12px var(--psdk-accent-glow)}@media (hover: hover) and (pointer: fine){.psdk-btn--accent:hover{background:var(--psdk-accent-hover);border-color:var(--psdk-accent-hover);box-shadow:0 4px 18px var(--psdk-accent-glow)}}.psdk-btn--accent.psdk-btn--active{background:#4338ca;border-color:#4338ca;box-shadow:0 0 0 3px #6366f14d;animation:psdk-pulse 2s infinite}@keyframes psdk-pulse{0%,to{box-shadow:0 0 0 3px #6366f14d}50%{box-shadow:0 0 0 6px #6366f11a}}.psdk-btn--danger{background:var(--psdk-danger-subtle);border-color:#ef44444d;color:var(--psdk-danger)}@media (hover: hover) and (pointer: fine){.psdk-btn--danger:hover{background:var(--psdk-danger);border-color:var(--psdk-danger);color:#fff}}.psdk-btn--ghost{background:transparent;border-color:transparent;color:var(--psdk-text-secondary)}@media (hover: hover) and (pointer: fine){.psdk-btn--ghost:hover{background:var(--psdk-bg-elevated);border-color:var(--psdk-border);color:var(--psdk-text-primary)}}.psdk-btn--icon{padding:7px}.psdk-btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}.psdk-file-input{position:absolute;width:0;height:0;opacity:0;pointer-events:none}.psdk-root.psdk-disabled .psdk-btn,.psdk-root.psdk-disabled .psdk-sidebar__scroll,.psdk-root.psdk-disabled .psdk-overlay{opacity:.5;pointer-events:none;cursor:not-allowed}.psdk-pagination{display:flex;align-items:center;gap:6px}.psdk-pagination__indicator{display:flex;align-items:center;gap:4px;padding:6px 10px;background:var(--psdk-bg-base);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-sm);font-size:12px;font-weight:500;color:var(--psdk-text-secondary);min-width:80px;justify-content:center}.psdk-pagination__current{color:var(--psdk-text-primary);font-weight:700;font-size:13px}.psdk-pagination__current-input{width:36px;background:transparent;border:1px solid transparent;color:var(--psdk-text-primary);font-weight:700;font-size:13px;text-align:center;font-family:inherit;outline:none;border-radius:4px;transition:all .15s}.psdk-pagination__current-input:focus{background:#ffffff0d;border-color:var(--psdk-accent)}.psdk-pagination__current-input:disabled{opacity:.5;cursor:not-allowed}.psdk-pagination__current-input::-webkit-inner-spin-button,.psdk-pagination__current-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.psdk-pagination__current-input[type=number]{-moz-appearance:textfield}.psdk-pagination__sep{color:var(--psdk-text-muted)}.psdk-zoom-badge{display:inline-flex;align-items:center;padding:5px 10px;background:var(--psdk-bg-base);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-sm);font-size:11px;font-weight:600;color:var(--psdk-text-secondary);min-width:52px;justify-content:center}.psdk-body{display:flex;flex:1;overflow:hidden;position:relative}.psdk-sidebar{width:var(--psdk-sidebar-width);flex-shrink:0;background:var(--psdk-bg-surface);border-right:1px solid var(--psdk-border);display:flex;flex-direction:column;overflow:hidden}.psdk-sidebar__header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--psdk-border);flex-shrink:0}.psdk-sidebar__title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--psdk-text-muted)}.psdk-sidebar__count{font-size:10px;font-weight:600;color:var(--psdk-text-muted);background:var(--psdk-bg-elevated);border-radius:20px;padding:2px 7px}.psdk-sidebar__scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px;display:flex;flex-direction:column;gap:6px}.psdk-sidebar__scroll::-webkit-scrollbar{width:4px}.psdk-sidebar__scroll::-webkit-scrollbar-track{background:transparent}.psdk-sidebar__scroll::-webkit-scrollbar-thumb{background:var(--psdk-border);border-radius:4px}.psdk-sidebar__scroll::-webkit-scrollbar-thumb:hover{background:var(--psdk-border-strong)}.psdk-thumb{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px;border-radius:var(--psdk-radius-md);cursor:pointer;transition:all var(--psdk-transition);border:1px solid transparent;position:relative}@media (hover: hover) and (pointer: fine){.psdk-thumb:hover{background:var(--psdk-bg-elevated);border-color:var(--psdk-border);transform:translateY(-1px)}}.psdk-thumb--active{background:var(--psdk-accent-subtle)!important;border-color:var(--psdk-accent)!important;box-shadow:0 0 0 1px var(--psdk-accent)}.psdk-thumb__canvas-wrap{width:100%;display:flex;justify-content:center;align-items:center;background:#fff;border-radius:4px;overflow:hidden;box-shadow:var(--psdk-shadow-sm)}.psdk-thumb canvas{display:block;max-width:100%;height:auto}.psdk-thumb__label{font-size:9px;font-weight:600;color:var(--psdk-text-muted);letter-spacing:.04em}.psdk-thumb--active .psdk-thumb__label{color:var(--psdk-accent)}.psdk-thumb-skeleton{width:100%;height:120px;background:linear-gradient(90deg,var(--psdk-bg-elevated) 25%,var(--psdk-bg-hover) 50%,var(--psdk-bg-elevated) 75%);background-size:200% 100%;animation:psdk-shimmer 1.5s infinite;border-radius:var(--psdk-radius-sm)}@keyframes psdk-shimmer{0%{background-position:200% 0}to{background-position:-200% 0}}.psdk-viewer{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--psdk-bg-base);position:relative}.psdk-viewer__canvas-area{flex:1;overflow:auto;display:flex;flex-direction:column;padding:24px;position:relative}.psdk-pages-container{display:flex;flex-direction:column;align-items:center;gap:24px;width:fit-content;min-width:100%;margin:auto}.psdk-viewer__canvas-area::-webkit-scrollbar{width:6px;height:6px}.psdk-viewer__canvas-area::-webkit-scrollbar-track{background:transparent}.psdk-viewer__canvas-area::-webkit-scrollbar-thumb{background:var(--psdk-border);border-radius:4px}.psdk-viewer__canvas-area::-webkit-scrollbar-thumb:hover{background:var(--psdk-border-strong)}.psdk-canvas-wrap{position:relative;display:inline-block;box-shadow:0 8px 40px #0009,0 0 0 1px #ffffff0f;border-radius:2px;background:#fff;transform-origin:top center;transition:transform .2s ease}.psdk-canvas-wrap canvas{display:block;border-radius:2px}.psdk-overlay{position:absolute;top:0;left:0;pointer-events:none;border-radius:2px}.psdk-overlay--active{pointer-events:all}.psdk-empty{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--psdk-text-muted)}.psdk-empty__icon{width:72px;height:72px;opacity:.25}.psdk-empty__icon svg{width:100%;height:100%;stroke:var(--psdk-text-secondary);fill:none;stroke-width:1.5}.psdk-empty__title{font-size:16px;font-weight:600;color:var(--psdk-text-secondary)}.psdk-empty__sub{font-size:13px;color:var(--psdk-text-muted);text-align:center;max-width:260px;line-height:1.5}.psdk-empty__cta{margin-top:8px}.psdk-tooltip{position:relative}.psdk-tooltip:after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translate(-50%);background:#1e2030;color:var(--psdk-text-primary);font-size:11px;font-weight:500;padding:4px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;border:1px solid var(--psdk-border);box-shadow:var(--psdk-shadow-sm);z-index:100}@media (hover: hover) and (pointer: fine){.psdk-tooltip:hover:after{opacity:1}}.psdk-mode-banner{position:absolute;bottom:16px;left:50%;transform:translate(-50%);display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--psdk-accent);color:#fff;border-radius:20px;font-size:12px;font-weight:600;box-shadow:0 4px 20px var(--psdk-accent-glow);animation:psdk-slide-up .2s cubic-bezier(.34,1.56,.64,1);z-index:50;white-space:nowrap;letter-spacing:.02em}.psdk-mode-banner__dot{width:7px;height:7px;border-radius:50%;background:#ffffffb3;animation:psdk-blink 1s infinite}@keyframes psdk-blink{0%,to{opacity:1}50%{opacity:.3}}@keyframes psdk-slide-up{0%{opacity:0;transform:translate(-50%) translateY(12px)}to{opacity:1;transform:translate(-50%) translateY(0)}}.psdk-statusbar{display:flex;align-items:center;gap:12px;padding:6px 16px;background:var(--psdk-bg-surface);border-top:1px solid var(--psdk-border);font-size:11px;color:var(--psdk-text-muted);flex-shrink:0}.psdk-statusbar__item{display:flex;align-items:center;gap:5px}.psdk-statusbar__dot{width:5px;height:5px;border-radius:50%;background:var(--psdk-success)}.psdk-statusbar__dot--sig{background:var(--psdk-accent);animation:psdk-blink 1s infinite}.psdk-statusbar__spacer{flex:1}@media (max-width: 640px){.psdk-topbar{justify-content:center;padding:10px 12px;gap:8px}.psdk-topbar__spacer{display:none}.psdk-topbar__brand{width:100%;justify-content:center;border-right:none;margin-right:0;padding-right:0;margin-bottom:4px}.psdk-btn{padding:8px 10px}}.psdk-modal-overlay{position:absolute;top:0;right:0;bottom:0;left:0;background:#0f1117b3;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s ease;border-radius:inherit}.psdk-modal-overlay--active{opacity:1}.psdk-modal{background:var(--psdk-bg-surface);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-lg);box-shadow:var(--psdk-shadow-md);width:90%;max-width:360px;display:flex;flex-direction:column;transform:scale(.95) translateY(10px);opacity:0;transition:all .2s cubic-bezier(.34,1.56,.64,1);overflow:hidden}.psdk-modal--active{transform:scale(1) translateY(0);opacity:1}.psdk-modal__header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--psdk-border);background:var(--psdk-bg-base)}.psdk-modal__title{font-size:14px;font-weight:700;color:var(--psdk-text-primary);margin:0}.psdk-modal__close{background:transparent;border:none;color:var(--psdk-text-muted);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:var(--psdk-radius-sm);transition:all var(--psdk-transition)}.psdk-modal__close:hover{background:var(--psdk-bg-hover);color:var(--psdk-text-primary)}.psdk-modal__close svg{width:18px;height:18px}.psdk-modal__body{padding:20px;max-height:400px;overflow-y:auto}.psdk-modal__list{display:flex;flex-direction:column;gap:10px}.psdk-modal__item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--psdk-bg-elevated);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-md);cursor:pointer;transition:all var(--psdk-transition);text-align:left;color:var(--psdk-text-primary);font-family:var(--psdk-font);width:100%}.psdk-modal__item:hover{background:var(--psdk-bg-hover);border-color:var(--psdk-border-strong);transform:translateY(-1px)}.psdk-modal__item:active{transform:translateY(0)}.psdk-modal__item-icon{width:32px;height:32px;border-radius:8px;background:var(--psdk-accent-subtle);color:var(--psdk-accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}.psdk-modal__item-icon--image{background:#fff}.psdk-modal__item-icon img{width:100%;height:100%;object-fit:contain}.psdk-modal__item-icon svg{width:18px;height:18px}.psdk-modal__item-label{font-size:13px;font-weight:600}@media (max-width: 768px){.psdk-body{flex-direction:column}.psdk-viewer{min-height:0;order:1}.psdk-sidebar{order:2;width:100%;height:140px;flex:0 0 140px;border-right:none;border-top:1px solid var(--psdk-border)}.psdk-sidebar__header{padding:6px 12px}.psdk-sidebar__scroll{flex-direction:row;overflow-y:hidden;overflow-x:auto;padding:10px 12px;height:100px;flex:0 0 100px}.psdk-sidebar__scroll::-webkit-scrollbar{height:4px}.psdk-thumb{width:80px;min-height:90px;flex-shrink:0;justify-content:center}.psdk-thumb-skeleton{width:80px;height:90px;flex-shrink:0}}.psdk-modal__input-wrapper{position:relative;display:flex;align-items:center;width:100%}.psdk-modal__input{width:100%;padding:10px 40px 10px 14px;background:var(--psdk-bg-base);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-md);color:var(--psdk-text-primary);font-family:var(--psdk-font);font-size:13px;outline:none;transition:all var(--psdk-transition)}.psdk-modal__input:focus{border-color:var(--psdk-accent);box-shadow:0 0 0 3px var(--psdk-accent-subtle)}.psdk-root.psdk-light .psdk-modal__input{background:var(--psdk-bg-elevated)}.psdk-modal__input-toggle{position:absolute;right:12px;background:transparent;border:none;color:var(--psdk-text-muted);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:var(--psdk-radius-sm);transition:all var(--psdk-transition)}.psdk-modal__input-toggle:hover{color:var(--psdk-text-primary)}.psdk-modal__input-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.psdk-modal__error{color:var(--psdk-danger);font-size:12px;margin-top:8px;display:flex;align-items:center;gap:6px;font-weight:500}.psdk-modal__error svg{width:14px;height:14px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.psdk-modal__buttons{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}.psdk-modal__input::-ms-reveal,.psdk-modal__input::-ms-clear{display:none!important}.psdk-topbar__secure-badge{display:inline-flex;align-items:center;justify-content:center;padding:4px;background:#22c55e26;color:var(--psdk-success);border-radius:50%;transition:all var(--psdk-transition);box-shadow:0 0 8px #22c55e33}.psdk-root.psdk-light .psdk-topbar__secure-badge{background:#22c55e1a}.psdk-topbar__secure-badge svg{width:12px;height:12px;stroke:currentColor}')),document.head.appendChild(r)}}catch(e){console.error("vite-plugin-css-injected-by-js",e)}})();
+(function(){"use strict";try{if(typeof document<"u"){var r=document.createElement("style");r.appendChild(document.createTextNode(':root,.psdk-root{--psdk-bg-base: #0f1117;--psdk-bg-surface: #1a1d27;--psdk-bg-elevated: #22263a;--psdk-bg-hover: #2a2f45;--psdk-border: rgba(255, 255, 255, .08);--psdk-border-strong: rgba(255, 255, 255, .14);--psdk-accent: #6366f1;--psdk-accent-hover: #4f52e0;--psdk-accent-glow: rgba(99, 102, 241, .35);--psdk-accent-subtle: rgba(99, 102, 241, .12);--psdk-danger: #ef4444;--psdk-danger-subtle: rgba(239, 68, 68, .12);--psdk-success: #22c55e;--psdk-warning: #f59e0b;--psdk-text-primary: #f1f5f9;--psdk-text-secondary: #8b92a5;--psdk-text-muted: #5a6070;--psdk-topbar-height: 56px;--psdk-sidebar-width: 190px;--psdk-sidebar-thumb-scale: .22;--psdk-radius-sm: 6px;--psdk-radius-md: 10px;--psdk-radius-lg: 14px;--psdk-shadow-sm: 0 2px 8px rgba(0, 0, 0, .35);--psdk-shadow-md: 0 4px 20px rgba(0, 0, 0, .5);--psdk-shadow-glow: 0 0 20px var(--psdk-accent-glow);--psdk-transition: .15s cubic-bezier(.4, 0, .2, 1);--psdk-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif}.psdk-root.psdk-light{--psdk-bg-base: #f8fafc;--psdk-bg-surface: #ffffff;--psdk-bg-elevated: #f1f5f9;--psdk-bg-hover: #e2e8f0;--psdk-border: rgba(0, 0, 0, .08);--psdk-border-strong: rgba(0, 0, 0, .14);--psdk-text-primary: #0f172a;--psdk-text-secondary: #475569;--psdk-text-muted: #64748b;--psdk-shadow-sm: 0 2px 8px rgba(0, 0, 0, .05);--psdk-shadow-md: 0 4px 20px rgba(0, 0, 0, .08)}.psdk-root{font-family:var(--psdk-font);display:flex;flex-direction:column;width:100%;height:100%;min-height:400px;background:var(--psdk-bg-base);color:var(--psdk-text-primary);overflow:hidden;box-sizing:border-box;position:relative;border-radius:var(--psdk-radius-lg);box-shadow:var(--psdk-shadow-md)}.psdk-root *,.psdk-root *:before,.psdk-root *:after{box-sizing:border-box}.psdk-root.psdk-loading:after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;background:#0f1117a6;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:1000;border-radius:inherit}.psdk-root.psdk-loading:before{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border:3px solid var(--psdk-border);border-top-color:var(--psdk-accent);border-radius:50%;animation:psdk-spin .7s linear infinite;z-index:1001}@keyframes psdk-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}.psdk-topbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-height:var(--psdk-topbar-height);padding:8px 16px;background:var(--psdk-bg-surface);border-bottom:1px solid var(--psdk-border);flex-shrink:0;z-index:10;position:relative}.psdk-topbar__brand{display:flex;align-items:center;gap:8px;margin-right:8px;padding-right:16px;border-right:1px solid var(--psdk-border)}.psdk-topbar__brand-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--psdk-accent),#818cf8);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:var(--psdk-shadow-glow)}.psdk-topbar__brand-icon--custom{background:transparent!important;box-shadow:none!important;border-radius:0!important;width:auto!important;height:auto!important}.psdk-topbar__brand-icon svg{width:16px;height:16px;fill:#fff}.psdk-topbar__brand-text{font-size:13px;font-weight:700;color:var(--psdk-text-primary);letter-spacing:-.3px}.psdk-topbar__divider{width:1px;height:24px;background:var(--psdk-border);margin:0 4px}.psdk-topbar__spacer{flex:1}.psdk-topbar__custom{display:flex;align-items:center;gap:8px}.psdk-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-sm);background:var(--psdk-bg-elevated);color:var(--psdk-text-primary);font-family:var(--psdk-font);font-size:12px;font-weight:500;cursor:pointer;transition:all var(--psdk-transition);white-space:nowrap;line-height:1;-webkit-user-select:none;user-select:none}@media (hover: hover) and (pointer: fine){.psdk-btn:hover{background:var(--psdk-bg-hover);border-color:var(--psdk-border-strong);transform:translateY(-1px);box-shadow:var(--psdk-shadow-sm)}}.psdk-btn:active{transform:translateY(0);box-shadow:none}.psdk-btn svg{width:14px;height:14px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.psdk-btn--accent{background:var(--psdk-accent);border-color:var(--psdk-accent);color:#fff;box-shadow:0 2px 12px var(--psdk-accent-glow)}@media (hover: hover) and (pointer: fine){.psdk-btn--accent:hover{background:var(--psdk-accent-hover);border-color:var(--psdk-accent-hover);box-shadow:0 4px 18px var(--psdk-accent-glow)}}.psdk-btn--accent.psdk-btn--active{background:#4338ca;border-color:#4338ca;box-shadow:0 0 0 3px #6366f14d;animation:psdk-pulse 2s infinite}@keyframes psdk-pulse{0%,to{box-shadow:0 0 0 3px #6366f14d}50%{box-shadow:0 0 0 6px #6366f11a}}.psdk-btn--danger{background:var(--psdk-danger-subtle);border-color:#ef44444d;color:var(--psdk-danger)}@media (hover: hover) and (pointer: fine){.psdk-btn--danger:hover{background:var(--psdk-danger);border-color:var(--psdk-danger);color:#fff}}.psdk-btn--ghost{background:transparent;border-color:transparent;color:var(--psdk-text-secondary)}@media (hover: hover) and (pointer: fine){.psdk-btn--ghost:hover{background:var(--psdk-bg-elevated);border-color:var(--psdk-border);color:var(--psdk-text-primary)}}.psdk-btn--icon{padding:7px}.psdk-btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}.psdk-file-input{position:absolute;width:0;height:0;opacity:0;pointer-events:none}.psdk-root.psdk-disabled .psdk-btn,.psdk-root.psdk-disabled .psdk-sidebar__scroll,.psdk-root.psdk-disabled .psdk-overlay{opacity:.5;pointer-events:none;cursor:not-allowed}.psdk-pagination{display:flex;align-items:center;gap:6px}.psdk-pagination__indicator{display:flex;align-items:center;gap:4px;padding:6px 10px;background:var(--psdk-bg-base);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-sm);font-size:12px;font-weight:500;color:var(--psdk-text-secondary);min-width:80px;justify-content:center}.psdk-pagination__current{color:var(--psdk-text-primary);font-weight:700;font-size:13px}.psdk-pagination__current-input{width:36px;background:transparent;border:1px solid transparent;color:var(--psdk-text-primary);font-weight:700;font-size:13px;text-align:center;font-family:inherit;outline:none;border-radius:4px;transition:all .15s}.psdk-pagination__current-input:focus{background:#ffffff0d;border-color:var(--psdk-accent)}.psdk-pagination__current-input:disabled{opacity:.5;cursor:not-allowed}.psdk-pagination__current-input::-webkit-inner-spin-button,.psdk-pagination__current-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.psdk-pagination__current-input[type=number]{-moz-appearance:textfield}.psdk-pagination__sep{color:var(--psdk-text-muted)}.psdk-zoom-badge{display:inline-flex;align-items:center;padding:5px 10px;background:var(--psdk-bg-base);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-sm);font-size:11px;font-weight:600;color:var(--psdk-text-secondary);min-width:52px;justify-content:center}.psdk-body{display:flex;flex:1;overflow:hidden;position:relative}.psdk-sidebar{width:var(--psdk-sidebar-width);flex-shrink:0;background:var(--psdk-bg-surface);border-right:1px solid var(--psdk-border);display:flex;flex-direction:column;overflow:hidden}.psdk-sidebar__header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--psdk-border);flex-shrink:0}.psdk-sidebar__title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--psdk-text-muted)}.psdk-sidebar__count{font-size:10px;font-weight:600;color:var(--psdk-text-muted);background:var(--psdk-bg-elevated);border-radius:20px;padding:2px 7px}.psdk-sidebar__scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px;display:flex;flex-direction:column;gap:6px}.psdk-sidebar__scroll::-webkit-scrollbar{width:4px}.psdk-sidebar__scroll::-webkit-scrollbar-track{background:transparent}.psdk-sidebar__scroll::-webkit-scrollbar-thumb{background:var(--psdk-border);border-radius:4px}.psdk-sidebar__scroll::-webkit-scrollbar-thumb:hover{background:var(--psdk-border-strong)}.psdk-thumb{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px;border-radius:var(--psdk-radius-md);cursor:pointer;transition:all var(--psdk-transition);border:1px solid transparent;position:relative}@media (hover: hover) and (pointer: fine){.psdk-thumb:hover{background:var(--psdk-bg-elevated);border-color:var(--psdk-border);transform:translateY(-1px)}}.psdk-thumb--active{background:var(--psdk-accent-subtle)!important;border-color:var(--psdk-accent)!important;box-shadow:0 0 0 1px var(--psdk-accent)}.psdk-thumb__canvas-wrap{width:100%;display:flex;justify-content:center;align-items:center;background:#fff;border-radius:4px;overflow:hidden;box-shadow:var(--psdk-shadow-sm)}.psdk-thumb canvas{display:block;max-width:100%;height:auto}.psdk-thumb__label{font-size:9px;font-weight:600;color:var(--psdk-text-muted);letter-spacing:.04em}.psdk-thumb--active .psdk-thumb__label{color:var(--psdk-accent)}.psdk-thumb-skeleton{width:100%;height:120px;background:linear-gradient(90deg,var(--psdk-bg-elevated) 25%,var(--psdk-bg-hover) 50%,var(--psdk-bg-elevated) 75%);background-size:200% 100%;animation:psdk-shimmer 1.5s infinite;border-radius:var(--psdk-radius-sm)}@keyframes psdk-shimmer{0%{background-position:200% 0}to{background-position:-200% 0}}.psdk-viewer{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--psdk-bg-base);position:relative}.psdk-viewer__canvas-area{flex:1;overflow:auto;display:flex;flex-direction:column;padding:24px;position:relative}.psdk-pages-container{display:flex;flex-direction:column;align-items:center;gap:24px;width:fit-content;min-width:100%;margin:auto}.psdk-viewer__canvas-area::-webkit-scrollbar{width:6px;height:6px}.psdk-viewer__canvas-area::-webkit-scrollbar-track{background:transparent}.psdk-viewer__canvas-area::-webkit-scrollbar-thumb{background:var(--psdk-border);border-radius:4px}.psdk-viewer__canvas-area::-webkit-scrollbar-thumb:hover{background:var(--psdk-border-strong)}.psdk-canvas-wrap{position:relative;display:inline-block;box-shadow:0 8px 40px #0009,0 0 0 1px #ffffff0f;border-radius:2px;background:#fff;transform-origin:top center;transition:transform .2s ease}.psdk-canvas-wrap canvas{display:block;border-radius:2px}.psdk-overlay{position:absolute;top:0;left:0;pointer-events:none;border-radius:2px}.psdk-overlay--active{pointer-events:all}.psdk-empty{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--psdk-text-muted)}.psdk-empty__icon{width:72px;height:72px;opacity:.25}.psdk-empty__icon svg{width:100%;height:100%;stroke:var(--psdk-text-secondary);fill:none;stroke-width:1.5}.psdk-empty__title{font-size:16px;font-weight:600;color:var(--psdk-text-secondary)}.psdk-empty__sub{font-size:13px;color:var(--psdk-text-muted);text-align:center;max-width:260px;line-height:1.5}.psdk-empty__cta{margin-top:8px}.psdk-tooltip{position:relative}.psdk-tooltip:after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translate(-50%);background:#1e2030;color:var(--psdk-text-primary);font-size:11px;font-weight:500;padding:4px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;border:1px solid var(--psdk-border);box-shadow:var(--psdk-shadow-sm);z-index:100}@media (hover: hover) and (pointer: fine){.psdk-tooltip:hover:after{opacity:1}}.psdk-mode-banner{position:absolute;bottom:16px;left:50%;transform:translate(-50%);display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--psdk-accent);color:#fff;border-radius:20px;font-size:12px;font-weight:600;box-shadow:0 4px 20px var(--psdk-accent-glow);animation:psdk-slide-up .2s cubic-bezier(.34,1.56,.64,1);z-index:50;white-space:nowrap;letter-spacing:.02em}.psdk-mode-banner__dot{width:7px;height:7px;border-radius:50%;background:#ffffffb3;animation:psdk-blink 1s infinite}@keyframes psdk-blink{0%,to{opacity:1}50%{opacity:.3}}@keyframes psdk-slide-up{0%{opacity:0;transform:translate(-50%) translateY(12px)}to{opacity:1;transform:translate(-50%) translateY(0)}}.psdk-statusbar{display:flex;align-items:center;gap:12px;padding:6px 16px;background:var(--psdk-bg-surface);border-top:1px solid var(--psdk-border);font-size:11px;color:var(--psdk-text-muted);flex-shrink:0}.psdk-statusbar__item{display:flex;align-items:center;gap:5px}.psdk-statusbar__dot{width:5px;height:5px;border-radius:50%;background:var(--psdk-success)}.psdk-statusbar__dot--sig{background:var(--psdk-accent);animation:psdk-blink 1s infinite}.psdk-statusbar__spacer{flex:1}@media (max-width: 640px){.psdk-topbar{justify-content:center;padding:10px 12px;gap:8px}.psdk-topbar__spacer{display:none}.psdk-topbar__brand{width:100%;justify-content:center;border-right:none;margin-right:0;padding-right:0;margin-bottom:4px}.psdk-btn{padding:8px 10px}}.psdk-modal-overlay{position:absolute;top:0;right:0;bottom:0;left:0;background:#0f1117b3;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s ease;border-radius:inherit}.psdk-modal-overlay--active{opacity:1}.psdk-modal{background:var(--psdk-bg-surface);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-lg);box-shadow:var(--psdk-shadow-md);width:90%;max-width:550px;display:flex;flex-direction:column;transform:scale(.95) translateY(10px);opacity:0;transition:all .2s cubic-bezier(.34,1.56,.64,1);overflow:hidden}.psdk-modal--active{transform:scale(1) translateY(0);opacity:1}.psdk-modal__header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--psdk-border);background:var(--psdk-bg-base)}.psdk-modal__title{font-size:15px;font-weight:700;color:var(--psdk-text-primary);margin:0}.psdk-modal__close{background:transparent;border:none;color:var(--psdk-text-muted);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:var(--psdk-radius-sm);transition:all var(--psdk-transition)}.psdk-modal__close:hover{background:var(--psdk-bg-hover);color:var(--psdk-text-primary)}.psdk-modal__close svg{width:18px;height:18px}.psdk-modal__body{padding:24px;max-height:480px;overflow-y:auto}.psdk-modal__group-toggle-container{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--psdk-bg-base);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-md);margin-bottom:20px}.psdk-modal__group-toggle-label{font-size:13px;font-weight:600;color:var(--psdk-text-secondary)}.psdk-modal__group-toggle{position:relative;width:40px;height:22px;flex-shrink:0}.psdk-modal__group-toggle input{position:absolute;opacity:0;width:0;height:0}.psdk-modal__group-toggle-track{position:absolute;top:0;right:0;bottom:0;left:0;background:var(--psdk-bg-elevated);border:1px solid var(--psdk-border);border-radius:20px;cursor:pointer;transition:all var(--psdk-transition)}.psdk-modal__group-toggle-track:after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--psdk-text-secondary);transition:all var(--psdk-transition)}.psdk-modal__group-toggle input:checked+.psdk-modal__group-toggle-track{background:var(--psdk-accent);border-color:var(--psdk-accent)}.psdk-modal__group-toggle input:checked+.psdk-modal__group-toggle-track:after{left:20px;background:#fff}.psdk-modal__group-section{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}.psdk-modal__group-section:last-child{margin-bottom:0}.psdk-modal__group-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--psdk-text-secondary);border-left:3px solid var(--psdk-accent);padding-left:8px;margin-bottom:6px}.psdk-modal__list{display:flex;flex-direction:column;gap:16px}.psdk-modal__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;width:100%}.psdk-modal__item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px 12px;background:var(--psdk-bg-elevated);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-lg);cursor:pointer;transition:all var(--psdk-transition);text-align:center;color:var(--psdk-text-primary);font-family:var(--psdk-font);width:100%;aspect-ratio:1 / 1;box-sizing:border-box}.psdk-modal__item:hover{background:var(--psdk-bg-hover);border-color:var(--psdk-border-strong);transform:translateY(-2px);box-shadow:0 4px 12px #00000026}.psdk-modal__item:active{transform:translateY(0)}.psdk-modal__item-icon{width:72px;height:72px;border-radius:12px;background:var(--psdk-accent-subtle);color:var(--psdk-accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;transition:all var(--psdk-transition)}.psdk-modal__item-icon--image{background:#fff;padding:6px}.psdk-modal__item-icon img{width:100%;height:100%;object-fit:contain}.psdk-modal__item-icon svg{width:36px;height:36px}.psdk-modal__item-label{font-size:13px;font-weight:600;word-break:break-word}@media (max-width: 768px){.psdk-body{flex-direction:column}.psdk-viewer{min-height:0;order:1}.psdk-sidebar{order:2;width:100%;height:140px;flex:0 0 140px;border-right:none;border-top:1px solid var(--psdk-border)}.psdk-sidebar__header{padding:6px 12px}.psdk-sidebar__scroll{flex-direction:row;overflow-y:hidden;overflow-x:auto;padding:10px 12px;height:100px;flex:0 0 100px}.psdk-sidebar__scroll::-webkit-scrollbar{height:4px}.psdk-thumb{width:80px;min-height:90px;flex-shrink:0;justify-content:center}.psdk-thumb-skeleton{width:80px;height:90px;flex-shrink:0}}.psdk-modal__input-wrapper{position:relative;display:flex;align-items:center;width:100%}.psdk-modal__input{width:100%;padding:10px 40px 10px 14px;background:var(--psdk-bg-base);border:1px solid var(--psdk-border);border-radius:var(--psdk-radius-md);color:var(--psdk-text-primary);font-family:var(--psdk-font);font-size:13px;outline:none;transition:all var(--psdk-transition)}.psdk-modal__input:focus{border-color:var(--psdk-accent);box-shadow:0 0 0 3px var(--psdk-accent-subtle)}.psdk-root.psdk-light .psdk-modal__input{background:var(--psdk-bg-elevated)}.psdk-modal__input-toggle{position:absolute;right:12px;background:transparent;border:none;color:var(--psdk-text-muted);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:var(--psdk-radius-sm);transition:all var(--psdk-transition)}.psdk-modal__input-toggle:hover{color:var(--psdk-text-primary)}.psdk-modal__input-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.psdk-modal__error{color:var(--psdk-danger);font-size:12px;margin-top:8px;display:flex;align-items:center;gap:6px;font-weight:500}.psdk-modal__error svg{width:14px;height:14px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.psdk-modal__buttons{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}.psdk-modal__input::-ms-reveal,.psdk-modal__input::-ms-clear{display:none!important}.psdk-topbar__secure-badge{display:inline-flex;align-items:center;justify-content:center;padding:4px;background:#22c55e26;color:var(--psdk-success);border-radius:50%;transition:all var(--psdk-transition);box-shadow:0 0 8px #22c55e33}.psdk-root.psdk-light .psdk-topbar__secure-badge{background:#22c55e1a}.psdk-topbar__secure-badge svg{width:12px;height:12px;stroke:currentColor}')),document.head.appendChild(r)}}catch(e){console.error("vite-plugin-css-injected-by-js",e)}})();
 var nf = Object.defineProperty;
 var Bd = (d) => {
   throw TypeError(d);
@@ -4433,14 +4433,14 @@ class Vu {
   destroy(t = !1) {
   }
 }
-var Mn, Wr, Qs, Zs, te, Ln, Rn, F, Qt, ja, Ar, Yl, vr, Wu, Tc, _r, Va, Wa, Pc, Xa;
+var Mn, Wr, Qs, Zs, te, Ln, Rn, N, Qt, ja, Ar, Yl, vr, Wu, Tc, _r, Va, Wa, Pc, Xa;
 class Df extends Vu {
   constructor({
     docId: e,
     ownerDocument: s = globalThis.document
   }) {
     super();
-    b(this, F);
+    b(this, N);
     b(this, Mn);
     b(this, Wr);
     b(this, Qs);
@@ -4453,84 +4453,84 @@ class Df extends Vu {
   addFilter(e) {
     if (!e)
       return "none";
-    let s = r(this, F, Qt).get(e);
+    let s = r(this, N, Qt).get(e);
     if (s)
       return s;
-    const [i, n, a] = y(this, F, Yl).call(this, e), o = e.length === 1 ? i : `${i}${n}${a}`;
-    if (s = r(this, F, Qt).get(o), s)
-      return r(this, F, Qt).set(e, s), s;
-    const l = `g_${r(this, Zs)}_transfer_map_${re(this, Rn)._++}`, h = y(this, F, vr).call(this, l);
-    r(this, F, Qt).set(e, h), r(this, F, Qt).set(o, h);
-    const c = y(this, F, _r).call(this, l);
-    return y(this, F, Wa).call(this, i, n, a, c), h;
+    const [i, n, a] = y(this, N, Yl).call(this, e), o = e.length === 1 ? i : `${i}${n}${a}`;
+    if (s = r(this, N, Qt).get(o), s)
+      return r(this, N, Qt).set(e, s), s;
+    const l = `g_${r(this, Zs)}_transfer_map_${re(this, Rn)._++}`, h = y(this, N, vr).call(this, l);
+    r(this, N, Qt).set(e, h), r(this, N, Qt).set(o, h);
+    const c = y(this, N, _r).call(this, l);
+    return y(this, N, Wa).call(this, i, n, a, c), h;
   }
   addHCMFilter(e, s) {
     var m;
     const i = `${e}-${s}`, n = "base";
-    let a = r(this, F, ja).get(n);
+    let a = r(this, N, ja).get(n);
     if ((a == null ? void 0 : a.key) === i || (a ? ((m = a.filter) == null || m.remove(), a.key = i, a.url = "none", a.filter = null) : (a = {
       key: i,
       url: "none",
       filter: null
-    }, r(this, F, ja).set(n, a)), !e || !s))
+    }, r(this, N, ja).set(n, a)), !e || !s))
       return a.url;
-    const o = y(this, F, Xa).call(this, e);
+    const o = y(this, N, Xa).call(this, e);
     e = G.makeHexColor(...o);
-    const l = y(this, F, Xa).call(this, s);
-    if (s = G.makeHexColor(...l), r(this, F, Ar).style.color = "", e === "#000000" && s === "#ffffff" || e === s)
+    const l = y(this, N, Xa).call(this, s);
+    if (s = G.makeHexColor(...l), r(this, N, Ar).style.color = "", e === "#000000" && s === "#ffffff" || e === s)
       return a.url;
     const h = new Array(256);
     for (let A = 0; A <= 255; A++) {
       const _ = A / 255;
       h[A] = _ <= 0.03928 ? _ / 12.92 : ((_ + 0.055) / 1.055) ** 2.4;
     }
-    const c = h.join(","), u = `g_${r(this, Zs)}_hcm_filter`, p = a.filter = y(this, F, _r).call(this, u);
-    y(this, F, Wa).call(this, c, c, c, p), y(this, F, Tc).call(this, p);
+    const c = h.join(","), u = `g_${r(this, Zs)}_hcm_filter`, p = a.filter = y(this, N, _r).call(this, u);
+    y(this, N, Wa).call(this, c, c, c, p), y(this, N, Tc).call(this, p);
     const g = (A, _) => {
       const v = o[A] / 255, S = l[A] / 255, E = new Array(_ + 1);
       for (let w = 0; w <= _; w++)
         E[w] = v + w / _ * (S - v);
       return E.join(",");
     };
-    return y(this, F, Wa).call(this, g(0, 5), g(1, 5), g(2, 5), p), a.url = y(this, F, vr).call(this, u), a.url;
+    return y(this, N, Wa).call(this, g(0, 5), g(1, 5), g(2, 5), p), a.url = y(this, N, vr).call(this, u), a.url;
   }
   addAlphaFilter(e) {
-    let s = r(this, F, Qt).get(e);
+    let s = r(this, N, Qt).get(e);
     if (s)
       return s;
-    const [i] = y(this, F, Yl).call(this, [e]), n = `alpha_${i}`;
-    if (s = r(this, F, Qt).get(n), s)
-      return r(this, F, Qt).set(e, s), s;
-    const a = `g_${r(this, Zs)}_alpha_map_${re(this, Rn)._++}`, o = y(this, F, vr).call(this, a);
-    r(this, F, Qt).set(e, o), r(this, F, Qt).set(n, o);
-    const l = y(this, F, _r).call(this, a);
-    return y(this, F, Pc).call(this, i, l), o;
+    const [i] = y(this, N, Yl).call(this, [e]), n = `alpha_${i}`;
+    if (s = r(this, N, Qt).get(n), s)
+      return r(this, N, Qt).set(e, s), s;
+    const a = `g_${r(this, Zs)}_alpha_map_${re(this, Rn)._++}`, o = y(this, N, vr).call(this, a);
+    r(this, N, Qt).set(e, o), r(this, N, Qt).set(n, o);
+    const l = y(this, N, _r).call(this, a);
+    return y(this, N, Pc).call(this, i, l), o;
   }
   addLuminosityFilter(e) {
-    let s = r(this, F, Qt).get(e || "luminosity");
+    let s = r(this, N, Qt).get(e || "luminosity");
     if (s)
       return s;
     let i, n;
-    if (e ? ([i] = y(this, F, Yl).call(this, [e]), n = `luminosity_${i}`) : n = "luminosity", s = r(this, F, Qt).get(n), s)
-      return r(this, F, Qt).set(e, s), s;
-    const a = `g_${r(this, Zs)}_luminosity_map_${re(this, Rn)._++}`, o = y(this, F, vr).call(this, a);
-    r(this, F, Qt).set(e, o), r(this, F, Qt).set(n, o);
-    const l = y(this, F, _r).call(this, a);
-    return y(this, F, Wu).call(this, l), e && y(this, F, Pc).call(this, i, l), o;
+    if (e ? ([i] = y(this, N, Yl).call(this, [e]), n = `luminosity_${i}`) : n = "luminosity", s = r(this, N, Qt).get(n), s)
+      return r(this, N, Qt).set(e, s), s;
+    const a = `g_${r(this, Zs)}_luminosity_map_${re(this, Rn)._++}`, o = y(this, N, vr).call(this, a);
+    r(this, N, Qt).set(e, o), r(this, N, Qt).set(n, o);
+    const l = y(this, N, _r).call(this, a);
+    return y(this, N, Wu).call(this, l), e && y(this, N, Pc).call(this, i, l), o;
   }
   addHighlightHCMFilter(e, s, i, n, a) {
     var S;
     const o = `${s}-${i}-${n}-${a}`;
-    let l = r(this, F, ja).get(e);
+    let l = r(this, N, ja).get(e);
     if ((l == null ? void 0 : l.key) === o || (l ? ((S = l.filter) == null || S.remove(), l.key = o, l.url = "none", l.filter = null) : (l = {
       key: o,
       url: "none",
       filter: null
-    }, r(this, F, ja).set(e, l)), !s || !i))
+    }, r(this, N, ja).set(e, l)), !s || !i))
       return l.url;
-    const [h, c] = [s, i].map(y(this, F, Xa).bind(this));
-    let u = Math.round(0.2126 * h[0] + 0.7152 * h[1] + 0.0722 * h[2]), p = Math.round(0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]), [g, m] = [n, a].map(y(this, F, Xa).bind(this));
-    p < u && ([u, p, g, m] = [p, u, m, g]), r(this, F, Ar).style.color = "";
+    const [h, c] = [s, i].map(y(this, N, Xa).bind(this));
+    let u = Math.round(0.2126 * h[0] + 0.7152 * h[1] + 0.0722 * h[2]), p = Math.round(0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]), [g, m] = [n, a].map(y(this, N, Xa).bind(this));
+    p < u && ([u, p, g, m] = [p, u, m, g]), r(this, N, Ar).style.color = "";
     const A = (E, w, C) => {
       const k = new Array(256), x = (p - u) / C, T = E / 255, P = (w - E) / (255 * C);
       let z = 0;
@@ -4543,15 +4543,15 @@ class Df extends Vu {
       for (let D = z; D < 256; D++)
         k[D] = k[z - 1];
       return k.join(",");
-    }, _ = `g_${r(this, Zs)}_hcm_${e}_filter`, v = l.filter = y(this, F, _r).call(this, _);
-    return y(this, F, Tc).call(this, v), y(this, F, Wa).call(this, A(g[0], m[0], 5), A(g[1], m[1], 5), A(g[2], m[2], 5), v), l.url = y(this, F, vr).call(this, _), l.url;
+    }, _ = `g_${r(this, Zs)}_hcm_${e}_filter`, v = l.filter = y(this, N, _r).call(this, _);
+    return y(this, N, Tc).call(this, v), y(this, N, Wa).call(this, A(g[0], m[0], 5), A(g[1], m[1], 5), A(g[2], m[2], 5), v), l.url = y(this, N, vr).call(this, _), l.url;
   }
   destroy(e = !1) {
     var s, i, n, a;
     e && ((s = r(this, Ln)) != null && s.size) || ((i = r(this, Qs)) == null || i.parentNode.parentNode.remove(), f(this, Qs, null), (n = r(this, Wr)) == null || n.clear(), f(this, Wr, null), (a = r(this, Ln)) == null || a.clear(), f(this, Ln, null), f(this, Rn, 0));
   }
 }
-Mn = new WeakMap(), Wr = new WeakMap(), Qs = new WeakMap(), Zs = new WeakMap(), te = new WeakMap(), Ln = new WeakMap(), Rn = new WeakMap(), F = new WeakSet(), Qt = function() {
+Mn = new WeakMap(), Wr = new WeakMap(), Qs = new WeakMap(), Zs = new WeakMap(), te = new WeakMap(), Ln = new WeakMap(), Rn = new WeakMap(), N = new WeakSet(), Qt = function() {
   return r(this, Wr) || f(this, Wr, /* @__PURE__ */ new Map());
 }, ja = function() {
   return r(this, Ln) || f(this, Ln, /* @__PURE__ */ new Map());
@@ -4592,18 +4592,18 @@ Mn = new WeakMap(), Wr = new WeakMap(), Qs = new WeakMap(), Zs = new WeakMap(), 
   s.setAttribute("type", "matrix"), s.setAttribute("values", "0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0 0 0 1 0"), e.append(s);
 }, _r = function(e) {
   const s = r(this, te).createElementNS(Hs, "filter");
-  return s.setAttribute("color-interpolation-filters", "sRGB"), s.setAttribute("id", e), r(this, F, Ar).append(s), s;
+  return s.setAttribute("color-interpolation-filters", "sRGB"), s.setAttribute("id", e), r(this, N, Ar).append(s), s;
 }, Va = function(e, s, i) {
   const n = r(this, te).createElementNS(Hs, s);
   n.setAttribute("type", "discrete"), n.setAttribute("tableValues", i), e.append(n);
 }, Wa = function(e, s, i, n) {
   const a = r(this, te).createElementNS(Hs, "feComponentTransfer");
-  n.append(a), y(this, F, Va).call(this, a, "feFuncR", e), y(this, F, Va).call(this, a, "feFuncG", s), y(this, F, Va).call(this, a, "feFuncB", i);
+  n.append(a), y(this, N, Va).call(this, a, "feFuncR", e), y(this, N, Va).call(this, a, "feFuncG", s), y(this, N, Va).call(this, a, "feFuncB", i);
 }, Pc = function(e, s) {
   const i = r(this, te).createElementNS(Hs, "feComponentTransfer");
-  s.append(i), y(this, F, Va).call(this, i, "feFuncA", e);
+  s.append(i), y(this, N, Va).call(this, i, "feFuncA", e);
 }, Xa = function(e) {
-  return r(this, F, Ar).style.color = e, Ed(getComputedStyle(r(this, F, Ar)).getPropertyValue("color"));
+  return r(this, N, Ar).style.color = e, Ed(getComputedStyle(r(this, N, Ar)).getPropertyValue("color"));
 };
 class Xu {
   constructor({
@@ -11327,7 +11327,7 @@ rs = new WeakMap(), ke = new WeakMap(), ul = new WeakMap(), Kn = new WeakMap(), 
   return this._hasBeenMoved || e.value !== s || e.fontSize !== i || e.color.some((o, l) => o !== n[l]) || e.pageIndex !== a;
 }, b(dt, bi), U(dt, "_freeTextDefaultContent", ""), U(dt, "_internalPadding", 0), U(dt, "_defaultColor", null), U(dt, "_defaultFontSize", 10), U(dt, "_type", "freetext"), U(dt, "_editorType", X.FREETEXT);
 let qc = dt;
-class N {
+class O {
   toSVGPath() {
     ct("Abstract method `toSVGPath` must be implemented.");
   }
@@ -11386,7 +11386,7 @@ class N {
     return [(t + 5 * s) / 6, (e + 5 * i) / 6, (5 * s + n) / 6, (5 * i + a) / 6, (s + n) / 2, (i + a) / 2];
   }
 }
-U(N, "PRECISION", 1e-4);
+U(O, "PRECISION", 1e-4);
 var Pe, as, da, ua, Ps, Z, Qn, Zn, pl, fl, pa, fa, Gi, gl, Oh, Bh, Nt, Ya, kp, Tp, Pp, Mp, Lp, Rp;
 const Us = class Us {
   constructor({
@@ -11499,7 +11499,7 @@ Pe = new WeakMap(), as = new WeakMap(), da = new WeakMap(), ua = new WeakMap(), 
 }, b(Us, gl, 8), b(Us, Oh, 2), b(Us, Bh, r(Us, gl) + r(Us, Oh));
 let Ah = Us;
 var ga, Jn, li, ml, Me, bl, xt, Hh, Dp;
-class Ip extends N {
+class Ip extends O {
   constructor(e, s, i, n, a, o) {
     super();
     b(this, Hh);
@@ -11533,16 +11533,16 @@ class Ip extends N {
     let h, c;
     switch (a) {
       case 0:
-        h = N._rescale(r(this, xt), e, n, o, -l), c = N._rescale(r(this, Me), e, n, o, -l);
+        h = O._rescale(r(this, xt), e, n, o, -l), c = O._rescale(r(this, Me), e, n, o, -l);
         break;
       case 90:
-        h = N._rescaleAndSwap(r(this, xt), e, s, o, l), c = N._rescaleAndSwap(r(this, Me), e, s, o, l);
+        h = O._rescaleAndSwap(r(this, xt), e, s, o, l), c = O._rescaleAndSwap(r(this, Me), e, s, o, l);
         break;
       case 180:
-        h = N._rescale(r(this, xt), i, s, -o, l), c = N._rescale(r(this, Me), i, s, -o, l);
+        h = O._rescale(r(this, xt), i, s, -o, l), c = O._rescale(r(this, Me), i, s, -o, l);
         break;
       case 270:
-        h = N._rescaleAndSwap(r(this, xt), i, n, -o, -l), c = N._rescaleAndSwap(r(this, Me), i, n, -o, -l);
+        h = O._rescaleAndSwap(r(this, xt), i, n, -o, -l), c = O._rescaleAndSwap(r(this, Me), i, n, -o, -l);
         break;
     }
     return {
@@ -11707,7 +11707,7 @@ yl = new WeakMap(), Al = new WeakMap(), Ui = new WeakMap(), os = new WeakMap(), 
   return n;
 };
 var vl, ma;
-class sm extends N {
+class sm extends O {
   constructor(e, s, i) {
     super();
     b(this, vl);
@@ -13014,7 +13014,7 @@ class rm {
       path: {
         d: this.toSVGPath()
       }
-    }) : (isNaN(r(this, Ms)[0]) && r(this, $t).splice(6, 6), r(this, Ms).set([s, i, n, a, t, e], 0), r(this, $t).push(...N.createBezierPoints(s, i, n, a, t, e)), {
+    }) : (isNaN(r(this, Ms)[0]) && r(this, $t).splice(6, 6), r(this, Ms).set([s, i, n, a, t, e], 0), r(this, $t).push(...O.createBezierPoints(s, i, n, a, t, e)), {
       path: {
         d: this.toSVGPath()
       }
@@ -13066,7 +13066,7 @@ class rm {
     };
   }
   toSVGPath() {
-    const t = N.svgRound(r(this, $t)[4]), e = N.svgRound(r(this, $t)[5]);
+    const t = O.svgRound(r(this, $t)[4]), e = O.svgRound(r(this, $t)[5]);
     if (r(this, le).length === 2)
       return f(this, Xt, `${r(this, Xt)} M ${t} ${e} Z`), r(this, Xt);
     if (r(this, le).length <= 6) {
@@ -13074,13 +13074,13 @@ class rm {
       f(this, Xt, `${r(this, Xt).slice(0, i)} M ${t} ${e}`), f(this, We, 6);
     }
     if (r(this, le).length === 4) {
-      const i = N.svgRound(r(this, $t)[10]), n = N.svgRound(r(this, $t)[11]);
+      const i = O.svgRound(r(this, $t)[10]), n = O.svgRound(r(this, $t)[11]);
       return f(this, Xt, `${r(this, Xt)} L ${i} ${n}`), f(this, We, 12), r(this, Xt);
     }
     const s = [];
     r(this, We) === 0 && (s.push(`M ${t} ${e}`), f(this, We, 6));
     for (let i = r(this, We), n = r(this, $t).length; i < n; i += 6) {
-      const [a, o, l, h, c, u] = r(this, $t).slice(i, i + 6).map(N.svgRound);
+      const [a, o, l, h, c, u] = r(this, $t).slice(i, i + 6).map(O.svgRound);
       s.push(`C${a} ${o} ${l} ${h} ${c} ${u}`);
     }
     return f(this, Xt, r(this, Xt) + s.join(" ")), f(this, We, r(this, $t).length), r(this, Xt);
@@ -13102,10 +13102,10 @@ class rm {
   }
 }
 Ms = new WeakMap(), $t = new WeakMap(), Gt = new WeakMap(), or = new WeakMap(), Ca = new WeakMap(), le = new WeakMap(), Xt = new WeakMap(), We = new WeakMap(), lr = new WeakMap(), hr = new WeakMap(), cr = new WeakMap(), xa = new WeakSet(), ch = function(t, e) {
-  return N._normalizePoint(t, e, r(this, hr), r(this, cr), r(this, or));
+  return O._normalizePoint(t, e, r(this, hr), r(this, cr), r(this, or));
 };
 var he, Pl, Ml, Ie, Ls, Rs, ka, Ta, Pa, Yt, $s, Yp, Kp, Qp;
-const Dd = class Dd extends N {
+const Dd = class Dd extends O {
   constructor() {
     super(...arguments);
     b(this, Yt);
@@ -13141,16 +13141,16 @@ const Dd = class Dd extends N {
     for (const {
       line: s
     } of r(this, Ie)) {
-      if (e.push(`M${N.svgRound(s[4])} ${N.svgRound(s[5])}`), s.length === 6) {
+      if (e.push(`M${O.svgRound(s[4])} ${O.svgRound(s[5])}`), s.length === 6) {
         e.push("Z");
         continue;
       }
       if (s.length === 12) {
-        e.push(`L${N.svgRound(s[10])} ${N.svgRound(s[11])}`);
+        e.push(`L${O.svgRound(s[10])} ${O.svgRound(s[11])}`);
         continue;
       }
       for (let i = 6, n = s.length; i < n; i += 6) {
-        const [a, o, l, h, c, u] = s.subarray(i, i + 6).map(N.svgRound);
+        const [a, o, l, h, c, u] = s.subarray(i, i + 6).map(O.svgRound);
         e.push(`C${a} ${o} ${l} ${h} ${c} ${u}`);
       }
     }
@@ -13161,16 +13161,16 @@ const Dd = class Dd extends N {
     let g, m, A, _, v, S, E, w, C;
     switch (r(this, Ta)) {
       case 0:
-        C = N._rescale, g = e, m = s + n, A = i, _ = -n, v = e + h * i, S = s + (1 - c - p) * n, E = e + (h + u) * i, w = s + (1 - c) * n;
+        C = O._rescale, g = e, m = s + n, A = i, _ = -n, v = e + h * i, S = s + (1 - c - p) * n, E = e + (h + u) * i, w = s + (1 - c) * n;
         break;
       case 90:
-        C = N._rescaleAndSwap, g = e, m = s, A = i, _ = n, v = e + c * i, S = s + h * n, E = e + (c + p) * i, w = s + (h + u) * n;
+        C = O._rescaleAndSwap, g = e, m = s, A = i, _ = n, v = e + c * i, S = s + h * n, E = e + (c + p) * i, w = s + (h + u) * n;
         break;
       case 180:
-        C = N._rescale, g = e + i, m = s, A = -i, _ = n, v = e + (1 - h - u) * i, S = s + c * n, E = e + (1 - h) * i, w = s + (c + p) * n;
+        C = O._rescale, g = e + i, m = s, A = -i, _ = n, v = e + (1 - h - u) * i, S = s + c * n, E = e + (1 - h) * i, w = s + (c + p) * n;
         break;
       case 270:
-        C = N._rescaleAndSwap, g = e + i, m = s + n, A = -i, _ = -n, v = e + (1 - c - p) * i, S = s + (1 - h - u) * n, E = e + (1 - c) * i, w = s + (1 - h) * n;
+        C = O._rescaleAndSwap, g = e + i, m = s + n, A = -i, _ = -n, v = e + (1 - c - p) * i, S = s + (1 - h - u) * n, E = e + (1 - c) * i, w = s + (1 - h) * n;
         break;
     }
     for (const {
@@ -13196,16 +13196,16 @@ const Dd = class Dd extends N {
     let p, g, m, A, _;
     switch (h) {
       case 0:
-        _ = N._rescale, p = -e / i, g = s / n + 1, m = 1 / i, A = -1 / n;
+        _ = O._rescale, p = -e / i, g = s / n + 1, m = 1 / i, A = -1 / n;
         break;
       case 90:
-        _ = N._rescaleAndSwap, p = -s / n, g = -e / i, m = 1 / n, A = 1 / i;
+        _ = O._rescaleAndSwap, p = -s / n, g = -e / i, m = 1 / n, A = 1 / i;
         break;
       case 180:
-        _ = N._rescale, p = e / i + 1, g = -s / n, m = -1 / i, A = 1 / n;
+        _ = O._rescale, p = e / i + 1, g = -s / n, m = -1 / i, A = 1 / n;
         break;
       case 270:
-        _ = N._rescaleAndSwap, p = s / n + 1, g = e / i + 1, m = -1 / n, A = -1 / i;
+        _ = O._rescaleAndSwap, p = s / n + 1, g = e / i + 1, m = -1 / n, A = -1 / i;
         break;
     }
     if (!o) {
@@ -13226,7 +13226,7 @@ const Dd = class Dd extends N {
         w.set([NaN, NaN, NaN, NaN, C, k], 0);
         for (let P = 4; P < E; P += 2) {
           const z = S[P], D = S[P + 1];
-          w.set(N.createBezierPoints(C, k, x, T, z, D), (P - 2) * 3), [C, k, x, T] = [x, T, z, D];
+          w.set(O.createBezierPoints(C, k, x, T, z, D), (P - 2) * 3), [C, k, x, T] = [x, T, z, D];
         }
       }
     }
@@ -13258,7 +13258,7 @@ const Dd = class Dd extends N {
     };
   }
   get viewBox() {
-    return r(this, he).map(N.svgRound).join(" ");
+    return r(this, he).map(O.svgRound).join(" ");
   }
   get defaultProperties() {
     const [e, s] = r(this, he);
@@ -13267,7 +13267,7 @@ const Dd = class Dd extends N {
         viewBox: this.viewBox
       },
       path: {
-        "transform-origin": `${N.svgRound(e)} ${N.svgRound(s)}`
+        "transform-origin": `${O.svgRound(e)} ${O.svgRound(s)}`
       }
     };
   }
@@ -13287,15 +13287,15 @@ const Dd = class Dd extends N {
       default:
         return "";
     }
-    return `matrix(${i} ${n} ${a} ${o} ${N.svgRound(l)} ${N.svgRound(h)})`;
+    return `matrix(${i} ${n} ${a} ${o} ${O.svgRound(l)} ${O.svgRound(h)})`;
   }
   getPathResizingSVGProperties([e, s, i, n]) {
     const [a, o] = y(this, Yt, $s).call(this), [l, h, c, u] = r(this, he);
-    if (Math.abs(c - a) <= N.PRECISION || Math.abs(u - o) <= N.PRECISION) {
+    if (Math.abs(c - a) <= O.PRECISION || Math.abs(u - o) <= O.PRECISION) {
       const _ = e + i / 2 - (l + c / 2), v = s + n / 2 - (h + u / 2);
       return {
         path: {
-          "transform-origin": `${N.svgRound(e)} ${N.svgRound(s)}`,
+          "transform-origin": `${O.svgRound(e)} ${O.svgRound(s)}`,
           transform: `${this.rotationTransform} translate(${_} ${v})`
         }
       };
@@ -13303,26 +13303,26 @@ const Dd = class Dd extends N {
     const p = (i - 2 * a) / (c - 2 * a), g = (n - 2 * o) / (u - 2 * o), m = c / i, A = u / n;
     return {
       path: {
-        "transform-origin": `${N.svgRound(l)} ${N.svgRound(h)}`,
-        transform: `${this.rotationTransform} scale(${m} ${A}) translate(${N.svgRound(a)} ${N.svgRound(o)}) scale(${p} ${g}) translate(${N.svgRound(-a)} ${N.svgRound(-o)})`
+        "transform-origin": `${O.svgRound(l)} ${O.svgRound(h)}`,
+        transform: `${this.rotationTransform} scale(${m} ${A}) translate(${O.svgRound(a)} ${O.svgRound(o)}) scale(${p} ${g}) translate(${O.svgRound(-a)} ${O.svgRound(-o)})`
       }
     };
   }
   getPathResizedSVGProperties([e, s, i, n]) {
     const [a, o] = y(this, Yt, $s).call(this), l = r(this, he), [h, c, u, p] = l;
-    if (l[0] = e, l[1] = s, l[2] = i, l[3] = n, Math.abs(u - a) <= N.PRECISION || Math.abs(p - o) <= N.PRECISION) {
+    if (l[0] = e, l[1] = s, l[2] = i, l[3] = n, Math.abs(u - a) <= O.PRECISION || Math.abs(p - o) <= O.PRECISION) {
       const v = e + i / 2 - (h + u / 2), S = s + n / 2 - (c + p / 2);
       for (const {
         line: E,
         points: w
       } of r(this, Ie))
-        N._translate(E, v, S, E), N._translate(w, v, S, w);
+        O._translate(E, v, S, E), O._translate(w, v, S, w);
       return {
         root: {
           viewBox: this.viewBox
         },
         path: {
-          "transform-origin": `${N.svgRound(e)} ${N.svgRound(s)}`,
+          "transform-origin": `${O.svgRound(e)} ${O.svgRound(s)}`,
           transform: this.rotationTransform || null,
           d: this.toSVGPath()
         }
@@ -13334,13 +13334,13 @@ const Dd = class Dd extends N {
         line: v,
         points: S
       } of r(this, Ie))
-        N._rescale(v, A, _, g, m, v), N._rescale(S, A, _, g, m, S);
+        O._rescale(v, A, _, g, m, v), O._rescale(S, A, _, g, m, S);
     return {
       root: {
         viewBox: this.viewBox
       },
       path: {
-        "transform-origin": `${N.svgRound(e)} ${N.svgRound(s)}`,
+        "transform-origin": `${O.svgRound(e)} ${O.svgRound(s)}`,
         transform: this.rotationTransform || null,
         d: this.toSVGPath()
       }
@@ -13353,7 +13353,7 @@ const Dd = class Dd extends N {
         line: c,
         points: u
       } of r(this, Ie))
-        N._translate(c, l, h, c), N._translate(u, l, h, u);
+        O._translate(c, l, h, c), O._translate(u, l, h, u);
     else {
       const c = r(this, Ls) / n, u = r(this, Rs) / a;
       f(this, Ls, n), f(this, Rs, a);
@@ -13361,7 +13361,7 @@ const Dd = class Dd extends N {
         line: p,
         points: g
       } of r(this, Ie))
-        N._rescale(p, l, h, c, u, p), N._rescale(g, l, h, c, u, g);
+        O._rescale(p, l, h, c, u, p), O._rescale(g, l, h, c, u, g);
       o[2] *= c, o[3] *= u;
     }
     return o[0] = e, o[1] = s, {
@@ -13370,7 +13370,7 @@ const Dd = class Dd extends N {
       },
       path: {
         d: this.toSVGPath(),
-        "transform-origin": `${N.svgRound(e)} ${N.svgRound(s)}`
+        "transform-origin": `${O.svgRound(e)} ${O.svgRound(s)}`
       }
     };
   }
@@ -13385,7 +13385,7 @@ const Dd = class Dd extends N {
       },
       path: {
         d: this.toSVGPath(),
-        "transform-origin": `${N.svgRound(e[0])} ${N.svgRound(e[1])}`,
+        "transform-origin": `${O.svgRound(e[0])} ${O.svgRound(e[1])}`,
         transform: this.rotationTransform || null
       },
       bbox: e
@@ -15086,6 +15086,7 @@ const um = {
   // global interactive disable
   signatureOptions: [],
   estampOptions: [],
+  groupByCategory: !1,
   labels: {
     uploadBtn: "Open PDF",
     signatureBtn: "Add Signature",
@@ -15133,7 +15134,7 @@ function pm(d = {}) {
 function fm(d) {
   return d ? typeof d == "string" ? document.querySelector(d) : d instanceof HTMLElement ? d : null : null;
 }
-function O(d, t = [], e = {}) {
+function F(d, t = [], e = {}) {
   const s = document.createElement(d);
   t.length && s.classList.add(...t);
   for (const [i, n] of Object.entries(e))
@@ -15143,20 +15144,20 @@ function O(d, t = [], e = {}) {
 function gm(d, t) {
   var A, _, v;
   d.innerHTML = "";
-  const e = O("div", ["psdk-root"]);
+  const e = F("div", ["psdk-root"]);
   t.theme === "light" && e.classList.add("psdk-light"), t.disabled && e.classList.add("psdk-disabled"), d.appendChild(e);
   let s = null;
   const i = ((A = t.ui) == null ? void 0 : A.topbar) || {};
-  Object.values(i).some(Boolean) && (s = O("div", ["psdk-topbar"], { role: "toolbar", "aria-label": "PDF Viewer Toolbar" }), e.appendChild(s));
-  const a = O("div", ["psdk-body"]);
+  Object.values(i).some(Boolean) && (s = F("div", ["psdk-topbar"], { role: "toolbar", "aria-label": "PDF Viewer Toolbar" }), e.appendChild(s));
+  const a = F("div", ["psdk-body"]);
   e.appendChild(a);
   let o = null;
-  ((v = (_ = t.ui) == null ? void 0 : _.sidebar) == null ? void 0 : v.thumbnails) !== !1 && (o = O("div", ["psdk-sidebar"], { role: "navigation", "aria-label": "Page Thumbnails" }), a.appendChild(o));
-  const l = O("div", ["psdk-viewer"], { role: "main" });
+  ((v = (_ = t.ui) == null ? void 0 : _.sidebar) == null ? void 0 : v.thumbnails) !== !1 && (o = F("div", ["psdk-sidebar"], { role: "navigation", "aria-label": "Page Thumbnails" }), a.appendChild(o));
+  const l = F("div", ["psdk-viewer"], { role: "main" });
   a.appendChild(l);
-  const h = O("div", ["psdk-viewer__canvas-area"]);
+  const h = F("div", ["psdk-viewer__canvas-area"]);
   l.appendChild(h);
-  const c = O("div", ["psdk-pages-container"]);
+  const c = F("div", ["psdk-pages-container"]);
   c.style.display = "none", h.appendChild(c);
   const u = mm();
   h.appendChild(u);
@@ -15164,7 +15165,7 @@ function gm(d, t) {
   p.style.display = "none", h.appendChild(p);
   const g = ym();
   l.appendChild(g);
-  const m = O("div", ["psdk-modal-overlay"]);
+  const m = F("div", ["psdk-modal-overlay"]);
   return m.style.display = "none", e.appendChild(m), {
     root: e,
     topbar: s,
@@ -15179,7 +15180,7 @@ function gm(d, t) {
   };
 }
 function mm() {
-  const d = O("div", ["psdk-empty"]);
+  const d = F("div", ["psdk-empty"]);
   return d.innerHTML = `
     <div class="psdk-empty__icon">
       <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -15194,14 +15195,14 @@ function mm() {
   `, d;
 }
 function bm() {
-  const d = O("div", ["psdk-mode-banner"]);
+  const d = F("div", ["psdk-mode-banner"]);
   return d.id = "psdk-mode-banner", d.innerHTML = `
     <div class="psdk-mode-banner__dot"></div>
     <span>Signature Mode — Click anywhere to place</span>
   `, d;
 }
 function ym() {
-  const d = O("div", ["psdk-statusbar"]);
+  const d = F("div", ["psdk-statusbar"]);
   return d.innerHTML = `
     <div class="psdk-statusbar__item">
       <div class="psdk-statusbar__dot" id="psdk-status-dot"></div>
@@ -15234,7 +15235,7 @@ const we = {
 };
 function Am(d, t, e) {
   var Lt, _t, Os, vi, Ut;
-  const s = ((Lt = t.ui) == null ? void 0 : Lt.topbar) || {}, i = O("div", ["psdk-topbar__brand"]), n = O("div", ["psdk-topbar__brand-icon"]), a = O("span", ["psdk-topbar__brand-text"]);
+  const s = ((Lt = t.ui) == null ? void 0 : Lt.topbar) || {}, i = F("div", ["psdk-topbar__brand"]), n = F("div", ["psdk-topbar__brand-icon"]), a = F("span", ["psdk-topbar__brand-text"]);
   i.appendChild(n), i.appendChild(a), d.appendChild(i);
   function o(M) {
     if (n.innerHTML = "", M)
@@ -15243,7 +15244,7 @@ function Am(d, t, e) {
         if (I.startsWith("<"))
           n.innerHTML = I;
         else {
-          const nt = O("img", [], {
+          const nt = F("img", [], {
             src: I,
             alt: "Logo",
             style: "max-height: 28px; max-width: 120px; object-fit: contain; display: block;"
@@ -15271,7 +15272,7 @@ function Am(d, t, e) {
         d.style[I] = nt, h.push(I);
   }
   o(s.logo), l(s.brandText), c(s.style);
-  const u = O("div", ["psdk-topbar__secure-badge", "psdk-tooltip"]);
+  const u = F("div", ["psdk-topbar__secure-badge", "psdk-tooltip"]);
   u.setAttribute("data-tooltip", "Password Protected (Encrypted)"), u.style.display = "none", u.style.marginLeft = "8px", u.innerHTML = `
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -15280,7 +15281,7 @@ function Am(d, t, e) {
   `, i.appendChild(u);
   const p = (
     /** @type {HTMLInputElement} */
-    O("input", ["psdk-file-input"], {
+    F("input", ["psdk-file-input"], {
       type: "file",
       accept: ".pdf,application/pdf",
       id: "psdk-file-input",
@@ -15296,7 +15297,7 @@ function Am(d, t, e) {
       (nt = M.target.files) == null ? void 0 : nt[0]
     );
     I && (e.loadDocument(I), p.value = "");
-  }), d.appendChild(g)), m = O("div", ["psdk-topbar__divider"]), d.appendChild(m), s.signature !== !1 && (A = bs("psdk-btn-signature", we.signature, ((Os = t.labels) == null ? void 0 : Os.signatureBtn) || "Add Signature", ["psdk-btn", "psdk-btn--accent", "psdk-tooltip"], "Add a signature"), A.addEventListener("click", () => {
+  }), d.appendChild(g)), m = F("div", ["psdk-topbar__divider"]), d.appendChild(m), s.signature !== !1 && (A = bs("psdk-btn-signature", we.signature, ((Os = t.labels) == null ? void 0 : Os.signatureBtn) || "Add Signature", ["psdk-btn", "psdk-btn--accent", "psdk-tooltip"], "Add a signature"), A.addEventListener("click", () => {
     e.openSignatureModal();
   }), d.appendChild(A)), s.eStamp !== !1 && (_ = bs("psdk-btn-estamp", we.estamp, ((vi = t.labels) == null ? void 0 : vi.estampBtn) || "E-Materai", ["psdk-btn", "psdk-btn--danger", "psdk-tooltip"], "Add E-Materai stamp"), _.addEventListener("click", () => {
     e.openEStampModal();
@@ -15304,7 +15305,7 @@ function Am(d, t, e) {
   const Y = bs("psdk-btn-clear", we.clear, ((Ut = t.labels) == null ? void 0 : Ut.clearBtn) || "Clear All", ["psdk-btn", "psdk-btn--ghost", "psdk-tooltip"], "Clear all signatures");
   if (Y.style.display = "none", Y.addEventListener("click", () => {
     e.clearSignatures(), St(0);
-  }), d.appendChild(Y), d.appendChild(O("div", ["psdk-topbar__spacer"])), D = O("div", ["psdk-topbar__custom"]), s.customComponent && (typeof s.customComponent == "string" ? D.innerHTML = s.customComponent : s.customComponent instanceof HTMLElement && D.appendChild(s.customComponent)), d.appendChild(D), et = O("div", ["psdk-topbar__divider"]), d.appendChild(et), s.themeToggle !== !1) {
+  }), d.appendChild(Y), d.appendChild(F("div", ["psdk-topbar__spacer"])), D = F("div", ["psdk-topbar__custom"]), s.customComponent && (typeof s.customComponent == "string" ? D.innerHTML = s.customComponent : s.customComponent instanceof HTMLElement && D.appendChild(s.customComponent)), d.appendChild(D), et = F("div", ["psdk-topbar__divider"]), d.appendChild(et), s.themeToggle !== !1) {
     const M = t.theme === "light";
     P = bs("psdk-btn-theme", M ? we.moon : we.sun, "", ["psdk-btn", "psdk-btn--ghost", "psdk-btn--icon", "psdk-tooltip"], "Toggle Theme"), P.addEventListener("click", () => {
       const I = d.closest(".psdk-root");
@@ -15312,10 +15313,10 @@ function Am(d, t, e) {
       I.classList.contains("psdk-light") ? (I.classList.remove("psdk-light"), P.innerHTML = we.sun, t.theme = "dark") : (I.classList.add("psdk-light"), P.innerHTML = we.moon, t.theme = "light");
     }), d.appendChild(P);
   }
-  if (z = O("div", ["psdk-topbar__divider"]), d.appendChild(z), s.zoom !== !1) {
-    v = O("div", ["psdk-pagination"]);
+  if (z = F("div", ["psdk-topbar__divider"]), d.appendChild(z), s.zoom !== !1) {
+    v = F("div", ["psdk-pagination"]);
     const M = bs("psdk-btn-zoom-out", we.zoomOut, "", ["psdk-btn", "psdk-btn--ghost", "psdk-btn--icon", "psdk-tooltip"], "Zoom out");
-    w = O("span", ["psdk-zoom-badge"]), w.id = "psdk-zoom-badge";
+    w = F("span", ["psdk-zoom-badge"]), w.id = "psdk-zoom-badge";
     const I = bs("psdk-btn-zoom-in", we.zoomIn, "", ["psdk-btn", "psdk-btn--ghost", "psdk-btn--icon", "psdk-tooltip"], "Zoom in"), nt = bs("psdk-btn-fit", we.fit, "", ["psdk-btn", "psdk-btn--ghost", "psdk-btn--icon", "psdk-tooltip"], "Fit to screen");
     H(Q), M.addEventListener("click", async () => {
       Q <= 0.25 || (Q = Math.max(0.25, +(Q - 0.25).toFixed(2)), H(Q), await e.setScale(Q));
@@ -15323,13 +15324,13 @@ function Am(d, t, e) {
       Q >= 4 || (Q = Math.min(4, +(Q + 0.25).toFixed(2)), H(Q), await e.setScale(Q));
     }), nt.addEventListener("click", async () => {
       Q = await e.fitToScreen(), H(Q);
-    }), v.appendChild(M), v.appendChild(w), v.appendChild(I), v.appendChild(nt), d.appendChild(v), S = O("div", ["psdk-topbar__divider"]), d.appendChild(S);
+    }), v.appendChild(M), v.appendChild(w), v.appendChild(I), v.appendChild(nt), d.appendChild(v), S = F("div", ["psdk-topbar__divider"]), d.appendChild(S);
   }
   if (s.pagination !== !1) {
-    E = O("div", ["psdk-pagination"]), x = /** @type {HTMLButtonElement} */
+    E = F("div", ["psdk-pagination"]), x = /** @type {HTMLButtonElement} */
     bs("psdk-btn-prev", we.prevPage, "", ["psdk-btn", "psdk-btn--ghost", "psdk-btn--icon", "psdk-tooltip"], "Previous page"), x.id = "psdk-btn-prev";
-    const M = O("div", ["psdk-pagination__indicator"]);
-    C = O("input", ["psdk-pagination__current-input"], {
+    const M = F("div", ["psdk-pagination__indicator"]);
+    C = F("input", ["psdk-pagination__current-input"], {
       type: "number",
       min: "1",
       id: "psdk-page-current",
@@ -15338,8 +15339,8 @@ function Am(d, t, e) {
       const Bs = parseInt(nt.target.value, 10);
       isNaN(Bs) ? nt.target.value = e.currentPage : e.goToPage(Bs) || (nt.target.value = e.currentPage);
     });
-    const I = O("span", ["psdk-pagination__sep"]);
-    I.textContent = "/", k = O("span", []), k.id = "psdk-page-total", k.textContent = "—", M.appendChild(C), M.appendChild(I), M.appendChild(k), T = /** @type {HTMLButtonElement} */
+    const I = F("span", ["psdk-pagination__sep"]);
+    I.textContent = "/", k = F("span", []), k.id = "psdk-page-total", k.textContent = "—", M.appendChild(C), M.appendChild(I), M.appendChild(k), T = /** @type {HTMLButtonElement} */
     bs("psdk-btn-next", we.nextPage, "", ["psdk-btn", "psdk-btn--ghost", "psdk-btn--icon", "psdk-tooltip"], "Next page"), T.id = "psdk-btn-next", x.addEventListener("click", () => e.prevPage()), T.addEventListener("click", () => e.nextPage()), x.disabled = !0, T.disabled = !0, E.appendChild(x), E.appendChild(M), E.appendChild(T), d.appendChild(E);
   }
   e.on("signaturePlaced", () => St(e.getSignatures().length)), e.on("eStampPlaced", () => St(e.getSignatures().length)), e.on("signatureRemoved", () => St(e.getSignatures().length));
@@ -15396,7 +15397,7 @@ function Am(d, t, e) {
   return { updatePageIndicator: ut, updateZoomBadge: H, applyConfig: He, setPaginationLocked: R, updateSecureStatus: fe };
 }
 function bs(d, t, e, s, i) {
-  const n = O("button", s, { id: d, type: "button" });
+  const n = F("button", s, { id: d, type: "button" });
   if (i && n.setAttribute("data-tooltip", i), n.innerHTML = t, e) {
     const a = document.createElement("span");
     a.textContent = e, n.appendChild(a);
@@ -15404,11 +15405,11 @@ function bs(d, t, e, s, i) {
   return n;
 }
 function vm(d, t, e) {
-  const s = O("div", ["psdk-sidebar__header"]), i = O("div", ["psdk-sidebar__title"]);
+  const s = F("div", ["psdk-sidebar__header"]), i = F("div", ["psdk-sidebar__title"]);
   i.textContent = "Pages";
-  const n = O("div", ["psdk-sidebar__count"]);
+  const n = F("div", ["psdk-sidebar__count"]);
   n.id = "psdk-page-count-badge", n.textContent = "0", s.appendChild(i), s.appendChild(n), d.appendChild(s);
-  const a = O("div", ["psdk-sidebar__scroll"]);
+  const a = F("div", ["psdk-sidebar__scroll"]);
   a.id = "psdk-sidebar-scroll", d.appendChild(a);
   let o = [], l = 1;
   function h() {
@@ -15416,21 +15417,21 @@ function vm(d, t, e) {
   }
   function c(A) {
     for (let _ = 0; _ < Math.min(A, 20); _++) {
-      const v = O("div", ["psdk-thumb"]), S = O("div", ["psdk-thumb-skeleton"]);
+      const v = F("div", ["psdk-thumb"]), S = F("div", ["psdk-thumb-skeleton"]);
       v.appendChild(S), a.appendChild(v);
     }
   }
   async function u(A, _) {
     h(), n.textContent = _, c(_), h();
     for (let v = 1; v <= _; v++) {
-      const S = O("div", ["psdk-thumb"]);
+      const S = F("div", ["psdk-thumb"]);
       S.id = `psdk-thumb-${v}`, S.setAttribute("role", "button"), S.setAttribute("tabindex", "0"), S.setAttribute("aria-label", `Page ${v}`);
-      const E = O("div", ["psdk-thumb__canvas-wrap"]), w = (
+      const E = F("div", ["psdk-thumb__canvas-wrap"]), w = (
         /** @type {HTMLCanvasElement} */
         document.createElement("canvas")
       );
       w.setAttribute("aria-hidden", "true"), E.appendChild(w);
-      const C = O("div", ["psdk-thumb__label"]);
+      const C = F("div", ["psdk-thumb__label"]);
       C.textContent = `Page ${v}`, S.appendChild(E), S.appendChild(C), a.appendChild(S), o.push(S);
       const k = v;
       S.addEventListener("click", () => e.goToPage(k)), S.addEventListener("keydown", (x) => {
@@ -15458,65 +15459,88 @@ function vm(d, t, e) {
   return { rebuild: u, setActivePage: p, clearThumbnails: h, applyConfig: g, setPaginationLocked: m };
 }
 function _m(d, t, e) {
-  const s = O("div", ["psdk-modal"]), i = O("div", ["psdk-modal__header"]), n = O("h3", ["psdk-modal__title"]);
+  const s = F("div", ["psdk-modal"]), i = F("div", ["psdk-modal__header"]), n = F("h3", ["psdk-modal__title"]);
   n.textContent = "Select Signature Role";
-  const a = O("button", ["psdk-modal__close"]);
+  const a = F("button", ["psdk-modal__close"]);
   a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>', i.appendChild(n), i.appendChild(a);
-  const o = O("div", ["psdk-modal__body"]), l = O("div", ["psdk-modal__list"]);
+  const o = F("div", ["psdk-modal__body"]), l = F("div", ["psdk-modal__list"]);
   o.appendChild(l), s.appendChild(i), s.appendChild(o), d.appendChild(s);
-  function h(u = "signature") {
-    var m, A;
-    const p = u === "signature", g = p ? t.signatureOptions || [] : t.estampOptions || [];
-    if (n.textContent = p ? ((m = t.labels) == null ? void 0 : m.signatureModalTitle) || "Select Signature Role" : ((A = t.labels) == null ? void 0 : A.estampModalTitle) || "Select E-Materai", !g || g.length === 0) {
-      p ? e.placeSignature() : e.placeEStamp();
+  function h(g, m) {
+    const A = F("button", ["psdk-modal__item"]), _ = F("div", ["psdk-modal__item-icon"]);
+    g.image ? (_.classList.add("psdk-modal__item-icon--image"), _.innerHTML = `<img src="${g.image}" alt="preview" />`) : _.innerHTML = m ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>';
+    const v = F("div", ["psdk-modal__item-label"]);
+    return v.textContent = g.label || (m ? "Signature" : "E-Materai"), A.appendChild(_), A.appendChild(v), A.addEventListener("click", () => {
+      p(), m ? e.placeSignature({ ...g }) : e.placeEStamp({ ...g });
+    }), A;
+  }
+  function c(g, m, A) {
+    if (l.innerHTML = "", A) {
+      l.classList.remove("psdk-modal__grid");
+      const _ = {}, v = [];
+      m.forEach((S) => {
+        const E = S.group || "";
+        _[E] || (_[E] = [], v.push(E)), _[E].push(S);
+      }), v.forEach((S) => {
+        var k;
+        const E = F("div", ["psdk-modal__group-section"]), w = F("div", ["psdk-modal__group-title"]);
+        w.textContent = S || ((k = t.labels) == null ? void 0 : k.defaultGroup) || "Umum", E.appendChild(w);
+        const C = F("div", ["psdk-modal__grid"]);
+        _[S].forEach((x) => {
+          C.appendChild(h(x, g));
+        }), E.appendChild(C), l.appendChild(E);
+      });
+    } else
+      l.classList.add("psdk-modal__grid"), m.forEach((_) => {
+        l.appendChild(h(_, g));
+      });
+  }
+  function u(g = "signature") {
+    var v, S;
+    const m = g === "signature", A = m ? t.signatureOptions || [] : t.estampOptions || [];
+    if (n.textContent = m ? ((v = t.labels) == null ? void 0 : v.signatureModalTitle) || "Select Signature Role" : ((S = t.labels) == null ? void 0 : S.estampModalTitle) || "Select E-Materai", !A || A.length === 0) {
+      m ? e.placeSignature() : e.placeEStamp();
       return;
     }
-    l.innerHTML = "", g.forEach((_) => {
-      const v = O("button", ["psdk-modal__item"]), S = O("div", ["psdk-modal__item-icon"]);
-      _.image ? (S.classList.add("psdk-modal__item-icon--image"), S.innerHTML = `<img src="${_.image}" alt="preview" />`) : S.innerHTML = p ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>';
-      const E = O("div", ["psdk-modal__item-label"]);
-      E.textContent = _.label || (p ? "Signature" : "E-Materai"), v.appendChild(S), v.appendChild(E), v.addEventListener("click", () => {
-        c(), p ? e.placeSignature({ ..._ }) : e.placeEStamp({ ..._ });
-      }), l.appendChild(v);
-    }), d.style.display = "flex", setTimeout(() => {
+    const _ = !!t.groupByCategory;
+    c(m, A, _), d.style.display = "flex", setTimeout(() => {
       d.classList.add("psdk-modal-overlay--active"), s.classList.add("psdk-modal--active");
     }, 10);
   }
-  function c() {
+  function p() {
     d.classList.remove("psdk-modal-overlay--active"), s.classList.remove("psdk-modal--active"), setTimeout(() => {
       d.style.display = "none";
     }, 200);
   }
-  return a.addEventListener("click", c), d.addEventListener("click", (u) => {
-    u.target === d && c();
-  }), { open: h, close: c };
+  return a.addEventListener("click", p), d.addEventListener("click", (g) => {
+    g.target === d && p();
+  }), { open: u, close: p };
 }
 function wm(d, t, e) {
   var P, z, D, et, Q, Y;
-  const s = O("div", ["psdk-modal-overlay", "psdk-password-overlay"]);
+  const s = F("div", ["psdk-modal-overlay", "psdk-password-overlay"]);
   s.style.display = "none";
-  const i = O("div", ["psdk-modal", "psdk-password-modal"]), n = O("div", ["psdk-modal__header"]), a = O("h3", ["psdk-modal__title"]);
+  const i = F("div", ["psdk-modal", "psdk-password-modal"]), n = F("div", ["psdk-modal__header"]), a = F("h3", ["psdk-modal__title"]);
   a.textContent = ((P = t.labels) == null ? void 0 : P.passwordModalTitle) || "Password Protected";
-  const o = O("button", ["psdk-modal__close"]);
+  const o = F("button", ["psdk-modal__close"]);
   o.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>', n.appendChild(a), n.appendChild(o);
-  const l = O("div", ["psdk-modal__body"]), h = O("div", ["psdk-password-modal__desc-wrap"]);
+  const l = F("div", ["psdk-modal__body"]), h = F("div", ["psdk-password-modal__desc-wrap"]);
   h.style.display = "flex", h.style.flexDirection = "column", h.style.alignItems = "center", h.style.textAlign = "center", h.style.marginBottom = "20px";
-  const c = O("div", ["psdk-password-modal__icon"]);
+  const c = F("div", ["psdk-password-modal__icon"]);
   c.style.width = "48px", c.style.height = "48px", c.style.borderRadius = "50%", c.style.background = "var(--psdk-danger-subtle)", c.style.color = "var(--psdk-danger)", c.style.display = "flex", c.style.alignItems = "center", c.style.justifyContent = "center", c.style.marginBottom = "12px", c.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
-  const u = O("p", ["psdk-password-modal__text"]);
+  const u = F("p", ["psdk-password-modal__text"]);
   u.style.margin = "0", u.style.fontSize = "13px", u.style.color = "var(--psdk-text-secondary)", u.textContent = ((z = t.labels) == null ? void 0 : z.passwordModalDesc) || "This document is encrypted. Please enter the password to view it.", h.appendChild(c), h.appendChild(u), l.appendChild(h);
-  const p = O("form", ["psdk-password-modal__form"]), g = O("div", ["psdk-modal__input-wrapper"]), m = O("input", ["psdk-modal__input"], {
+  const p = F("form", ["psdk-password-modal__form"]), g = F("div", ["psdk-modal__input-wrapper"]), m = F("input", ["psdk-modal__input"], {
     type: "password",
     placeholder: ((D = t.labels) == null ? void 0 : D.passwordPlaceholder) || "Enter document password",
     required: "true",
     autocomplete: "current-password"
-  }), A = O("button", ["psdk-modal__input-toggle"], { type: "button" });
+  }), A = F("button", ["psdk-modal__input-toggle"], { type: "button" });
   A.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>', g.appendChild(m), g.appendChild(A), p.appendChild(g);
-  const _ = O("div", ["psdk-modal__error"]);
+  const _ = F("div", ["psdk-modal__error"]);
   _.style.display = "none", _.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg><span>${((et = t.labels) == null ? void 0 : et.passwordIncorrect) || "Incorrect password. Please try again."}</span>`, p.appendChild(_);
-  const v = O("div", ["psdk-modal__buttons"]), S = O("button", ["psdk-btn", "psdk-btn--ghost"], { type: "button" });
+  const v = F("div", ["psdk-modal__buttons"]), S = F("button", ["psdk-btn", "psdk-btn--ghost"], { type: "button" });
   S.textContent = ((Q = t.labels) == null ? void 0 : Q.cancelBtn) || "Cancel";
-  const E = O("button", ["psdk-btn", "psdk-btn--accent"], { type: "submit" });
+  const E = F("button", ["psdk-btn", "psdk-btn--accent"], { type: "submit" });
   E.textContent = ((Y = t.labels) == null ? void 0 : Y.unlockBtn) || "Unlock", v.appendChild(S), v.appendChild(E), p.appendChild(v), l.appendChild(p), i.appendChild(n), i.appendChild(l), s.appendChild(i), d.appendChild(s);
   let w = null, C = null;
   A.addEventListener("click", () => {
