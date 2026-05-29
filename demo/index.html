@@ -628,6 +628,39 @@
 
             <div class="demo-toggle-row">
               <div>
+                <div class="demo-toggle-label" style="color: #6366f1;">Disable Dragging (All)</div>
+                <div class="demo-toggle-sub">config.disableDragging</div>
+              </div>
+              <label class="demo-toggle">
+                <input type="checkbox" id="cfg-disable-dragging" />
+                <div class="demo-toggle__track"></div>
+              </label>
+            </div>
+
+            <div class="demo-toggle-row">
+              <div>
+                <div class="demo-toggle-label" style="color: #6366f1;">Disable Drag Only</div>
+                <div class="demo-toggle-sub">config.disableDrag</div>
+              </div>
+              <label class="demo-toggle">
+                <input type="checkbox" id="cfg-disable-drag" />
+                <div class="demo-toggle__track"></div>
+              </label>
+            </div>
+
+            <div class="demo-toggle-row">
+              <div>
+                <div class="demo-toggle-label" style="color: #6366f1;">Disable Resize Only</div>
+                <div class="demo-toggle-sub">config.disableResize</div>
+              </div>
+              <label class="demo-toggle">
+                <input type="checkbox" id="cfg-disable-resize" />
+                <div class="demo-toggle__track"></div>
+              </label>
+            </div>
+
+            <div class="demo-toggle-row">
+              <div>
                 <div class="demo-toggle-label">Lock Pagination</div>
                 <div class="demo-toggle-sub">viewer.setPaginationLocked(true)</div>
               </div>
@@ -701,26 +734,57 @@
       const viewer = createViewer({
         container: "#viewer-container",
         scale: 1.5,
-        signatureOptions: [
-          { id: "dir", label: "Direktur Utama", group: "Internal", image: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Signature_of_John_Hancock.svg" },
-          { id: "hrd", label: "Manager HRD", group: "Internal", image: "https://upload.wikimedia.org/wikipedia/commons/7/75/Signature_of_George_Washington.svg" },
-          { id: "emp", label: "Karyawan", group: "Staff", image: "https://upload.wikimedia.org/wikipedia/commons/a/af/Signature_of_Abraham_Lincoln.svg" },
-          { id: "guest", label: "Mitra / Tamu", group: "Eksternal", image: "https://upload.wikimedia.org/wikipedia/commons/d/dd/Signature_of_John_Adams.svg" },
-        ],
-        estampOptions: [
-          {
-            id: "ematerai",
-            label: "E-Materai Resmi",
-            group: "Dokumen Resmi",
-            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Rubber_stamp_approved.svg/128px-Rubber_stamp_approved.svg.png",
-          },
-          {
-            id: "ematerai_draft",
-            label: "Materai Draft",
-            group: "Internal / Draft",
-            image: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Approved_stamp.png",
-          },
-        ],
+       signatureOptions: [
+  {
+    id: "dir",
+    label: "Direktur Utama",
+    group: "Internal",
+    image: "https://placehold.co/400x400/png?text=Signature+Director",
+  },
+  {
+    id: "hrd",
+    label: "Manager HRD",
+    group: "Internal",
+    image: "https://placehold.co/400x120/png?text=Signature+HRD",
+  },
+  {
+    id: "emp",
+    label: "Karyawan",
+    group: "Staff",
+    image: "https://placehold.co/120x400/png?text=Signature+Employee",
+  },
+  {
+    id: "guest",
+    label: "Mitra / Tamu",
+    group: "Eksternal",
+    image: "https://placehold.co/120x120/png?text=Signature+Guest",
+  },
+],
+
+estampOptions: [
+  {
+    id: "ematerai",
+    label: "E-Materai Resmi",
+    group: "Dokumen Resmi",
+    image: "https://placehold.co/200x400/png?text=E-Materai",
+  },
+  {
+    id: "ematerai_draft",
+    label: "Materai Draft",
+    group: "Internal / Draft",
+    image: "https://placehold.co/400x200/png?text=Draft+Stamp",
+  },
+],
+        onUpload: async (file) => {
+          console.log("[demo] onUpload triggered for file:", file.name);
+          const shouldLoad = confirm(`[Validation Demo]\nDo you want to load file: ${file.name}?\nClick OK to load, Cancel to reject.`);
+          if (!shouldLoad) {
+            console.log("[demo] File upload rejected by onUpload validation.");
+            return false;
+          }
+          console.log("[demo] File upload approved by onUpload validation.");
+          return true;
+        },
         ui: {
           topbar: { upload: true, signature: true, eStamp: true, pagination: true, zoom: true },
           sidebar: { thumbnails: true },
@@ -791,6 +855,9 @@
           overrideLogoHeader: document.getElementById("toggle-override-logo-header").checked,
           groupByCategory: document.getElementById("toggle-groupby-category").checked,
           disabled: document.getElementById("cfg-disabled").checked,
+          disableDragging: document.getElementById("cfg-disable-dragging").checked,
+          disableDrag: document.getElementById("cfg-disable-drag").checked,
+          disableResize: document.getElementById("cfg-disable-resize").checked,
           lblUpload: document.getElementById("cfg-lbl-upload").value,
           lblSig: document.getElementById("cfg-lbl-sig").value,
           lblSigModal: document.getElementById("cfg-lbl-sig-modal").value,
@@ -811,6 +878,9 @@
         "toggle-override-logo-header",
         "toggle-groupby-category",
         "cfg-disabled",
+        "cfg-disable-dragging",
+        "cfg-disable-drag",
+        "cfg-disable-resize",
         "cfg-lock-pagination",
         "cfg-disable-page-input",
         "cfg-lbl-upload",
@@ -849,6 +919,9 @@
 
           viewer.updateConfig({
             disabled: t.disabled,
+            disableDragging: t.disableDragging,
+            disableDrag: t.disableDrag,
+            disableResize: t.disableResize,
             groupByCategory: t.groupByCategory,
             ui: {
               topbar: {

@@ -437,7 +437,25 @@ export default function Page() {
                 <td class="p-4 font-mono text-indigo-400">disabled</td>
                 <td class="p-4 font-mono text-zinc-300">boolean</td>
                 <td class="p-4 font-mono">false</td>
-                <td class="p-4">Mengunci / menonaktifkan seluruh tombol aksi dan kemampuan seret/tarik item.</td>
+                <td class="p-4">Mengunci / menonaktifkan seluruh tombol aksi dan interaksi overlay canvas (menambahkan class .psdk-disabled).</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">disableDragging</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">false</td>
+                <td class="p-4">Mengunci pergeseran (drag) dan perubahan ukuran (resize) seluruh tanda tangan dan E-Materai. Tombol silang tetap aktif.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">disableDrag</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">false</td>
+                <td class="p-4">Mengunci pergeseran (drag) seluruh tanda tangan dan E-Materai, namun ukuran (resize) tetap bisa diubah. Tombol silang tetap aktif.</td>
+              </tr>
+              <tr class="hover:bg-zinc-900/30 transition">
+                <td class="p-4 font-mono text-indigo-400">disableResize</td>
+                <td class="p-4 font-mono text-zinc-300">boolean</td>
+                <td class="p-4 font-mono">false</td>
+                <td class="p-4">Mengunci ukuran (resize) seluruh tanda tangan dan E-Materai (menyembunyikan handle resize), namun pergeseran (drag) tetap bisa dilakukan. Tombol silang tetap aktif.</td>
               </tr>
               <tr class="hover:bg-zinc-900/30 transition">
                 <td class="p-4 font-mono text-indigo-400">signatureOptions</td>
@@ -626,6 +644,9 @@ export default function Page() {
                 <li><code class="text-zinc-300">page</code> (number, opsional): Nomor halaman target (default: halaman saat ini).</li>
                 <li><code class="text-zinc-300">label</code> (string, opsional): Teks yang akan ditampilkan pada tanda tangan.</li>
                 <li><code class="text-zinc-300">image</code> (string, opsional): URL atau Base64 gambar tanda tangan.</li>
+                <li><code class="text-zinc-300">disableDrag</code> (boolean, opsional): Kunci pergeseran tanda tangan ini saja.</li>
+                <li><code class="text-zinc-300">disableResize</code> (boolean, opsional): Kunci perubahan ukuran tanda tangan ini saja.</li>
+                <li><code class="text-zinc-300">disableDragging</code> / <code class="text-zinc-300">locked</code> (boolean, opsional): Kunci pergeseran & perubahan ukuran tanda tangan ini saja.</li>
               </ul>
             </div>
             <div class="text-xs text-zinc-500">
@@ -643,6 +664,9 @@ export default function Page() {
               <ul class="list-disc pl-5 space-y-0.5">
                 <li><code class="text-zinc-300">x</code>, <code class="text-zinc-300">y</code>, <code class="text-zinc-300">page</code> (opsional): Sama seperti tanda tangan.</li>
                 <li><code class="text-zinc-300">image</code> (string, opsional): Gambar khusus materai.</li>
+                <li><code class="text-zinc-300">disableDrag</code> (boolean, opsional): Kunci pergeseran E-Materai ini saja.</li>
+                <li><code class="text-zinc-300">disableResize</code> (boolean, opsional): Kunci perubahan ukuran E-Materai ini saja.</li>
+                <li><code class="text-zinc-300">disableDragging</code> / <code class="text-zinc-300">locked</code> (boolean, opsional): Kunci pergeseran & perubahan ukuran E-Materai ini saja.</li>
               </ul>
             </div>
           </div>

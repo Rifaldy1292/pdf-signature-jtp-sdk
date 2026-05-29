@@ -142,10 +142,28 @@ export function buildTopbar(topbarEl, config, viewer) {
   if (uiCfg.upload !== false) {
     btnUpload = makeBtn('psdk-btn-upload', ICONS.upload, config.labels?.uploadBtn || 'Open PDF', ['psdk-btn', 'psdk-tooltip'], 'Open PDF file');
     btnUpload.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => {
+    fileInput.addEventListener('change', async (e) => {
       const file = /** @type {HTMLInputElement} */(e.target).files?.[0];
       if (file) {
-        viewer.loadDocument(file);
+        if (typeof config.onUpload === 'function') {
+          try {
+            const result = await config.onUpload(file);
+            if (result === false) {
+              fileInput.value = '';
+              return;
+            }
+            const fileToLoad = (result instanceof File || result instanceof Blob) ? result : file;
+            await viewer.loadDocument(fileToLoad);
+          } catch (err) {
+            console.error('[pdf-signature-sdk] onUpload validation error:', err);
+          }
+        } else {
+          try {
+            await viewer.loadDocument(file);
+          } catch (err) {
+            console.error('[pdf-signature-sdk] loadDocument error:', err);
+          }
+        }
         fileInput.value = '';
       }
     });

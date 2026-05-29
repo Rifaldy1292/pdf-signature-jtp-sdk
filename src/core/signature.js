@@ -12,9 +12,11 @@
 export class SignatureManager {
   /**
    * @param {import('./events').EventEmitter} eventBus
+   * @param {import('../utils/config').SDKConfig} config
    */
-  constructor(eventBus) {
+  constructor(eventBus, config) {
     this._bus = eventBus;
+    this._config = config;
     /** @type {Map<number, HTMLCanvasElement>} */
     this._overlayCanvases = new Map();
     /** @type {Map<number, CanvasRenderingContext2D>} */
@@ -119,12 +121,16 @@ export class SignatureManager {
   // ─── Placement API ───────────────────────────────────────────────────────────
 
   /**
-   * Programmatically place a signature at given canvas coords.
-   * @param {{x:number, y:number, page?:number, label?:string, image?:string}} opts
+   * Programmatically place a signature at given coordinates (in 1:1 PDF points).
+   * @param {{x:number, y:number, page?:number, label?:string, image?:string, width?:number, height?:number, disableDrag?:boolean, disableDragging?:boolean, disableResize?:boolean, locked?:boolean}} opts
    */
-  placeSignature({ x, y, page = this._currentPage, label, image } = {}) {
+  placeSignature({ x, y, page = this._currentPage, label, image, width, height, disableDrag, disableDragging, disableResize, locked } = {}) {
+    const scale = this._config?.scale || 1.0;
     const finalLabel = label || 'Signature';
-    const item = this._createItem('signature', x, y, page, finalLabel, image);
+    const canvasX = x !== undefined ? x * scale : 0;
+    const canvasY = y !== undefined ? y * scale : 0;
+    
+    const item = this._createItem('signature', canvasX, canvasY, page, finalLabel, image, width, height, disableDrag, disableDragging, disableResize, locked);
     this._items.push(item);
     this._redrawPage(page);
     this._bus.emit('signaturePlaced', this._publicItem(item));
@@ -132,11 +138,15 @@ export class SignatureManager {
   }
 
   /**
-   * Programmatically place an e-materai stamp at given canvas coords.
-   * @param {{x:number, y:number, page?:number, image?:string}} opts
+   * Programmatically place an e-materai stamp at given coordinates (in 1:1 PDF points).
+   * @param {{x:number, y:number, page?:number, image?:string, width?:number, height?:number, disableDrag?:boolean, disableDragging?:boolean, disableResize?:boolean, locked?:boolean}} opts
    */
-  placeEStamp({ x, y, page = this._currentPage, image } = {}) {
-    const item = this._createItem('estamp', x, y, page, 'E-Materai', image);
+  placeEStamp({ x, y, page = this._currentPage, image, width, height, disableDrag, disableDragging, disableResize, locked } = {}) {
+    const scale = this._config?.scale || 1.0;
+    const canvasX = x !== undefined ? x * scale : 0;
+    const canvasY = y !== undefined ? y * scale : 0;
+    
+    const item = this._createItem('estamp', canvasX, canvasY, page, 'E-Materai', image, width, height, disableDrag, disableDragging, disableResize, locked);
     this._items.push(item);
     this._redrawPage(page);
     this._bus.emit('eStampPlaced', this._publicItem(item));
@@ -161,6 +171,11 @@ export class SignatureManager {
     this._redrawAll();
   }
 
+  /** Redraw all overlay canvases. */
+  redraw() {
+    this._redrawAll();
+  }
+
   /**
    * Get all placed items (all pages).
    * @returns {Array<object>}
@@ -180,7 +195,11 @@ export class SignatureManager {
   // ─── Internal ────────────────────────────────────────────────────────────────
 
   /** @private */
-  _createItem(type, x, y, page, label, imageUrl) {
+  _createItem(type, x, y, page, label, imageUrl, customWidth, customHeight, disableDrag, disableDragging, disableResize, locked) {
+    const scale = this._config?.scale || 1.0;
+    const baseWidth = customWidth !== undefined ? customWidth : (type === 'estamp' ? 80 : 160);
+    const baseHeight = customHeight !== undefined ? customHeight : (type === 'estamp' ? 80 : 48);
+
     const item = {
       id: `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       type,
@@ -190,9 +209,13 @@ export class SignatureManager {
       label,
       image: imageUrl,
       imgElement: null,
-      width: type === 'estamp' ? 80 : 160,
-      height: type === 'estamp' ? 80 : 48,
+      width: baseWidth * scale,
+      height: baseHeight * scale,
       isDragging: false,
+      disableDrag: !!disableDrag,
+      disableDragging: !!disableDragging,
+      disableResize: !!disableResize,
+      locked: !!locked,
     };
     
     if (imageUrl) {
@@ -200,6 +223,16 @@ export class SignatureManager {
       img.src = imageUrl;
       img.onload = () => {
         item.imgElement = img;
+        
+        // If height was not custom-defined, calculate it proportionally based on original aspect ratio
+        if (customHeight === undefined) {
+          const aspect = img.naturalHeight / img.naturalWidth;
+          item.height = item.width * aspect;
+          
+          // Emit signatureMoved to notify the parent app of the finalized size
+          this._bus.emit('signatureMoved', this._publicItem(item));
+        }
+
         this._redrawPage(page); // re-draw when image is loaded
       };
     }
@@ -209,15 +242,20 @@ export class SignatureManager {
 
   /** @private */
   _publicItem(item) {
+    const scale = this._config?.scale || 1.0;
     return {
       id: item.id,
       type: item.type,
-      x: item.x,
-      y: item.y,
+      x: item.x / scale,
+      y: item.y / scale,
       page: item.page,
       label: item.label,
-      width: item.width,
-      height: item.height,
+      width: item.width / scale,
+      height: item.height / scale,
+      disableDrag: item.disableDrag,
+      disableDragging: item.disableDragging,
+      disableResize: item.disableResize,
+      locked: item.locked,
     };
   }
 
@@ -241,28 +279,35 @@ export class SignatureManager {
     for (let i = pageItems.length - 1; i >= 0; i--) {
       const item = pageItems[i];
       
-      // Delete handle bounds (top right)
+      // Delete handle bounds (top right) — ALWAYS checked and clickable!
       const dx = item.x + item.width;
       const dy = item.y;
       if (Math.hypot(x - dx, y - dy) <= 24) { // 24px radius for hit area
         return { item, part: 'delete' };
       }
       
+      const isDragDisabled = this._config.disableDragging || this._config.disableDrag || item.disableDragging || item.disableDrag || item.locked;
+      const isResizeDisabled = this._config.disableResize || item.disableResize || this._config.disableDragging || item.disableDragging || item.locked;
+
       // Resize handle bounds (bottom right)
-      const rx = item.x + item.width;
-      const ry = item.y + item.height;
-      if (x >= rx - 15 && x <= rx + 10 && y >= ry - 15 && y <= ry + 10) {
-        return { item, part: 'resize' };
+      if (!isResizeDisabled) {
+        const rx = item.x + item.width;
+        const ry = item.y + item.height;
+        if (x >= rx - 15 && x <= rx + 10 && y >= ry - 15 && y <= ry + 10) {
+          return { item, part: 'resize' };
+        }
       }
       
       // Body bounds
-      if (
-        x >= item.x &&
-        x <= item.x + item.width &&
-        y >= item.y &&
-        y <= item.y + item.height
-      ) {
-        return { item, part: 'body' };
+      if (!isDragDisabled) {
+        if (
+          x >= item.x &&
+          x <= item.x + item.width &&
+          y >= item.y &&
+          y <= item.y + item.height
+        ) {
+          return { item, part: 'body' };
+        }
       }
     }
     return null;
@@ -421,14 +466,23 @@ export class SignatureManager {
       ctx.fillText(label, x + 10, y + height / 2);
     }
 
-    // Always draw border to indicate interactivity
-    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-    ctx.lineWidth = 1;
-    this._roundRect(ctx, x, y, width, height, radius);
-    ctx.stroke();
+    const isDragDisabled = this._config.disableDragging || this._config.disableDrag || item.disableDragging || item.disableDrag || item.locked;
+    const isResizeDisabled = this._config.disableResize || item.disableResize || this._config.disableDragging || item.disableDragging || item.locked;
 
+    // Always draw delete handle
     this._drawDeleteHandle(ctx, x + width, y);
-    this._drawResizeHandle(ctx, x + width, y + height);
+
+    if (!isDragDisabled || !isResizeDisabled) {
+      // Always draw border to indicate interactivity if not fully locked
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+      ctx.lineWidth = 1;
+      this._roundRect(ctx, x, y, width, height, radius);
+      ctx.stroke();
+    }
+
+    if (!isResizeDisabled) {
+      this._drawResizeHandle(ctx, x + width, y + height);
+    }
   }
 
   /** @private */
@@ -461,13 +515,22 @@ export class SignatureManager {
       ctx.textAlign = 'left';
     }
 
-    // Border
-    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x, y, width, height);
+    const isDragDisabled = this._config.disableDragging || this._config.disableDrag || item.disableDragging || item.disableDrag || item.locked;
+    const isResizeDisabled = this._config.disableResize || item.disableResize || this._config.disableDragging || item.disableDragging || item.locked;
 
+    // Always draw delete handle
     this._drawDeleteHandle(ctx, x + width, y);
-    this._drawResizeHandle(ctx, x + width, y + height);
+
+    if (!isDragDisabled || !isResizeDisabled) {
+      // Border
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, width, height);
+    }
+
+    if (!isResizeDisabled) {
+      this._drawResizeHandle(ctx, x + width, y + height);
+    }
   }
 
   /** @private */

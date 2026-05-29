@@ -88,6 +88,24 @@ export const PdfViewer = defineComponent({
       default: false,
     },
 
+    /** Lock signatures and stamps in place */
+    disableDragging: {
+      type: Boolean,
+      default: false,
+    },
+
+    /** Lock signature position only */
+    disableDrag: {
+      type: Boolean,
+      default: false,
+    },
+
+    /** Lock signature size only */
+    disableResize: {
+      type: Boolean,
+      default: false,
+    },
+
     /** Array of signature options shown in the modal */
     signatureOptions: {
       type: Array,
@@ -135,6 +153,12 @@ export const PdfViewer = defineComponent({
       type: String,
       default: '',
     },
+
+    /** Callback before upload. Receives File, returns boolean/Promise<boolean> or File/Blob */
+    onUpload: {
+      type: Function,
+      default: null,
+    },
   },
 
   emits: [
@@ -170,11 +194,15 @@ export const PdfViewer = defineComponent({
         scale: props.scale,
         theme: props.theme,
         disabled: props.disabled,
+        disableDragging: props.disableDragging,
+        disableDrag: props.disableDrag,
+        disableResize: props.disableResize,
         signatureOptions: props.signatureOptions,
         estampOptions: props.estampOptions,
         labels: props.labels,
         ui: props.ui,
         groupByCategory: props.groupByCategory,
+        onUpload: props.onUpload,
       });
 
       // Wire all SDK events → Vue emits
@@ -201,17 +229,21 @@ export const PdfViewer = defineComponent({
       if (_viewer) _viewer.setScale(newScale);
     });
 
-    // Full config changes (ui, theme, disabled, labels, signatureOptions, estampOptions)
+    // Full config changes (ui, theme, disabled, disableDragging, labels, signatureOptions, estampOptions)
     // Use deep watch on each; batch into one updateConfig call
     watch(
       () => ({
         ui:               props.ui,
         theme:            props.theme,
         disabled:         props.disabled,
+        disableDragging:  props.disableDragging,
+        disableDrag:      props.disableDrag,
+        disableResize:    props.disableResize,
         labels:           props.labels,
         signatureOptions: props.signatureOptions,
         estampOptions:    props.estampOptions,
         groupByCategory:  props.groupByCategory,
+        onUpload:         props.onUpload,
       }),
       (newCfg) => {
         if (_viewer) _viewer.updateConfig(newCfg);

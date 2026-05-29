@@ -23,7 +23,7 @@ src/
 │   ├── document.js   # Wrapper untuk PDF.js (Load PDF & Render halaman)
 │   ├── events.js     # Sistem Event Bus kustom (EventEmitter)(komunikasi antar komponent)
 │   ├── pagination.js # Manajemen status halaman (Current, Total, Locked)
-│   ├── signature.js  # Manajemen objek interaktif dengan Fabric.js
+│   ├── signature.js  # Manajemen objek interaktif dengan Canvas API murni (tanpa Fabric.js)
 │   └── viewer.js     # Orkestrator utama (Facade) yang menghubungkan Core & UI
 │
 ├── ui/               # Komponen antarmuka pengguna (Vanilla JS)
@@ -64,7 +64,7 @@ Modul ini adalah *wrapper* untuk pustaka pihak ketiga `pdfjs-dist`.
 Modul yang menangani segala hal terkait objek manipulasi. Modul ini ditulis menggunakan **Vanilla JS (Canvas API murni)** tanpa pustaka pihak ketiga tambahan.
 - **Tugas Utama:**
   - Mengelola `Overlay Canvas` dan *event listener* (*pointer events*) pada setiap halaman.
-  - Mengelola penempatan tanda tangan baru, *e-materai*, pengubahan ukuran (*scaling*), serta pergerakan (*drag-and-drop*).
+  - Mengelola penempatan tanda tangan baru, *e-materai*, pengubahan ukuran (*scaling*), pergerakan (*drag-and-drop*), serta fitur penguncian (*disableDrag*, *disableResize*, *disableDragging / locked*).
   - Memancarkan *event* spesifik seperti `signaturePlaced` atau `signatureMoved` beserta titik koordinatnya (`x`, `y`).
 
 ### 4. Pagination Manager (`src/core/pagination.js`)

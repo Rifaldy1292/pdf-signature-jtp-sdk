@@ -71,6 +71,9 @@ const EVENT_PROP_MAP = {
  * @param {number}                            [props.scale=1.5]       - Render scale
  * @param {'light'|'dark'}                   [props.theme='dark']    - Color theme
  * @param {boolean}                           [props.disabled=false]  - Disable all interactions
+ * @param {boolean}                           [props.disableDragging=false] - Lock signatures and stamps in place (both drag & resize)
+ * @param {boolean}                           [props.disableDrag=false] - Lock signature position only
+ * @param {boolean}                           [props.disableResize=false] - Lock signature size only
  * @param {Array<{id,label,image}>}           [props.signatureOptions] - Signature choices
  * @param {Array<{id,label,image}>}           [props.estampOptions]   - E-Materai choices
  * @param {object}                            [props.labels]          - Button / modal labels
@@ -95,6 +98,9 @@ export function PdfViewer({
   scale = 1.5,
   theme = 'dark',
   disabled = false,
+  disableDragging = false,
+  disableDrag = false,
+  disableResize = false,
 
   // Signature & e-materai options
   signatureOptions = [],
@@ -110,6 +116,9 @@ export function PdfViewer({
   // Container
   style = { width: '100%', height: '600px' },
   className = '',
+
+  // Callback / validation
+  onUpload = null,
 
   // Events
   onDocumentLoaded,
@@ -150,11 +159,15 @@ export function PdfViewer({
       scale,
       theme,
       disabled,
+      disableDragging,
+      disableDrag,
+      disableResize,
       signatureOptions,
       estampOptions,
       labels,
       ui,
       groupByCategory,
+      onUpload,
     });
 
     viewerRef.current = viewer;
@@ -194,13 +207,13 @@ export function PdfViewer({
 
   // ── Config change (ui, theme, disabled, labels, options) ──────────────────
   // Stringify the combined config to detect deep changes
-  const configKey = JSON.stringify({ ui, theme, disabled, labels, signatureOptions, estampOptions, groupByCategory });
+  const configKey = JSON.stringify({ ui, theme, disabled, disableDragging, disableDrag, disableResize, labels, signatureOptions, estampOptions, groupByCategory });
   useEffect(() => {
     if (viewerRef.current) {
-      viewerRef.current.updateConfig({ ui, theme, disabled, labels, signatureOptions, estampOptions, groupByCategory });
+      viewerRef.current.updateConfig({ ui, theme, disabled, disableDragging, disableDrag, disableResize, labels, signatureOptions, estampOptions, groupByCategory, onUpload });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [configKey]);
+  }, [configKey, onUpload]);
 
   return (
     <div
@@ -270,6 +283,7 @@ export function usePdfViewer(options = {}) {
     onSignatureModeChanged,
     onCoordinateCapture,
     onReady,
+    onUpload = null,
     ...staticOptions
   } = options;
 
@@ -289,6 +303,7 @@ export function usePdfViewer(options = {}) {
 
     const viewer = createViewer({
       container: containerRef.current,
+      onUpload,
       ...staticOptions,
     });
 

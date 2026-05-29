@@ -35,7 +35,7 @@ export function createViewer(userConfig = {}) {
   const bus = new EventEmitter();
   const docManager = new DocumentManager(bus);
   const pagination = new PaginationManager(bus);
-  const sigManager = new SignatureManager(bus);
+  const sigManager = new SignatureManager(bus, config);
 
   // ─── Build UI ─────────────────────────────────────────────────────────────
   const nodes = buildLayout(container, config);
@@ -345,8 +345,11 @@ export function createViewer(userConfig = {}) {
       if (opts.x === undefined || opts.y === undefined) {
         const canvas = pageMainCanvases.get(page);
         if (canvas) {
-          opts.x = canvas.width / 2 - 75; // assume 150 width
-          opts.y = canvas.height / 2 - 25; // assume 50 height
+          const scale = config.scale || 1.0;
+          const pdfWidth = canvas.width / scale;
+          const pdfHeight = canvas.height / scale;
+          opts.x = pdfWidth / 2 - 80; // assume 160 width in 1:1 points
+          opts.y = pdfHeight / 2 - 24; // assume 48 height in 1:1 points
         }
       }
       return sigManager.placeSignature(opts);
@@ -362,8 +365,11 @@ export function createViewer(userConfig = {}) {
       if (opts.x === undefined || opts.y === undefined) {
         const canvas = pageMainCanvases.get(page);
         if (canvas) {
-          opts.x = canvas.width / 2 - 40; // assume 80 width
-          opts.y = canvas.height / 2 - 40; // assume 80 height
+          const scale = config.scale || 1.0;
+          const pdfWidth = canvas.width / scale;
+          const pdfHeight = canvas.height / scale;
+          opts.x = pdfWidth / 2 - 40; // assume 80 width in 1:1 points
+          opts.y = pdfHeight / 2 - 40; // assume 80 height in 1:1 points
         }
       }
       return sigManager.placeEStamp(opts);
@@ -438,6 +444,9 @@ export function createViewer(userConfig = {}) {
       } else {
         nodes.root.classList.remove('psdk-light');
       }
+
+      // Redraw overlay to reflect changes in disableDragging or scale
+      sigManager.redraw();
     },
 
 

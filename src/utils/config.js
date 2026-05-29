@@ -10,9 +10,13 @@ export const DEFAULT_CONFIG = {
   scale: 1.5,
   theme: 'light', // 'light' or 'dark'
   disabled: false, // global interactive disable
+  disableDragging: false, // lock signatures/stamps in place (both drag & resize)
+  disableDrag: false, // lock position only
+  disableResize: false, // lock size only
   signatureOptions: [],
   estampOptions: [],
   groupByCategory: false,
+  onUpload: null, // Callback hook for upload validation/interception
   labels: {
     uploadBtn: 'Open PDF',
     signatureBtn: 'Add Signature',
