@@ -58,11 +58,14 @@ export function buildSidebar(sidebarEl, config, viewer) {
     clearThumbnails();
     countBadge.textContent = totalPages;
 
-    // Show skeletons while rendering
-    addSkeletons(totalPages);
-
-    // Clear skeletons and render real thumbs
-    clearThumbnails();
+    // BUG-10: Show skeleton placeholders immediately for loading feedback.
+    // They will be replaced one-by-one as real thumbnails finish rendering.
+    for (let i = 0; i < Math.min(totalPages, 20); i++) {
+      const skeletonWrap = el('div', ['psdk-thumb']);
+      const skel = el('div', ['psdk-thumb-skeleton']);
+      skeletonWrap.appendChild(skel);
+      scroll.appendChild(skeletonWrap);
+    }
 
     for (let i = 1; i <= totalPages; i++) {
       const thumbWrap = el('div', ['psdk-thumb']);
@@ -81,8 +84,15 @@ export function buildSidebar(sidebarEl, config, viewer) {
 
       thumbWrap.appendChild(canvasWrap);
       thumbWrap.appendChild(label);
-      scroll.appendChild(thumbWrap);
       thumbEls.push(thumbWrap);
+
+      // Replace skeleton at this position (if still present), otherwise append
+      const existing = scroll.children[i - 1];
+      if (existing) {
+        scroll.replaceChild(thumbWrap, existing);
+      } else {
+        scroll.appendChild(thumbWrap);
+      }
 
       // Click handler
       const pageNum = i;
@@ -94,11 +104,11 @@ export function buildSidebar(sidebarEl, config, viewer) {
         }
       });
 
-      // Render thumbnail async (don't await — render one at a time in sequence)
+      // Render thumbnail async — await to render sequentially
       await docManager.renderThumbnail(i, canvas, 0.22).catch(() => {});
     }
 
-    // Set active page
+    // Set active page highlight
     setActivePage(activePageEl);
   }
 

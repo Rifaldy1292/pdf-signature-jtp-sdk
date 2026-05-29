@@ -15,6 +15,8 @@ export class DocumentManager {
     this._pdfDoc = null;
     /** @type {Map<number, import('pdfjs-dist').RenderTask>} */
     this._renderTasks = new Map();
+    /** @type {Map<number, import('pdfjs-dist').RenderTask>} */
+    this._thumbRenderTasks = new Map();
     /** @type {import('../core/events').EventEmitter} */
     this._bus = eventBus;
     this._isPasswordProtected = false;
@@ -128,14 +130,35 @@ export class DocumentManager {
    */
   async renderThumbnail(pageNumber, canvas, thumbScale = 0.2) {
     if (!this._pdfDoc) return;
+
+    // BUG-06: cancel any in-flight thumbnail render for this page
+    if (this._thumbRenderTasks.has(pageNumber)) {
+      this._thumbRenderTasks.get(pageNumber).cancel().catch(() => {});
+      this._thumbRenderTasks.delete(pageNumber);
+    }
+
     const page = await this.getPage(pageNumber);
+    if (!this._pdfDoc) return; // document may have been destroyed while awaiting getPage
+
     const viewport = page.getViewport({ scale: thumbScale });
     canvas.width = viewport.width;
     canvas.height = viewport.height;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const task = page.render({ canvasContext: ctx, viewport });
-    await task.promise.catch(() => {});
+    this._thumbRenderTasks.set(pageNumber, task);
+
+    try {
+      await task.promise;
+    } catch (err) {
+      if (err?.name !== 'RenderingCancelledException') {
+        // swallow cancellations silently; thumbnails failing is non-critical
+      }
+    } finally {
+      if (this._thumbRenderTasks.get(pageNumber) === task) {
+        this._thumbRenderTasks.delete(pageNumber);
+      }
+    }
   }
 
   /** @returns {boolean} */
@@ -160,6 +183,12 @@ export class DocumentManager {
       await task.cancel().catch(() => {});
     }
     this._renderTasks.clear();
+
+    // BUG-06: also cancel in-flight thumbnail renders before destroying
+    for (const [, task] of this._thumbRenderTasks.entries()) {
+      task.cancel().catch(() => {});
+    }
+    this._thumbRenderTasks.clear();
 
     if (this._pdfDoc) {
       await this._pdfDoc.destroy().catch(() => {});

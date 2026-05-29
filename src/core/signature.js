@@ -37,6 +37,8 @@ export class SignatureManager {
     /** @type {string|null} — ID of item being resized */
     this._resizingId = null;
     this._resizeStart = { w: 0, h: 0, px: 0, py: 0 };
+    /** @type {Map<number, {w:number, h:number}>} — page canvas dimensions for coordinate rescaling */
+    this._pageDimensions = new Map();
   }
 
   /** Pasang overlay canvas ke halaman tertentu dan daftarkan event handler pointer/touch. */
@@ -70,6 +72,8 @@ export class SignatureManager {
     overlayCanvas.addEventListener('pointermove', onMove);
     overlayCanvas.addEventListener('pointerup', onUp);
     overlayCanvas.addEventListener('pointerleave', onUp);
+    // BUG-02: handle OS-cancelled gestures (alt-tab, system dialogs, mobile browser interrupt)
+    overlayCanvas.addEventListener('pointercancel', onUp);
     overlayCanvas.addEventListener('touchstart', onTouchStart, { passive: false });
     overlayCanvas.addEventListener('touchmove', onTouchMove, { passive: false });
   }
@@ -83,10 +87,6 @@ export class SignatureManager {
   syncSize(page, width, height) {
     const canvas = this._overlayCanvases.get(page);
     if (!canvas) return;
-
-    if (!this._pageDimensions) {
-      this._pageDimensions = new Map();
-    }
 
     const oldDim = this._pageDimensions.get(page);
     if (oldDim && oldDim.w > 0 && oldDim.h > 0) {
@@ -169,6 +169,8 @@ export class SignatureManager {
   clearAll() {
     this._items = [];
     this._redrawAll();
+    // BUG-14: notify UI so counters stay in sync when called programmatically
+    this._bus.emit('signaturesCleared');
   }
 
   /** Redraw all overlay canvases. */
@@ -400,7 +402,8 @@ export class SignatureManager {
     }
     this._draggingId = null;
     this._resizingId = null;
-    if (canvas) canvas.style.cursor = 'default';
+    // BUG-05: canvas may have been removed from DOM before pointerup/pointercancel fires
+    if (canvas && canvas.isConnected) canvas.style.cursor = 'default';
   }
 
   /** @private — Redraw all items for all pages */
@@ -595,6 +598,7 @@ export class SignatureManager {
         canvas.removeEventListener('pointermove', handlers.onMove);
         canvas.removeEventListener('pointerup', handlers.onUp);
         canvas.removeEventListener('pointerleave', handlers.onUp);
+        canvas.removeEventListener('pointercancel', handlers.onUp);
         canvas.removeEventListener('touchstart', handlers.onTouchStart);
         canvas.removeEventListener('touchmove', handlers.onTouchMove);
       }

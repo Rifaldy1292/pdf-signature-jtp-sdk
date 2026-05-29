@@ -284,7 +284,9 @@ export function createViewer(userConfig = {}) {
         const current = pagination.currentPage;
         await _buildPages(pagination.totalPages);
         
-        // Scroll the active page back into view since heights have changed
+        // BUG-07: wait one animation frame so browser has laid out the new canvas
+        // sizes before we calculate scroll position
+        await new Promise((r) => requestAnimationFrame(r));
         const wrap = document.getElementById(`psdk-page-${current}`);
         if (wrap) {
           isProgrammaticScroll = true;
@@ -474,6 +476,12 @@ export function createViewer(userConfig = {}) {
 
     /** Destroy the viewer and clean up all resources. */
     async destroy() {
+      // Clear any pending scroll timers & listeners to avoid zombie callbacks
+      clearTimeout(scrollTimeout);
+      if (programmaticScrollListener) {
+        nodes.canvasArea.removeEventListener('scroll', programmaticScrollListener);
+        programmaticScrollListener = null;
+      }
       if (observer) observer.disconnect();
       sigManager.destroy();
       await docManager.destroy();
@@ -520,9 +528,6 @@ export function createViewer(userConfig = {}) {
  * @property {function} goToPage
  * @property {number} currentPage
  * @property {number} totalPages
- * @property {function} enableSignatureMode
- * @property {function} disableSignatureMode
- * @property {boolean} isSignatureModeActive
  * @property {function} placeSignature
  * @property {function} placeEStamp
  * @property {function} removeSignature

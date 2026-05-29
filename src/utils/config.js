@@ -10,8 +10,9 @@ export const DEFAULT_CONFIG = {
   scale: 1.5,
   theme: 'light', // 'light' or 'dark'
   disabled: false, // global interactive disable
-  disableDragging: false, // lock signatures/stamps in place (both drag & resize)
-  disableDrag: false, // lock position only
+  disableDragging: false, // lock signatures/stamps in place (drag + resize)
+  /** @deprecated Prefer `disableDragging` to lock both position and resize. Use `disableDrag` only when you want to allow resize but not drag. */
+  disableDrag: false, // lock position only (disableDragging takes precedence)
   disableResize: false, // lock size only
   signatureOptions: [],
   estampOptions: [],

@@ -110,14 +110,15 @@ export function buildTopbar(topbarEl, config, viewer) {
   `;
   brand.appendChild(secureBadge);
 
-  // ── Hidden file input — appended to body for max browser compatibility
+  // ── Hidden file input — appended to topbarEl (NOT body) so it is cleaned up
+  // automatically when viewer.destroy() clears the container DOM.
   const fileInput = /** @type {HTMLInputElement} */ (el('input', ['psdk-file-input'], {
     type: 'file',
     accept: '.pdf,application/pdf',
     id: 'psdk-file-input',
     'aria-hidden': 'true',
   }));
-  document.body.appendChild(fileInput);
+  topbarEl.appendChild(fileInput);
 
   // ── References to all optional elements (needed for applyConfig)
   /** @type {HTMLElement|null} */ let btnUpload = null;
@@ -144,26 +145,24 @@ export function buildTopbar(topbarEl, config, viewer) {
     btnUpload.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', async (e) => {
       const file = /** @type {HTMLInputElement} */(e.target).files?.[0];
-      if (file) {
+      if (!file) return;
+      try {
         if (typeof config.onUpload === 'function') {
-          try {
-            const result = await config.onUpload(file);
-            if (result === false) {
-              fileInput.value = '';
-              return;
-            }
-            const fileToLoad = (result instanceof File || result instanceof Blob) ? result : file;
-            await viewer.loadDocument(fileToLoad);
-          } catch (err) {
-            console.error('[pdf-signature-sdk] onUpload validation error:', err);
-          }
+          const result = await config.onUpload(file);
+          if (result === false) return; // onUpload rejected — value reset via finally
+          const fileToLoad = (result instanceof File || result instanceof Blob) ? result : file;
+          await viewer.loadDocument(fileToLoad);
         } else {
-          try {
-            await viewer.loadDocument(file);
-          } catch (err) {
-            console.error('[pdf-signature-sdk] loadDocument error:', err);
+          // BUG-15: warn developer if onUpload was set but is not a function
+          if (config.onUpload != null) {
+            console.warn('[pdf-signature-sdk] onUpload must be a function. Received:', typeof config.onUpload, '— ignored.');
           }
+          await viewer.loadDocument(file);
         }
+      } catch (err) {
+        console.error('[pdf-signature-sdk] Upload error:', err);
+      } finally {
+        // Always reset so user can re-select the same file again
         fileInput.value = '';
       }
     });
@@ -339,6 +338,8 @@ export function buildTopbar(topbarEl, config, viewer) {
   viewer.on('signaturePlaced', () => updateSigCount(viewer.getSignatures().length));
   viewer.on('eStampPlaced', () => updateSigCount(viewer.getSignatures().length));
   viewer.on('signatureRemoved', () => updateSigCount(viewer.getSignatures().length));
+  // BUG-14: also handle programmatic clearSignatures() calls from outside the UI
+  viewer.on('signaturesCleared', () => updateSigCount(0));
 
   // ─── Helpers ───────────────────────────────────────────────────────────────
 

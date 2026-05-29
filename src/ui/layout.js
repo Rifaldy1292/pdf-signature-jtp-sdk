@@ -64,8 +64,11 @@ export function buildLayout(container, config) {
 
   // ── Topbar (conditional)
   let topbar = null;
-  const topbarConfig = config.ui?.topbar || {};
-  const showTopbar = Object.values(topbarConfig).some(Boolean);
+  const topbarRaw = config.ui?.topbar;
+  const topbarConfig = (topbarRaw && typeof topbarRaw === 'object') ? topbarRaw : {};
+  // BUG-08: show topbar unless explicitly set to false, or all interactive features are off.
+  // null/undefined → treat as "show with defaults" (!topbarRaw short-circuits to true).
+  const showTopbar = topbarRaw !== false && (!topbarRaw || Object.values(topbarConfig).some(Boolean));
   if (showTopbar) {
     topbar = el('div', ['psdk-topbar'], { role: 'toolbar', 'aria-label': 'PDF Viewer Toolbar' });
     root.appendChild(topbar);

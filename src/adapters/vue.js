@@ -190,7 +190,8 @@ export const PdfViewer = defineComponent({
     onMounted(() => {
       _viewer = createViewer({
         container: containerRef.value,
-        file: props.file,
+        // BUG-13: do NOT pass file here — load explicitly after wiring events
+        // to prevent the file watcher from double-loading on mount
         scale: props.scale,
         theme: props.theme,
         disabled: props.disabled,
@@ -215,13 +216,21 @@ export const PdfViewer = defineComponent({
       _viewer.on('coordinateCapture',   (p) => emit('coordinateCapture', p));
 
       emit('ready', _viewer);
+
+      // BUG-13: load initial file explicitly so the watcher below cannot double-load it
+      if (props.file) {
+        _viewer.loadDocument(props.file).catch((e) => {
+          console.error('[PdfViewer] Initial load error:', e);
+        });
+      }
     });
 
     // ── Watchers ──────────────────────────────────────────────────────────────
 
     // File source change → reload document
-    watch(() => props.file, (newFile) => {
-      if (newFile && _viewer) _viewer.loadDocument(newFile);
+    watch(() => props.file, (newFile, oldFile) => {
+      // BUG-13: only load when file genuinely changes (prevents edge-case double-load)
+      if (newFile && newFile !== oldFile && _viewer) _viewer.loadDocument(newFile);
     });
 
     // Scale change → re-render
@@ -279,13 +288,7 @@ export const PdfViewer = defineComponent({
       /** Fit the current page to the available container width/height. */
       fitToScreen: () => _viewer?.fitToScreen(),
 
-      // ── Signature mode ───────────────────────────────────────────────────────
-      /** Enable click-to-place signature mode (opens modal first). */
-      enableSignatureMode: () => _viewer?.enableSignatureMode(),
-      /** Disable signature placement mode. */
-      disableSignatureMode: () => _viewer?.disableSignatureMode(),
-
-      // ── Modals ───────────────────────────────────────────────────────────────
+      // ── Modals ────────────────────────────────────────────────────────────────────────
       /** Programmatically open the signature selection modal. */
       openSignatureModal: () => _viewer?.openSignatureModal(),
       /** Programmatically open the e-materai selection modal. */
@@ -329,7 +332,6 @@ export const PdfViewer = defineComponent({
       get currentPage()          { return _viewer?.currentPage; },
       get totalPages()           { return _viewer?.totalPages; },
       get currentScale()         { return _viewer?.currentScale; },
-      get isSignatureModeActive(){ return _viewer?.isSignatureModeActive; },
       get isPaginationLocked()   { return _viewer?.isPaginationLocked; },
     });
 
