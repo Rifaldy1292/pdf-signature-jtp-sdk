@@ -1,4 +1,4 @@
-# Repository Skills & Context Map — `pdf-signature-jtp-sdk`
+# Repository Context Map & AI Reference — `pdf-signature-jtp-sdk`
 
 This file provides a comprehensive overview of the `pdf-signature-jtp-sdk` repository. It is designed to help AI agents and developers understand the repository's context, architecture, API surface, events, and customization options instantly without needing to scan the entire codebase.
 
@@ -22,7 +22,7 @@ pdf-viewer-test/
 ├── dist/                     # Production build artifacts (UMD and ES formats)
 ├── demo/                     # Local test/demo files
 ├── src/                      # Source code
-│   ├── core/                 # Logika Inti / Core Engine
+│   ├── core/                 # Core logic / Engine
 │   │   ├── document.js       # Wrapper around PDF.js (handles loading & page rendering)
 │   │   ├── events.js         # Centralized pub/sub Event Bus (EventEmitter class)
 │   │   ├── pagination.js     # Manages active page index, total page bounds, navigation locks
@@ -66,9 +66,13 @@ When initializing the viewer using `createViewer(config)` or using the framework
 | `scale` | `number` | `1.5` | Zoom multiplier factor (0.25 to 4.0) |
 | `theme` | `'light' \| 'dark'` | `'light'` | Theme styling modifier class |
 | `disabled` | `boolean` | `false` | Disables all interactions on the overlay canvas |
+| `disableDragging` | `boolean` | `false` | Locks both signature and estamp placement positions (prevents drag & resize) |
+| `disableDrag` | `boolean` | `false` | Locks positions only. (*Deprecated*: Prefer `disableDragging` unless you want to allow resize without dragging) |
+| `disableResize` | `boolean` | `false` | Locks size adjustments only |
 | `signatureOptions` | `Array<object>` | `[]` | List of items for the signature modal: `[{ id, label, image, group? }]` |
 | `estampOptions` | `Array<object>` | `[]` | List of items for e-materai: `[{ id, label, image, group? }]` |
 | `groupByCategory` | `boolean` | `false` | Categorizes selection modals using `group` |
+| `onUpload` | `function` | `null` | Callback triggered before a PDF is loaded via client upload button. Receives `File` and returns a boolean, Promise<boolean>, or modified `File/Blob` |
 | `labels` | `object` | *See below* | Localizable text overrides for UI labels |
 | `ui` | `object` | *See below* | Toggles and configuration for UI elements |
 
@@ -88,7 +92,7 @@ When initializing the viewer using `createViewer(config)` or using the framework
 - **`ui.topbar.upload`** (`boolean`): Show/hide upload button.
 - **`ui.topbar.signature`** (`boolean`): Show/hide signature button.
 - **`ui.topbar.eStamp`** (`boolean`): Show/hide electronic stamp button.
-- **`ui.topbar.pagination`** (`boolean`): Show/hide pages buttons.
+- **`ui.topbar.pagination`** (`boolean`): Show/hide page navigation container.
 - **`ui.topbar.paginationInput`** (`boolean`): Show/hide numeric page jump input field.
 - **`ui.topbar.zoom`** (`boolean`): Show/hide zoom controls.
 - **`ui.topbar.themeToggle`** (`boolean`): Show/hide light/dark switch.
@@ -106,6 +110,7 @@ When initializing the viewer using `createViewer(config)` or using the framework
 The function `createViewer(config)` returns a `ViewerInstance` containing the following control methods and properties:
 
 ```js
+import { createViewer } from 'pdf-signature-jtp-sdk';
 const viewer = createViewer({ container: '#pdf-container' });
 ```
 
@@ -124,8 +129,8 @@ const viewer = createViewer({ container: '#pdf-container' });
 ### Signature & E-Materai Controls
 * **`openSignatureModal()`**: Displays selection modal for signature roles.
 * **`openEStampModal()`**: Displays selection modal for e-materai.
-* **`placeSignature(options)`**: Spawns signature programmatically. `options: { id?, x?, y?, page?, label?, image? }`.
-* **`placeEStamp(options)`**: Spawns e-materai programmatically. `options: { id?, x?, y?, page?, image? }`.
+* **`placeSignature(options)`**: Spawns signature programmatically. `options: { id?, x?, y?, page?, label?, image?, width?, height?, disableDrag?, disableDragging?, disableResize?, locked? }`. (x and y coordinates are specified in 1:1 PDF points).
+* **`placeEStamp(options)`**: Spawns e-materai programmatically. `options: { id?, x?, y?, page?, image?, width?, height?, disableDrag?, disableDragging?, disableResize?, locked? }`.
 * **`removeSignature(id)`**: Deletes an item by its unique ID.
 * **`clearSignatures()`**: Clears all signatures and stamps from all pages.
 * **`getSignatures()`**: Returns an `Array` containing all placed items across the document.
@@ -150,11 +155,16 @@ The core communicates internally and externally using an `EventEmitter` instance
 | :--- | :--- | :--- |
 | `documentLoaded` | `{ totalPages }` | Emitted when PDF has been loaded, parsed, and total page count is ready. |
 | `pageChanged` | `{ page, total, source }` | Emitted when page index changes (via pagination controls or viewport scrolling). |
-| `signaturePlaced`| `{ id, x, y, page, type, label, width, height }` | Emitted when a signature is successfully added. |
+| `signaturePlaced`| `{ id, x, y, page, type, label, width, height }` | Emitted when a signature is successfully added. Coordinates are relative to 1:1 PDF scale. |
 | `eStampPlaced` | `{ id, x, y, page, type, label, width, height }` | Emitted when e-materai is added. |
 | `signatureMoved` | `{ id, x, y, page, width, height }` | Emitted after drag or resize completion. |
+| `signatureRemoved`| `{ id }` | Emitted when a specific signature or stamp is removed. |
+| `signaturesCleared`| *None* | Emitted when all signatures/stamps are cleared. |
 | `signatureModeChanged` | `{ active }` | Toggled when canvas entering/exiting placement mode. |
 | `coordinateCapture` | `{ x, y, page, canvasWidth, canvasHeight }` | Emitted when user clicks any raw point on overlay canvas. |
+
+> [!NOTE]
+> Framework adapters (Vue/React wrappers) expose event bindings for the primary layout events but do **not** wrap every underlying event (e.g. `signatureRemoved` or `signaturesCleared` are only fired on the core instance). To listen to those, fetch the core instance via `onReady` or template refs.
 
 ---
 
@@ -189,11 +199,14 @@ For detailed overrides, the principal class components are:
 
 ## 🧱 Framework Integrations
 
-### React Wrapper (`pdf-signature-sdk/react`)
-Provides the `<PdfViewer>` component.
+### React Wrapper (`pdf-signature-jtp-sdk/react`)
+
+You can use either the declarative `<PdfViewer>` component or the hook-based `usePdfViewer` for full imperative control:
+
+#### 1. Declarative Component
 ```jsx
-import { PdfViewer } from 'pdf-signature-sdk/react';
-import 'pdf-signature-sdk/dist/style.css'; // if stylesheets are not injected
+import { PdfViewer } from 'pdf-signature-jtp-sdk/react';
+import 'pdf-signature-jtp-sdk/dist/style.css'; // if stylesheets are not injected
 
 function PdfSignatureApp() {
   return (
@@ -206,16 +219,50 @@ function PdfSignatureApp() {
 }
 ```
 
-### Vue 3 Component (`pdf-signature-sdk/vue`)
+#### 2. Imperative Hook (`usePdfViewer`)
+```jsx
+import { useEffect, useRef } from 'react';
+import { usePdfViewer } from 'pdf-signature-jtp-sdk/react';
+
+function PdfSignatureHookApp() {
+  const { containerRef, loadDocument, placeSignature, getSignatures } = usePdfViewer({
+    scale: 1.5,
+    theme: 'dark',
+    signatureOptions: [{ id: 'boss', label: 'CEO Signature', image: '/sig.png' }]
+  });
+
+  return (
+    <div>
+      <button onClick={() => placeSignature({ x: 100, y: 200 })}>Place Sig</button>
+      <button onClick={() => console.log(getSignatures())}>Log Placed</button>
+      <div ref={containerRef} style={{ width: '100%', height: '600px' }} />
+    </div>
+  );
+}
+```
+
+---
+
+### Vue 3 Component (`pdf-signature-jtp-sdk/vue`)
+
 ```vue
 <script setup>
-import { PdfViewer } from 'pdf-signature-sdk/vue';
+import { ref } from 'vue';
+import { PdfViewer } from 'pdf-signature-jtp-sdk/vue';
+
+const viewerRef = ref(null);
+
+const onReady = (viewerInstance) => {
+  console.log('SDK Core is ready', viewerInstance);
+};
 </script>
 
 <template>
   <PdfViewer
+    ref="viewerRef"
     file="/contract.pdf"
     @signature-placed="(sig) => console.log(sig)"
+    @ready="onReady"
   />
 </template>
 ```
@@ -227,7 +274,7 @@ import { PdfViewer } from 'pdf-signature-sdk/vue';
 1. **Lazy Loading Mechanics**:
    The wrapper DOM nodes are instantiated instantly matching `totalPages` using default calculated aspect sizes. The actual heavy content rendering only launches when `IntersectionObserver` reports the page container is entering viewport boundaries.
 2. **Coordinate System Consistency**:
-   The coordinates emitted by events (`x`, `y`) are calculated relative to the *underlying canvas width and height* (`canvas.width` / `canvas.height`), NOT the layout style pixel dimension. This guarantees coordinate persistence across high-dpi screens, zoom adjustments (`scale`), or screen resizing actions.
+   The coordinates emitted by events (`x`, `y`) are calculated relative to the *underlying canvas width and height* (`canvas.width` / `canvas.height`), NOT the layout style pixel dimension. This guarantees coordinate persistence across high-dpi screens, zoom adjustments (`scale`), or screen resizing actions. All place options coordinates (e.g. in `placeSignature`) expect standard 1:1 PDF points.
 3. **Double Canvas Overlay**:
    PDF rendering takes place inside the bottom `.psdk-main-canvas`. Drag/drop items operate entirely within `.psdk-overlay` canvas (rendered directly above the PDF canvas inside `.psdk-canvas-wrap`). Clicking the sidebar or topbar triggers page shifts, which are auto-debounced using `scrollDebounce` parameters to keep scrolling alignments synced.
 4. **Style Auto-injection**:

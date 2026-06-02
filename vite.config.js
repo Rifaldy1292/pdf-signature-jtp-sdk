@@ -13,6 +13,7 @@ export default defineConfig({
     open: true,
   },
   build: {
+    target: 'es2018',
     outDir: '../dist',
     emptyOutDir: true,
     lib: {
