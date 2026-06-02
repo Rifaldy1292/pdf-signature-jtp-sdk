@@ -26,6 +26,11 @@ A **framework-agnostic** PDF Viewer + Signature SDK. Works with Vanilla JS, Vue 
 npm install pdf-signature-sdk
 ```
 
+## run repository
+
+```bash
+npm run dev
+```
 ---
 
 ## Usage

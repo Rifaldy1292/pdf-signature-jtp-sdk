@@ -8,6 +8,11 @@ export default defineConfig({
   plugins: [
     cssInjectedByJsPlugin(),
   ],
+  // Replace Node.js-only globals with browser-safe stubs so Webpack 4 / Nuxt 2
+  // can parse the output without a "Module parse failed" error.
+  define: {
+    'process.getBuiltinModule': 'undefined',
+  },
   server: {
     port: 12000,
     open: true,
@@ -28,6 +33,16 @@ export default defineConfig({
         // CSS extracted to dist/style.css
         assetFileNames: '[name][extname]',
       },
+      plugins: [
+        {
+          // Runs on the final bundled output to strip any leftover
+          // import.meta.url that Webpack 4 cannot parse.
+          name: 'strip-node-only-code',
+          renderChunk(code) {
+            return code.replace(/\.createRequire\(import\.meta\.url\)/g, '.createRequire("")');
+          },
+        },
+      ],
     },
   },
   optimizeDeps: {
