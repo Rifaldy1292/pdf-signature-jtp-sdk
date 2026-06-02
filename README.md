@@ -73,6 +73,8 @@ viewer.placeSignature({ x: 100, y: 200, page: 1 });
 viewer.placeEStamp({ x: 300, y: 400 });
 viewer.clearSignatures();
 const sigs = viewer.getSignatures(); // array of all placed items
+viewer.showSkeleton(true, { opacity: 0.85, blur: '4px' }); // Show loading state
+viewer.showSkeleton(false); // Hide loading state
 viewer.destroy();
 ```
 
@@ -192,6 +194,7 @@ function App() {
 | `updateConfig(partialConfig)` | Update UI config dynamically |
 | `getCanvas()` | Get the main PDF canvas element |
 | `getOverlayCanvas()` | Get the overlay canvas element |
+| `showSkeleton(visible, options)` | Show or hide the full-view skeleton loader overlay |
 | `destroy()` | Destroy viewer and clean up resources |
 
 ---

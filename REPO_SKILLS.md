@@ -137,6 +137,7 @@ const viewer = createViewer({ container: '#pdf-container' });
 * **`isPaginationLocked`** (getter): Returns `boolean`.
 * **`getCanvas(page)`**: Retrieves the raw HTML5 render `<canvas>` of a page (main canvas).
 * **`getOverlayCanvas(page)`**: Retrieves the interactive overlay `<canvas>` of a page.
+* **`showSkeleton(visible, options)`**: Shows/hides the full-view skeleton loading state overlay. `options: { opacity?, blur?, customHTML? }`.
 * **`destroy()`**: Unbinds events, clears cache/timers, and destroys PDF documents/workers.
 
 ---
@@ -231,3 +232,5 @@ import { PdfViewer } from 'pdf-signature-sdk/vue';
    PDF rendering takes place inside the bottom `.psdk-main-canvas`. Drag/drop items operate entirely within `.psdk-overlay` canvas (rendered directly above the PDF canvas inside `.psdk-canvas-wrap`). Clicking the sidebar or topbar triggers page shifts, which are auto-debounced using `scrollDebounce` parameters to keep scrolling alignments synced.
 4. **Style Auto-injection**:
    The `vite-plugin-css-injected-by-js` automatically injects the compiled styles into the client side header when `index.js` or `createViewer()` is called. No separate style import is strictly required unless loading specific build files.
+5. **Drag-and-Drop Latency Optimization**:
+   During active drag or resize operations, drawing-heavy properties like `shadowBlur` are dynamically bypassed to avoid DOM or Canvas pipeline stutter, ensuring smooth 60fps positioning feedback.

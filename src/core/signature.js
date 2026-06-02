@@ -34,6 +34,8 @@ export class SignatureManager {
     /** @type {string|null} — ID of item being dragged */
     this._draggingId = null;
     this._dragOffset = { x: 0, y: 0 };
+    /** @type {boolean} — throttle redraw to rAF during drag/resize */
+    this._rafPending = false;
     /** @type {string|null} — ID of item being resized */
     this._resizingId = null;
     this._resizeStart = { w: 0, h: 0, px: 0, py: 0 };
@@ -406,6 +408,7 @@ export class SignatureManager {
     if (canvas && canvas.isConnected) canvas.style.cursor = 'default';
   }
 
+
   /** @private — Redraw all items for all pages */
   _redrawAll() {
     for (const page of this._overlayCanvases.keys()) {
@@ -447,9 +450,12 @@ export class SignatureManager {
     if (imgElement && imgElement.complete) {
       ctx.drawImage(imgElement, x, y, width, height);
     } else {
-      // Fallback
-      ctx.shadowColor = 'rgba(99,102,241,0.4)';
-      ctx.shadowBlur = 12;
+      // Fallback — skip shadowBlur during drag/resize (expensive, causes lag)
+      const isActive = !!(this._draggingId || this._resizingId);
+      if (!isActive) {
+        ctx.shadowColor = 'rgba(99,102,241,0.4)';
+        ctx.shadowBlur = 12;
+      }
       ctx.fillStyle = 'rgba(99, 102, 241, 0.12)';
       this._roundRect(ctx, x, y, width, height, radius);
       ctx.fill();
@@ -499,8 +505,12 @@ export class SignatureManager {
       const cy = y + height / 2;
       const r = Math.min(width, height) / 2 - 4;
 
-      ctx.shadowColor = 'rgba(239,68,68,0.4)';
-      ctx.shadowBlur = 12;
+      // Skip shadowBlur during drag/resize (expensive, causes lag)
+      const isActive = !!(this._draggingId || this._resizingId);
+      if (!isActive) {
+        ctx.shadowColor = 'rgba(239,68,68,0.4)';
+        ctx.shadowBlur = 12;
+      }
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(239,68,68,0.9)';

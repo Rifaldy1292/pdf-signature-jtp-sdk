@@ -116,6 +116,11 @@ export function buildLayout(container, config) {
   modalOverlay.style.display = 'none';
   root.appendChild(modalOverlay);
 
+  // Skeleton Overlay
+  const skeletonOverlay = el('div', ['psdk-skeleton-overlay']);
+  skeletonOverlay.style.display = 'none';
+  root.appendChild(skeletonOverlay);
+
   return {
     root,
     topbar,
@@ -127,7 +132,27 @@ export function buildLayout(container, config) {
     modeBanner,
     statusbar,
     modalOverlay,
+    skeletonOverlay,
   };
+}
+
+/**
+ * Populate skeleton overlay content with either the custom HTML/element or a default spinner.
+ * @param {HTMLElement} overlay
+ * @param {string|HTMLElement} [customHTML]
+ */
+export function buildSkeletonContent(overlay, customHTML = null) {
+  overlay.innerHTML = '';
+  if (customHTML) {
+    if (typeof customHTML === 'string') {
+      overlay.innerHTML = customHTML;
+    } else if (customHTML instanceof HTMLElement) {
+      overlay.appendChild(customHTML);
+    }
+  } else {
+    const spinner = el('div', ['psdk-skeleton-default-spinner']);
+    overlay.appendChild(spinner);
+  }
 }
 
 /** @private */

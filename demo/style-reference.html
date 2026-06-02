@@ -493,6 +493,17 @@
           </div>
         </div>
 
+        <!-- Skeleton Variables -->
+        <div class="section-title">Skeleton Loader Variables</div>
+        <div class="card">
+          <div class="card__body" style="padding:0">
+            <table>
+              <thead><tr><th>Variable</th><th>Default</th><th>Keterangan</th></tr></thead>
+              <tbody id="vars-skeleton"></tbody>
+            </table>
+          </div>
+        </div>
+
         <hr class="section-sep" />
 
         <!-- ── Component Classes ──────────────────────── -->
@@ -570,6 +581,17 @@
             <table>
               <thead><tr><th>Class</th><th>Keterangan</th></tr></thead>
               <tbody id="table-modal"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Skeleton Overlay -->
+        <div class="section-title">Skeleton Loader Overlay</div>
+        <div class="card">
+          <div class="card__body" style="padding:0">
+            <table>
+              <thead><tr><th>Class</th><th>Keterangan</th></tr></thead>
+              <tbody id="table-skeleton"></tbody>
             </table>
           </div>
         </div>
@@ -706,6 +728,11 @@
         { v: SDK_VARIABLES.transition,   val: '150ms cubic-bezier(0.4,0,0.2,1)', desc: 'Default transition timing' },
       ];
 
+      const SKELETON_VARS = [
+        { v: SDK_VARIABLES.skeletonBgOpacity, val: '0.85', usage: 'Opacity of skeleton backdrop (0.0 to 1.0)' },
+        { v: SDK_VARIABLES.skeletonBlur,      val: '4px',  usage: 'Backdrop blur filter size (e.g. 4px, 8px, none)' },
+      ];
+
       function isColor(val) {
         return val.startsWith('#') || val.startsWith('rgb');
       }
@@ -750,6 +777,7 @@
       fillSimpleVarTable('vars-accent', ACCENT_VARS);
       fillSimpleVarTable('vars-text', TEXT_VARS);
       fillSimpleVarTable('vars-layout', LAYOUT_VARS, true);
+      fillSimpleVarTable('vars-skeleton', SKELETON_VARS);
 
       // ── Button preview + table ─────────────────────────
       const BUTTONS = [
@@ -850,6 +878,12 @@
         { cls: 'psdk-modal__item',          desc: 'Signature / stamp option row.' },
         { cls: 'psdk-modal__item-icon',     desc: 'Item icon/image cell.' },
         { cls: 'psdk-modal__item-label',    desc: 'Item label text.' },
+      ]);
+
+      fillClassTable('table-skeleton', [
+        { cls: 'psdk-skeleton-overlay',          desc: 'Full-view skeleton loader overlay.' },
+        { cls: 'psdk-skeleton-overlay--active',  desc: 'Visible and active state of the skeleton loader (opacity: 1).' },
+        { cls: 'psdk-skeleton-default-spinner',  desc: 'Default spinner icon inside the loader overlay.' },
       ]);
 
       // ── Theme Builder ──────────────────────────────────

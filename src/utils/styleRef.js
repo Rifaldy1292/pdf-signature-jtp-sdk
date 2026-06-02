@@ -156,6 +156,13 @@ export const SDK_CLASSES = {
     itemLabel: 'psdk-modal__item-label',
   },
 
+  /** Skeleton loading state overlay */
+  skeleton: {
+    overlay: 'psdk-skeleton-overlay',
+    overlayActive: 'psdk-skeleton-overlay--active',
+    spinner: 'psdk-skeleton-default-spinner',
+  },
+
   /** Tooltip (via data-tooltip attribute) */
   tooltip: {
     base: 'psdk-tooltip',
@@ -238,6 +245,12 @@ export const SDK_VARIABLES = {
   shadowMd: '--psdk-shadow-md',
   shadowGlow: '--psdk-shadow-glow',
 
+  // ── Skeleton Loader ────────────────────────────────
+  /** Opacity of the skeleton overlay (0.0 to 1.0) */
+  skeletonBgOpacity: '--psdk-skeleton-bg-opacity',
+  /** Backdrop blur filter value for skeleton overlay */
+  skeletonBlur: '--psdk-skeleton-blur',
+
   // ── Animation ──────────────────────────────────────
   /** Default transition timing */
   transition: '--psdk-transition',
@@ -271,5 +284,7 @@ export const SDK_VARIABLE_DEFAULTS = {
   [SDK_VARIABLES.radiusSm]:      '6px',
   [SDK_VARIABLES.radiusMd]:      '10px',
   [SDK_VARIABLES.radiusLg]:      '14px',
+  [SDK_VARIABLES.skeletonBgOpacity]: '0.85',
+  [SDK_VARIABLES.skeletonBlur]:      '4px',
   [SDK_VARIABLES.transition]:    '150ms cubic-bezier(0.4,0,0.2,1)',
 };

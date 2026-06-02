@@ -27,7 +27,7 @@ src/
 │   └── viewer.js     # Orkestrator utama (Facade) yang menghubungkan Core & UI
 │
 ├── ui/               # Komponen antarmuka pengguna (Vanilla JS)
-│   ├── layout.js     # Membangun struktur dasar DOM (kerangka aplikasi)
+│   ├── layout.js     # Membangun struktur dasar DOM (kerangka aplikasi & overlay skeleton loader)
 │   ├── modal.js      # Sistem Pop-up (Pemilihan tipe tanda tangan)
 │   ├── renderer.js   # Memperbarui UI banner mode & status (Status bar)
 │   ├── sidebar.js    # Panel kiri (Thumbnail dokumen)
@@ -51,7 +51,7 @@ Berperan sebagai pengontrol utama (*Facade/Controller*). File ini menghubungkan 
 - **Tugas Utama:**
   - Membuat instance dari modul-modul *Core*.
   - Menjalankan `IntersectionObserver` untuk melacak halaman mana yang sedang terlihat (*visible*).
-  - Menyediakan *Public API* (`api`) yang diekspos ke *developer* (seperti `loadDocument`, `goToPage`, `placeSignature`).
+  - Menyediakan *Public API* (`api`) yang diekspos ke *developer* (seperti `loadDocument`, `goToPage`, `placeSignature`, `showSkeleton`).
   - Mengelola *scroll debouncing* untuk mencegah bentrok antara animasi *scroll* manual dengan sistem deteksi otomatis halaman.
 
 ### 2. Document Manager (`src/core/document.js`)
@@ -65,6 +65,7 @@ Modul yang menangani segala hal terkait objek manipulasi. Modul ini ditulis meng
 - **Tugas Utama:**
   - Mengelola `Overlay Canvas` dan *event listener* (*pointer events*) pada setiap halaman.
   - Mengelola penempatan tanda tangan baru, *e-materai*, pengubahan ukuran (*scaling*), pergerakan (*drag-and-drop*), serta fitur penguncian (*disableDrag*, *disableResize*, *disableDragging / locked*).
+  - **Optimasi Performa**: Mengurangi jeda responsivitas (latency) saat penyeretan atau pengubahan ukuran dengan cara menonaktifkan efek bayangan (`shadowBlur`) yang berat secara dinamis selama interaksi berlangsung.
   - Memancarkan *event* spesifik seperti `signaturePlaced` atau `signatureMoved` beserta titik koordinatnya (`x`, `y`).
 
 ### 4. Pagination Manager (`src/core/pagination.js`)

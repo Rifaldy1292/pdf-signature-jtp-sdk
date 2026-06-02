@@ -1219,3 +1219,41 @@
   stroke: currentColor;
 }
 
+/* ─── Skeleton Overlay ────────────────────────────────────────────────────── */
+.psdk-skeleton-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 17, 23, var(--psdk-skeleton-bg-opacity, 0.85)); /* Dark theme overlay */
+  backdrop-filter: blur(var(--psdk-skeleton-blur, 4px));
+  z-index: 1500;
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+  border-radius: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+}
+
+.psdk-skeleton-overlay--active {
+  opacity: 1;
+}
+
+/* Default loader spinner */
+.psdk-skeleton-default-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: var(--psdk-accent, #6366f1);
+  border-radius: 50%;
+  animation: psdk-skeleton-spin 0.8s linear infinite;
+}
+
+@keyframes psdk-skeleton-spin {
+  to { transform: rotate(360deg); }
+}
+
+.psdk-root.psdk-light .psdk-skeleton-overlay {
+  background: rgba(248, 250, 252, var(--psdk-skeleton-bg-opacity, 0.85)); /* Light theme overlay */
+}
+

@@ -8,7 +8,7 @@ import { DocumentManager } from './document.js';
 import { PaginationManager } from './pagination.js';
 import { SignatureManager } from './signature.js';
 import { mergeConfig, deepMerge } from '../utils/config.js';
-import { buildLayout, resolveContainer } from '../ui/layout.js';
+import { buildLayout, resolveContainer, buildSkeletonContent } from '../ui/layout.js';
 import { buildTopbar } from '../ui/topbar.js';
 import { buildSidebar } from '../ui/sidebar.js';
 import { buildSignatureModal, buildPasswordModal } from '../ui/modal.js';
@@ -489,6 +489,64 @@ export function createViewer(userConfig = {}) {
       bus.removeAllListeners();
       container.innerHTML = '';
     },
+
+    /**
+     * Show or hide the full-view skeleton loader overlay.
+     * @param {boolean} visible True to show the loader, false to hide it.
+     * @param {string|HTMLElement|object} [options] Custom HTML/element, or options object (customHTML, opacity, blur).
+     */
+    showSkeleton(visible, options = null) {
+      if (visible) {
+        let customHTML = null;
+        let opacity = null;
+        let blur = null;
+
+        if (options) {
+          if (typeof options === 'string' || options instanceof HTMLElement) {
+            customHTML = options;
+          } else if (typeof options === 'object') {
+            customHTML = options.customHTML;
+            opacity = options.opacity;
+            blur = options.blur;
+          }
+        }
+
+        // Apply custom opacity
+        if (opacity !== null && opacity !== undefined) {
+          nodes.skeletonOverlay.style.setProperty('--psdk-skeleton-bg-opacity', opacity);
+        } else {
+          nodes.skeletonOverlay.style.removeProperty('--psdk-skeleton-bg-opacity');
+        }
+
+        // Apply custom blur
+        if (blur !== null && blur !== undefined) {
+          nodes.skeletonOverlay.style.setProperty('--psdk-skeleton-blur', blur);
+        } else {
+          nodes.skeletonOverlay.style.removeProperty('--psdk-skeleton-blur');
+        }
+
+        buildSkeletonContent(nodes.skeletonOverlay, customHTML);
+        nodes.skeletonOverlay.style.display = 'flex';
+        // Force reflow for opacity transition
+        nodes.skeletonOverlay.offsetHeight;
+        nodes.skeletonOverlay.classList.add('psdk-skeleton-overlay--active');
+      } else {
+        nodes.skeletonOverlay.classList.remove('psdk-skeleton-overlay--active');
+        const onTransitionEnd = (e) => {
+          if (e.propertyName === 'opacity' && !nodes.skeletonOverlay.classList.contains('psdk-skeleton-overlay--active')) {
+            nodes.skeletonOverlay.style.display = 'none';
+            nodes.skeletonOverlay.removeEventListener('transitionend', onTransitionEnd);
+          }
+        };
+        nodes.skeletonOverlay.addEventListener('transitionend', onTransitionEnd);
+        // Fallback
+        setTimeout(() => {
+          if (!nodes.skeletonOverlay.classList.contains('psdk-skeleton-overlay--active')) {
+            nodes.skeletonOverlay.style.display = 'none';
+          }
+        }, 250);
+      }
+    },
   };
 
   if (nodes.topbar) {
@@ -543,4 +601,6 @@ export function createViewer(userConfig = {}) {
  * @property {function} setPaginationLocked
  * @property {boolean} isPaginationLocked
  * @property {function} destroy
+ * @property {function} showSkeleton
  */
+

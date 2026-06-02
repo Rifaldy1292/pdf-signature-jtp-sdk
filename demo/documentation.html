@@ -731,6 +731,25 @@ export default function Page() {
             <p class="text-sm text-zinc-400">Menghancurkan instance viewer, menghapus seluruh event listener, memutus IntersectionObserver, dan membersihkan elemen DOM kontainer agar tidak terjadi kebocoran memori.</p>
           </div>
 
+          <!-- showSkeleton -->
+          <div class="p-5 rounded-xl border border-zinc-800 bg-zinc-900/20 space-y-2">
+            <h3 class="font-mono text-md font-bold text-white">showSkeleton(visible, options)</h3>
+            <p class="text-sm text-zinc-400">Menampilkan atau menyembunyikan overlay skeleton loader (loading state) pada viewer secara terprogram.</p>
+            <div class="text-xs text-zinc-500 space-y-1">
+              <p><strong class="text-zinc-400">Parameters:</strong></p>
+              <ul class="list-disc pl-5 space-y-0.5">
+                <li><code class="text-indigo-300">visible</code> (boolean) — Nilai <code class="text-zinc-200">true</code> untuk menampilkan loader, atau <code class="text-zinc-200">false</code> untuk menyembunyikannya.</li>
+                <li><code class="text-indigo-300">options</code> (object, opsional) — Opsi konfigurasi visual overlay loader:
+                  <ul class="list-disc pl-5 space-y-0.5">
+                    <li><code class="text-zinc-300">opacity</code> (number, opsional) — Nilai opacity latar belakang (nilai desimal 0 hingga 1).</li>
+                    <li><code class="text-zinc-300">blur</code> (string, opsional) — Nilai css filter blur (misal: <code class="text-zinc-200">'4px'</code>, <code class="text-zinc-200">'8px'</code>, atau <code class="text-zinc-200">'none'</code>).</li>
+                    <li><code class="text-zinc-300">customHTML</code> (string | HTMLElement, opsional) — Elemen khusus atau markup HTML untuk menggantikan pemutar (spinner) default.</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+
         </div>
       </section>
 

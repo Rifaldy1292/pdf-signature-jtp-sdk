@@ -775,14 +775,50 @@ estampOptions: [
     image: "https://placehold.co/400x200/png?text=Draft+Stamp",
   },
 ],
-        onUpload: async (file) => {
+        onUpload: async (file, viewerInstance) => {
           console.log("[demo] onUpload triggered for file:", file.name);
+          const v = viewerInstance || viewer;
+
+          // 1. Show skeleton with lower opacity (0.4) and no blur ('none')
+          v.showSkeleton(true, {
+            opacity: 1,
+            blur: 'none',
+            customHTML: `
+              <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; background: rgba(15,23,42,0.85); padding: 16px 24px; border-radius: 8px; border: 1px solid rgba(251,191,36,0.3); box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+                <div class="psdk-skeleton-default-spinner" style="width: 32px; height: 32px; border-top-color: #fbbf24;"></div>
+                <div style="font-size: 13px; font-weight: 600; color: #fbbf24; letter-spacing: 0.05em;">Validating document metadata... (Opacity: 0.4, Blur: none)</div>
+              </div>
+            `
+          });
+
+          // Simulate scanning delay
+          await new Promise(r => setTimeout(r, 800));
+
+          // Hide skeleton to allow confirmation modal to display
+          v.showSkeleton(false);
+
           const shouldLoad = confirm(`[Validation Demo]\nDo you want to load file: ${file.name}?\nClick OK to load, Cancel to reject.`);
           if (!shouldLoad) {
             console.log("[demo] File upload rejected by onUpload validation.");
             return false;
           }
+
           console.log("[demo] File upload approved by onUpload validation.");
+
+          // 2. Show skeleton again with higher opacity (0.9) and high blur ('8px')
+          v.showSkeleton(true, {
+            opacity: 0.9,
+            blur: '8px',
+            customHTML: `
+              <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px;">
+                <div class="psdk-skeleton-default-spinner" style="width: 60px; height: 60px; border-top-color: #10b981; border-width: 4px;"></div>
+                <div style="font-size: 14px; font-weight: 600; color: #10b981; letter-spacing: 0.05em;">Processing signature security layers... (Opacity: 0.9, Blur: 8px)</div>
+              </div>
+            `
+          });
+
+          // Simulate processing delay before returning true
+          await new Promise(r => setTimeout(r, 1200));
           return true;
         },
         ui: {
@@ -813,6 +849,7 @@ estampOptions: [
 
       viewer.on("documentLoaded", ({ totalPages }) => {
         logEvent("", `documentLoaded — ${totalPages} pages`);
+        viewer.showSkeleton(false);
       });
 
       viewer.on("pageChanged", ({ page, total }) => {
