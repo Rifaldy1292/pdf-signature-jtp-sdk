@@ -547,6 +547,21 @@ export function createViewer(userConfig = {}) {
         }, 250);
       }
     },
+
+    /** Enable signature placement mode (backwards-compatibility stub). */
+    enableSignatureMode() {
+      bus.emit('signatureModeChanged', { active: true });
+    },
+
+    /** Disable signature placement mode (backwards-compatibility stub). */
+    disableSignatureMode() {
+      bus.emit('signatureModeChanged', { active: false });
+    },
+
+    /** Get signature placement mode status (backwards-compatibility stub). */
+    get isSignatureModeActive() {
+      return false;
+    },
   };
 
   if (nodes.topbar) {
