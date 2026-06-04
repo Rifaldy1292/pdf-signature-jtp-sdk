@@ -1,8 +1,8 @@
 /**
- * react.js — React adapter for pdf-signature-jtp-sdk
+ * react.js — React adapter for pdf-signature-sdk
  *
  * Usage:
- *   import { PdfViewer, usePdfViewer } from 'pdf-signature-jtp-sdk/react'
+ *   import { PdfViewer, usePdfViewer } from 'pdf-signature-sdk/react'
  *
  *   <PdfViewer
  *     file={pdfFile}
@@ -30,8 +30,6 @@
  *     onSignaturePlaced={(sig) => console.log(sig)}
  *     onEStampPlaced={(sig) => console.log(sig)}
  *     onSignatureMoved={(sig) => console.log(sig)}
- *     onSignatureRemoved={({ id }) => console.log(id)}
- *     onSignaturesCleared={() => console.log('cleared')}
  *     onSignatureModeChanged={({ active }) => console.log(active)}
  *     onCoordinateCapture={({ x, y, page }) => console.log(x, y, page)}
  *     onReady={(viewer) => console.log(viewer)}
@@ -40,7 +38,7 @@
  *   />
  */
 
-import React, { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { createViewer } from '../core/viewer.js';
 
 // ─── All events emitted by the core viewer ───────────────────────────────────
@@ -52,8 +50,6 @@ const VIEWER_EVENTS = [
   'signatureMoved',
   'signatureModeChanged',
   'coordinateCapture',
-  'signatureRemoved',
-  'signaturesCleared',
 ];
 
 // Map from prop name → event name (camelCase "on" prefix → event string)
@@ -65,12 +61,10 @@ const EVENT_PROP_MAP = {
   onSignatureMoved:     'signatureMoved',
   onSignatureModeChanged: 'signatureModeChanged',
   onCoordinateCapture:  'coordinateCapture',
-  onSignatureRemoved:   'signatureRemoved',
-  onSignaturesCleared:  'signaturesCleared',
 };
 
 /**
- * PdfViewer — React component wrapping the pdf-signature-jtp-sdk viewer.
+ * PdfViewer — React component wrapping the pdf-signature-sdk viewer.
  *
  * @param {object} props
  * @param {File|string|Blob|ArrayBuffer|null} [props.file]            - PDF source
@@ -91,8 +85,6 @@ const EVENT_PROP_MAP = {
  * @param {function}                          [props.onSignaturePlaced]
  * @param {function}                          [props.onEStampPlaced]
  * @param {function}                          [props.onSignatureMoved]
- * @param {function}                          [props.onSignatureRemoved]
- * @param {function}                          [props.onSignaturesCleared]
  * @param {function}                          [props.onSignatureModeChanged]
  * @param {function}                          [props.onCoordinateCapture]
  * @param {function}                          [props.onReady]         - Receives viewer instance
@@ -134,8 +126,6 @@ export function PdfViewer({
   onSignaturePlaced,
   onEStampPlaced,
   onSignatureMoved,
-  onSignatureRemoved,
-  onSignaturesCleared,
   onSignatureModeChanged,
   onCoordinateCapture,
   onReady,
@@ -155,8 +145,6 @@ export function PdfViewer({
     onSignaturePlaced,
     onEStampPlaced,
     onSignatureMoved,
-    onSignatureRemoved,
-    onSignaturesCleared,
     onSignatureModeChanged,
     onCoordinateCapture,
   };
@@ -183,13 +171,7 @@ export function PdfViewer({
     });
 
     viewerRef.current = viewer;
-    if (externalRef) {
-      if (typeof externalRef === 'function') {
-        externalRef(viewer);
-      } else {
-        externalRef.current = viewer;
-      }
-    }
+    if (externalRef) externalRef.current = viewer;
 
     // Wire all events via stable closures that delegate to the latest callback refs
     VIEWER_EVENTS.forEach((event) => {
@@ -204,13 +186,7 @@ export function PdfViewer({
     return () => {
       viewer.destroy();
       viewerRef.current = null;
-      if (externalRef) {
-        if (typeof externalRef === 'function') {
-          externalRef(null);
-        } else {
-          externalRef.current = null;
-        }
-      }
+      if (externalRef) externalRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount / unmount
@@ -239,11 +215,13 @@ export function PdfViewer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [configKey, onUpload]);
 
-  return React.createElement('div', {
-    ref: containerRef,
-    className,
-    style,
-  });
+  return (
+    <div
+      ref={containerRef}
+      className={className}
+      style={style}
+    />
+  );
 }
 
 // ─── Imperative API helpers ────────────────────────────────────────────────
@@ -302,8 +280,6 @@ export function usePdfViewer(options = {}) {
     onSignaturePlaced,
     onEStampPlaced,
     onSignatureMoved,
-    onSignatureRemoved,
-    onSignaturesCleared,
     onSignatureModeChanged,
     onCoordinateCapture,
     onReady,
@@ -318,8 +294,6 @@ export function usePdfViewer(options = {}) {
     onSignaturePlaced,
     onEStampPlaced,
     onSignatureMoved,
-    onSignatureRemoved,
-    onSignaturesCleared,
     onSignatureModeChanged,
     onCoordinateCapture,
   };
@@ -396,19 +370,5 @@ export function usePdfViewer(options = {}) {
 
     // Config
     updateConfig:     useCallback((cfg) => call('updateConfig', cfg), [call]),
-
-    // Loader Skeleton
-    showSkeleton:     useCallback((visible, options) => call('showSkeleton', visible, options), [call]),
-
-    // Destroy
-    destroy:          useCallback(() => call('destroy'), [call]),
-
-    // Getters (evaluated dynamically from the viewer instance ref)
-    get currentPage()          { return viewerRef.current?.currentPage; },
-    get totalPages()           { return viewerRef.current?.totalPages; },
-    get currentScale()         { return viewerRef.current?.currentScale; },
-    get isPaginationLocked()   { return viewerRef.current?.isPaginationLocked; },
-    get isPasswordProtected()  { return viewerRef.current?.isPasswordProtected; },
-    get isSignatureModeActive() { return viewerRef.current?.isSignatureModeActive; },
   };
 }

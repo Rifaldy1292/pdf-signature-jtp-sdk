@@ -347,15 +347,6 @@ export class SignatureManager {
       this._dragOffset = { x: x - hit.item.x, y: y - hit.item.y };
       canvas.setPointerCapture(e.pointerId);
       canvas.style.cursor = 'grabbing';
-    } else if (canvas) {
-      const scale = this._config?.scale || 1.0;
-      this._bus.emit('coordinateCapture', {
-        x: x / scale,
-        y: y / scale,
-        page,
-        canvasWidth: canvas.width / scale,
-        canvasHeight: canvas.height / scale,
-      });
     }
   }
 

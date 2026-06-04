@@ -1,8 +1,8 @@
 /**
- * vue.js — Vue 3 adapter for pdf-signature-jtp-sdk
+ * vue.js — Vue 3 adapter for pdf-signature-sdk
  *
  * Usage:
- *   import { PdfViewer } from 'pdf-signature-jtp-sdk/vue'
+ *   import { PdfViewer } from 'pdf-signature-sdk/vue'
  *
  *   <PdfViewer
  *     :file="pdfFile"
@@ -22,8 +22,6 @@
  *     @signature-placed="onSig"
  *     @e-stamp-placed="onEStamp"
  *     @signature-moved="onMoved"
- *     @signature-removed="onRemoved"
- *     @signatures-cleared="onCleared"
  *     @signature-mode-changed="onModeChange"
  *     @coordinate-capture="onCapture"
  *     @ready="onReady"
@@ -178,10 +176,6 @@ export const PdfViewer = defineComponent({
     'signatureModeChanged',
     /** Fired on coordinate-capture click in signature mode. Payload: { x, y, page } */
     'coordinateCapture',
-    /** Fired when a signature is removed. Payload: { id } */
-    'signatureRemoved',
-    /** Fired when all signatures are cleared. Payload: none */
-    'signaturesCleared',
     /** Fired after the viewer is fully initialized. Payload: viewer instance */
     'ready',
   ],
@@ -220,8 +214,6 @@ export const PdfViewer = defineComponent({
       _viewer.on('signatureMoved',      (p) => emit('signatureMoved', p));
       _viewer.on('signatureModeChanged',(p) => emit('signatureModeChanged', p));
       _viewer.on('coordinateCapture',   (p) => emit('coordinateCapture', p));
-      _viewer.on('signatureRemoved',    (p) => emit('signatureRemoved', p));
-      _viewer.on('signaturesCleared',   () => emit('signaturesCleared'));
 
       emit('ready', _viewer);
 
@@ -336,27 +328,11 @@ export const PdfViewer = defineComponent({
       /** Dynamically update any config options. */
       updateConfig: (cfg) => _viewer?.updateConfig(cfg),
 
-      // ── Loader Skeleton ──────────────────────────────────────────────────────
-      /** Show or hide the full-view skeleton loader overlay. */
-      showSkeleton: (visible, options) => _viewer?.showSkeleton(visible, options),
-
-      // ── Destroy ──────────────────────────────────────────────────────────────
-      /** Destroy the viewer and clean up resources. */
-      destroy: () => _viewer?.destroy(),
-
-      // ── Signature mode stubs ──────────────────────────────────────────────────
-      /** Enable signature placement mode (backwards-compatibility stub). */
-      enableSignatureMode: () => _viewer?.enableSignatureMode(),
-      /** Disable signature placement mode (backwards-compatibility stub). */
-      disableSignatureMode: () => _viewer?.disableSignatureMode(),
-
       // ── Reactive state getters ───────────────────────────────────────────────
       get currentPage()          { return _viewer?.currentPage; },
       get totalPages()           { return _viewer?.totalPages; },
       get currentScale()         { return _viewer?.currentScale; },
       get isPaginationLocked()   { return _viewer?.isPaginationLocked; },
-      get isPasswordProtected()  { return _viewer?.isPasswordProtected; },
-      get isSignatureModeActive() { return _viewer?.isSignatureModeActive; },
     });
 
     // ── Render ────────────────────────────────────────────────────────────────

@@ -74,9 +74,6 @@
       <div class="flex items-center gap-4">
         <a href="#quickstart" class="text-sm font-semibold text-zinc-300 hover:text-white transition">Quick Start</a>
         <a href="#api" class="text-sm font-semibold text-zinc-300 hover:text-white transition">API Reference</a>
-        <a href="style-reference.html" class="text-sm font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-lg shadow-indigo-500/20">
-          <i data-lucide="palette" class="w-3.5 h-3.5"></i> Style Reference
-        </a>
         <span class="text-xs px-2.5 py-1 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">Framework-Agnostic</span>
       </div>
     </div>
@@ -104,9 +101,9 @@
             <i data-lucide="terminal" class="w-3.5 h-3.5 text-indigo-400"></i> Panduan Integrasi
           </h3>
           <ul class="space-y-2 text-sm">
-            <li><a href="#integrasi" onclick="switchTab('html')" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link" id="nav-link-html">HTML / Vanilla JS</a></li>
-            <li><a href="#integrasi" onclick="switchTab('vue')" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link" id="nav-link-vue">Vue.js (Vue 3)</a></li>
-            <li><a href="#integrasi" onclick="switchTab('react')" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link" id="nav-link-react">React / Next.js</a></li>
+            <li><a href="#integration-html" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">HTML / Vanilla JS</a></li>
+            <li><a href="#integration-vue" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">Vue.js (Vue 3)</a></li>
+            <li><a href="#integration-react" class="block py-1.5 text-zinc-400 hover:text-indigo-400 transition nav-link">React / Next.js</a></li>
           </ul>
         </div>
 
@@ -181,7 +178,7 @@
       </section>
 
       <!-- Panduan Integrasi -->
-      <section id="integrasi" class="scroll-mt-24 space-y-8">
+      <section class="scroll-mt-24 space-y-8">
         <h2 class="text-2xl font-bold text-white flex items-center gap-2">
           <i data-lucide="code-2" class="w-6 h-6 text-indigo-400"></i> Panduan Integrasi Framework
         </h2>
@@ -254,7 +251,7 @@
               <pre class="rounded-xl overflow-hidden"><code class="language-vue">&lt;script setup&gt;
 import { ref } from 'vue';
 import { PdfViewer } from 'pdf-signature-jtp-sdk/vue';
-// Gaya CSS otomatis diinjeksi saat runtime, tidak perlu mengimpor file CSS secara manual!
+import 'pdf-signature-jtp-sdk/style.css';
 
 const pdfFile = ref('https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf');
 const scale = ref(1.5);
@@ -321,7 +318,7 @@ function handleGetSigs() {
 
 import { useRef } from 'react';
 import { PdfViewer } from 'pdf-signature-jtp-sdk/react';
-// Gaya CSS otomatis diinjeksi saat runtime, tidak perlu mengimpor file CSS secara manual!
+import 'pdf-signature-jtp-sdk/style.css';
 
 export default function MyPdfViewer() {
   const viewerRef = useRef(null);
@@ -841,24 +838,9 @@ export default function Page() {
                 <td class="p-4">Dipicu ketika objek tanda tangan / E-Materai selesai diseret (drag) atau dirubah ukurannya (resize) oleh pengguna.</td>
               </tr>
               <tr class="hover:bg-zinc-900/30 transition">
-                <td class="p-4 font-mono text-indigo-400">signatureModeChanged</td>
-                <td class="p-4 font-mono text-xs text-zinc-300">{ active: boolean }</td>
-                <td class="p-4">Dipicu saat mode penempatan tanda tangan diaktifkan atau dinonaktifkan.</td>
-              </tr>
-              <tr class="hover:bg-zinc-900/30 transition">
-                <td class="p-4 font-mono text-indigo-400">coordinateCapture</td>
-                <td class="p-4 font-mono text-xs text-zinc-300">{ x: number, y: number, page: number, canvasWidth: number, canvasHeight: number }</td>
-                <td class="p-4">Dipicu ketika pengguna mengklik area halaman di luar objek yang ditempatkan, mengembalikan koordinat PDF mentah (unscaled).</td>
-              </tr>
-              <tr class="hover:bg-zinc-900/30 transition">
                 <td class="p-4 font-mono text-indigo-400">signatureRemoved</td>
                 <td class="p-4 font-mono text-xs text-zinc-300">{ id: string }</td>
                 <td class="p-4">Dipicu ketika tanda tangan / E-Materai dihapus secara spesifik dengan mengklik tanda silang merah.</td>
-              </tr>
-              <tr class="hover:bg-zinc-900/30 transition">
-                <td class="p-4 font-mono text-indigo-400">signaturesCleared</td>
-                <td class="p-4 font-mono text-xs text-zinc-300"><span class="italic text-zinc-500">(tidak ada payload)</span></td>
-                <td class="p-4">Dipicu ketika seluruh tanda tangan dan E-Materai dihapus sekaligus melalui pemanggilan <code class="text-zinc-300">clearSignatures()</code>.</td>
               </tr>
             </tbody>
           </table>
@@ -920,26 +902,6 @@ export default function Page() {
       const activeBtn = document.getElementById(`tab-btn-${framework}`);
       activeBtn.classList.remove('border-transparent', 'text-zinc-400');
       activeBtn.classList.add('border-indigo-500', 'text-indigo-400');
-
-      // Sync active sidebar nav highlights
-      updateNavHighlight(framework);
-    }
-
-    function updateNavHighlight(activeFramework) {
-      const integrasiSection = document.getElementById('integrasi');
-      if (integrasiSection) {
-        const rect = integrasiSection.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight * 0.7 && rect.bottom >= window.innerHeight * 0.3;
-        if (isVisible) {
-          document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.remove('text-indigo-400', 'font-medium', 'pl-1');
-          });
-          const activeNavLink = document.getElementById(`nav-link-${activeFramework}`);
-          if (activeNavLink) {
-            activeNavLink.classList.add('text-indigo-400', 'font-medium', 'pl-1');
-          }
-        }
-      }
     }
 
     // Scroll Spy active navigation state
@@ -947,25 +909,12 @@ export default function Page() {
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           const id = entry.target.getAttribute('id');
-          if (entry.intersectionRatio > 0) {
-            document.querySelectorAll('.nav-link').forEach(link => {
-              link.classList.remove('text-indigo-400', 'font-medium', 'pl-1');
-            });
+          const navLink = document.querySelector(`.nav-link[href="#${id}"]`);
+          if (!navLink) return;
 
-            if (id === 'integrasi') {
-              // Highlight active tab link
-              const activeTabBtn = document.querySelector('.tab-btn.border-indigo-500');
-              const activeFramework = activeTabBtn ? activeTabBtn.id.replace('tab-btn-', '') : 'html';
-              const activeNavLink = document.getElementById(`nav-link-${activeFramework}`);
-              if (activeNavLink) {
-                activeNavLink.classList.add('text-indigo-400', 'font-medium', 'pl-1');
-              }
-            } else {
-              const navLink = document.querySelector(`.nav-link[href="#${id}"]`);
-              if (navLink) {
-                navLink.classList.add('text-indigo-400', 'font-medium', 'pl-1');
-              }
-            }
+          if (entry.intersectionRatio > 0) {
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('text-indigo-400', 'font-medium', 'pl-1'));
+            navLink.classList.add('text-indigo-400', 'font-medium', 'pl-1');
           }
         });
       }, {

@@ -20,27 +20,16 @@ export default defineConfig({
     outDir: "../dist",
     emptyOutDir: true,
     lib: {
-      entry: {
-        'pdf-signature-sdk': resolve(__dirname, "index.js"),
-        'vue': resolve(__dirname, "src/adapters/vue.js"),
-        'react': resolve(__dirname, "src/adapters/react.js"),
-      },
+      entry: resolve(__dirname, "index.js"),
       name: "PdfSignatureSDK",
-      fileName: (format, entryName) => {
-        if (format === 'es') return `${entryName}.js`;
-        return `${entryName}.umd.cjs`;
-      },
+      fileName: "pdf-signature-sdk",
     },
     rollupOptions: {
-      // We intentionally bundle pdfjs-dist for easier DX, but externalize peer dependencies
-      external: ['vue', 'react'],
+      // We intentionally bundle pdfjs-dist for easier DX
+      external: [],
       output: {
         // CSS extracted to dist/style.css
         assetFileNames: "[name][extname]",
-        globals: {
-          vue: 'Vue',
-          react: 'React',
-        },
       },
       plugins: [
         {
