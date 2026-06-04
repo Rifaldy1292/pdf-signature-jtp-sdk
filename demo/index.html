@@ -885,7 +885,7 @@ estampOptions: [
           signature: document.getElementById("toggle-signature").checked,
           eStamp: document.getElementById("toggle-estamp").checked,
           pagination: document.getElementById("toggle-pagination").checked,
-          paginationInput: !document.getElementById("cfg-disable-page-input").checked,
+          paginationInput: document.getElementById("toggle-pagination-input").checked && !document.getElementById("cfg-disable-page-input").checked,
           zoom: document.getElementById("toggle-zoom").checked,
           themeToggle: document.getElementById("toggle-theme-btn").checked,
           customComp: document.getElementById("toggle-custom-comp").checked,
