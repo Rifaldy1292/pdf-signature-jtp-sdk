@@ -51,7 +51,7 @@ export function buildTopbar(topbarEl, config, viewer) {
           const img = el('img', [], {
             src: trimmed,
             alt: 'Logo',
-            style: 'max-height: 28px; max-width: 120px; object-fit: contain; display: block;'
+            style: 'max-height: 28px; max-width: 120px; object-fit: contain; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));'
           });
           brandIcon.appendChild(img);
         }
@@ -59,12 +59,12 @@ export function buildTopbar(topbarEl, config, viewer) {
         brandIcon.appendChild(logo);
       }
     } else {
-      brandIcon.classList.remove('psdk-topbar__brand-icon--custom');
+      brandIcon.classList.add('psdk-topbar__brand-icon--custom');
       brandIcon.innerHTML = '';
       const img = el('img', [], {
         src: defaultLogoUrl,
         alt: 'Logo',
-        style: 'max-height: 28px; max-width: 120px; object-fit: contain; display: block;'
+        style: 'max-height: 28px; max-width: 120px; object-fit: contain; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));'
       });
       brandIcon.appendChild(img);
     }
