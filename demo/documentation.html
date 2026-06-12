@@ -200,8 +200,8 @@
 &lt;head&gt;
   &lt;meta charset="UTF-8"&gt;
   &lt;title&gt;Demo PDF Signature SDK&lt;/title&gt;
-  &lt;!-- Import CSS default SDK --&gt;
-  &lt;link rel="stylesheet" href="node_modules/pdf-signature-jtp-sdk/dist/style.css"&gt;
+
+
 &lt;/head&gt;
 &lt;body class="bg-slate-900"&gt;
   
@@ -246,31 +246,121 @@
 
           <!-- Tab Vue -->
           <div id="tab-content-vue" class="tab-content p-6 space-y-4 hidden">
-            <p class="text-sm text-zinc-400">Pustaka menyediakan adapter Vue 3 bawaan yang dapat langsung diimpor dari <code class="text-indigo-400 font-mono">pdf-signature-jtp-sdk/vue</code>.</p>
-            <div class="relative">
-              <pre class="rounded-xl overflow-hidden"><code class="language-vue">&lt;script setup&gt;
+            <p class="text-sm text-zinc-400">Karena library ini bersifat <strong>framework-agnostic</strong>, integrasi Vue 3 dilakukan dengan membuat komponen wrapper lokal menggunakan <code class="text-indigo-400 font-mono">createViewer</code>.</p>
+            
+            <div class="space-y-2">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400">1. Buat Komponen Wrapper (misal: components/PdfViewer.vue)</h4>
+              <div class="relative">
+                <pre class="rounded-xl overflow-hidden"><code class="language-vue">&lt;script setup&gt;
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { createViewer } from 'pdf-signature-jtp-sdk';
+
+const props = defineProps({
+  file: [String, Object, ArrayBuffer],
+  scale: { type: Number, default: 1.5 },
+  theme: { type: String, default: 'dark' },
+  signatureOptions: { type: Array, default: () => [] },
+  estampOptions: { type: Array, default: () => [] },
+  containerStyle: { type: Object, default: () => ({ width: '100%', height: '100%' }) }
+});
+
+const emit = defineEmits([
+  'ready', 'document-loaded', 'page-changed', 
+  'signature-placed', 'e-stamp-placed', 'signature-moved', 'signature-removed', 'signatures-cleared'
+]);
+
+const containerRef = ref(null);
+let viewer = null;
+
+onMounted(() => {
+  if (!containerRef.value) return;
+
+  viewer = createViewer({
+    container: containerRef.value,
+    file: props.file,
+    scale: props.scale,
+    theme: props.theme,
+    signatureOptions: props.signatureOptions,
+    estampOptions: props.estampOptions
+  });
+
+  // Forward core events to Vue
+  viewer.on('documentLoaded', (data) => emit('document-loaded', data));
+  viewer.on('pageChanged', (data) => emit('page-changed', data));
+  viewer.on('signaturePlaced', (data) => emit('signature-placed', data));
+  viewer.on('eStampPlaced', (data) => emit('e-stamp-placed', data));
+  viewer.on('signatureMoved', (data) => emit('signature-moved', data));
+  viewer.on('signatureRemoved', (data) => emit('signature-removed', data));
+  viewer.on('signaturesCleared', (data) => emit('signatures-cleared', data));
+
+  emit('ready', viewer);
+});
+
+onBeforeUnmount(() => {
+  if (viewer) viewer.destroy();
+});
+
+// Watch for prop updates
+watch(() => props.file, (newFile) => {
+  if (viewer && newFile) viewer.loadDocument(newFile);
+});
+watch(() => props.scale, (newScale) => {
+  if (viewer) viewer.setScale(newScale);
+});
+watch(() => props.theme, (newTheme) => {
+  if (viewer) viewer.updateConfig({ theme: newTheme });
+});
+
+// Expose API methods to parent component
+defineExpose({
+  loadDocument: (src) => viewer?.loadDocument(src),
+  nextPage: () => viewer?.nextPage(),
+  prevPage: () => viewer?.prevPage(),
+  goToPage: (n) => viewer?.goToPage(n),
+  setScale: (s) => viewer?.setScale(s),
+  fitToScreen: () => viewer?.fitToScreen(),
+  openSignatureModal: () => viewer?.openSignatureModal(),
+  openEStampModal: () => viewer?.openEStampModal(),
+  placeSignature: (opts) => viewer?.placeSignature(opts),
+  placeEStamp: (opts) => viewer?.placeEStamp(opts),
+  removeSignature: (id) => viewer?.removeSignature(id),
+  clearSignatures: () => viewer?.clearSignatures(),
+  getSignatures: () => viewer?.getSignatures(),
+  getSignaturesByPage: (pg) => viewer?.getSignaturesByPage(pg),
+  setPaginationLocked: (locked) => viewer?.setPaginationLocked(locked)
+});
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div ref="containerRef" :style="containerStyle"&gt;&lt;/div&gt;
+&lt;/template&gt;</code></pre>
+                <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400">2. Gunakan di Halaman / Parent Component</h4>
+              <div class="relative">
+                <pre class="rounded-xl overflow-hidden"><code class="language-vue">&lt;script setup&gt;
 import { ref } from 'vue';
-import { PdfViewer } from 'pdf-signature-jtp-sdk/vue';
-import 'pdf-signature-jtp-sdk/style.css';
+import PdfViewer from './components/PdfViewer.vue';
 
-const pdfFile = ref('https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf');
-const scale = ref(1.5);
-const theme = ref('dark');
-
-const signatures = [
-  { id: 'ceo', label: 'CEO Approval', image: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Signature_of_John_Hancock.svg' }
-];
-
+const pdfFile = ref('https://example.com/compressed.pdf');
 const viewerRef = ref(null);
 
+const signatures = [
+  { id: 'ceo', label: 'CEO Approval', image: 'https://example.com/sig.png' }
+];
+
 function onSigPlaced(sig) {
-  console.log('Tanda tangan ditambahkan:', sig);
+  console.log('Tanda tangan ditempatkan:', sig);
 }
 
 function handleGetSigs() {
   if (viewerRef.value) {
-    const allPlaced = viewerRef.value.getSignatures();
-    console.log('Semua tanda tangan yang ditempatkan:', allPlaced);
+    console.log('Semua tanda tangan:', viewerRef.value.getSignatures());
   }
 }
 &lt;/script&gt;
@@ -289,38 +379,147 @@ function handleGetSigs() {
     &lt;PdfViewer
       ref="viewerRef"
       :file="pdfFile"
-      :scale="scale"
-      :theme="theme"
+      :scale="1.5"
+      theme="dark"
       :signature-options="signatures"
       :container-style="{ width: '100%', height: '700px' }"
       @signature-placed="onSigPlaced"
     /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</code></pre>
-              <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
-                <i data-lucide="copy" class="w-4 h-4"></i>
-              </button>
+                <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+              </div>
             </div>
           </div>
 
           <!-- Tab React -->
           <div id="tab-content-react" class="tab-content p-6 space-y-4 hidden">
-            <p class="text-sm text-zinc-400">Pustaka menyediakan component dan hook React bawaan yang dapat langsung diimpor dari <code class="text-indigo-400 font-mono">pdf-signature-jtp-sdk/react</code>.</p>
+            <p class="text-sm text-zinc-400">Integrasi React dilakukan dengan membuat wrapper component menggunakan React Ref dan hook lifecycle.</p>
             
             <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm">
-              <strong>Peringatan Next.js SSR:</strong> Karena SDK ini mengakses DOM, Canvas API, dan variabel global browser (<code class="text-amber-400 font-mono">window</code>), Anda harus me-render komponen ini secara Client-Side saja di Next.js dengan mematikan SSR.
+              <strong>Peringatan Next.js SSR:</strong> Karena SDK ini mengakses DOM dan Canvas API browser, Anda harus me-render komponen ini secara Client-Side saja di Next.js dengan mematikan SSR.
             </div>
 
             <div class="space-y-2">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400">1. Buat Komponen Wrapper Client (misal: Components/MyPdfViewer.jsx)</h4>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400">1. Buat Komponen Wrapper (misal: components/PdfViewer.jsx)</h4>
+              <div class="relative">
+                <pre class="rounded-xl overflow-hidden"><code class="language-jsx">"use client";
+
+import { useEffect, useRef, useImperativeHandle } from 'react';
+import { createViewer } from 'pdf-signature-jtp-sdk';
+
+export default function PdfViewer({
+  file,
+  scale = 1.5,
+  theme = 'dark',
+  signatureOptions = [],
+  estampOptions = [],
+  onReady,
+  onDocumentLoaded,
+  onPageChanged,
+  onSignaturePlaced,
+  onEStampPlaced,
+  onSignatureMoved,
+  onSignatureRemoved,
+  onSignaturesCleared,
+  style = { width: '100%', height: '100%' },
+  viewerRef
+}) {
+  const containerRef = useRef(null);
+  const instanceRef = useRef(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const viewer = createViewer({
+      container: containerRef.current,
+      file,
+      scale,
+      theme,
+      signatureOptions,
+      estampOptions
+    });
+    instanceRef.current = viewer;
+
+    // Attach listeners
+    if (onDocumentLoaded) viewer.on('documentLoaded', onDocumentLoaded);
+    if (onPageChanged) viewer.on('pageChanged', onPageChanged);
+    if (onSignaturePlaced) viewer.on('signaturePlaced', onSignaturePlaced);
+    if (onEStampPlaced) viewer.on('eStampPlaced', onEStampPlaced);
+    if (onSignatureMoved) viewer.on('signatureMoved', onSignatureMoved);
+    if (onSignatureRemoved) viewer.on('signatureRemoved', onSignatureRemoved);
+    if (onSignaturesCleared) viewer.on('signaturesCleared', onSignaturesCleared);
+
+    if (onReady) onReady(viewer);
+
+    return () => {
+      viewer.destroy();
+    };
+  }, []);
+
+  // Sync prop changes
+  useEffect(() => {
+    if (instanceRef.current && file) {
+      instanceRef.current.loadDocument(file);
+    }
+  }, [file]);
+
+  useEffect(() => {
+    if (instanceRef.current) {
+      instanceRef.current.setScale(scale);
+    }
+  }, [scale]);
+
+  useEffect(() => {
+    if (instanceRef.current) {
+      instanceRef.current.updateConfig({ theme });
+    }
+  }, [theme]);
+
+  // Expose methods via ref
+  useImperativeHandle(viewerRef, () => ({
+    loadDocument: (src) => instanceRef.current?.loadDocument(src),
+    nextPage: () => instanceRef.current?.nextPage(),
+    prevPage: () => instanceRef.current?.prevPage(),
+    goToPage: (n) => instanceRef.current?.goToPage(n),
+    setScale: (s) => instanceRef.current?.setScale(s),
+    fitToScreen: () => instanceRef.current?.fitToScreen(),
+    openSignatureModal: () => instanceRef.current?.openSignatureModal(),
+    openEStampModal: () => instanceRef.current?.openEStampModal(),
+    placeSignature: (opts) => instanceRef.current?.placeSignature(opts),
+    placeEStamp: (opts) => instanceRef.current?.placeEStamp(opts),
+    removeSignature: (id) => instanceRef.current?.removeSignature(id),
+    clearSignatures: () => instanceRef.current?.clearSignatures(),
+    getSignatures: () => instanceRef.current?.getSignatures(),
+    getSignaturesByPage: (pg) => instanceRef.current?.getSignaturesByPage(pg),
+    setPaginationLocked: (locked) => instanceRef.current?.setPaginationLocked(locked)
+  }));
+
+  return &lt;div ref={containerRef} style={style} /&gt;;
+}</code></pre>
+                <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400">2. Panggil Dengan Dynamic Import Di Halaman (Next.js)</h4>
               <div class="relative">
                 <pre class="rounded-xl overflow-hidden"><code class="language-jsx">"use client";
 
 import { useRef } from 'react';
-import { PdfViewer } from 'pdf-signature-jtp-sdk/react';
-import 'pdf-signature-jtp-sdk/style.css';
+import dynamic from 'next/dynamic';
 
-export default function MyPdfViewer() {
+// Nonaktifkan Server-Side Rendering (SSR) untuk Komponen PDF Viewer
+const PDFViewerDynamic = dynamic(
+  () =&gt; import('../components/PdfViewer'),
+  { ssr: false }
+);
+
+export default function Page() {
   const viewerRef = useRef(null);
 
   const signatureOptions = [
@@ -334,50 +533,22 @@ export default function MyPdfViewer() {
   };
 
   return (
-    &lt;div&gt;
+    &lt;main className="min-h-screen bg-zinc-950 p-12 text-white"&gt;
+      &lt;h1 className="text-2xl font-bold mb-6"&gt;Dokumen Approval&lt;/h1&gt;
       &lt;div className="flex gap-2 mb-4"&gt;
         &lt;button onClick={handleLogSigs} className="bg-indigo-600 px-4 py-2 rounded text-sm text-white"&gt;Log Signatures&lt;/button&gt;
         &lt;button onClick={() =&gt; viewerRef.current?.clearSignatures()} className="bg-zinc-700 px-4 py-2 rounded text-sm text-white"&gt;Clear All&lt;/button&gt;
       &lt;/div&gt;
-
-      &lt;PdfViewer
-        viewerRef={viewerRef}
-        file="https://example.com/sample.pdf"
-        scale={1.5}
-        theme="dark"
-        signatureOptions={signatureOptions}
-        style={{ width: '100%', height: '700px' }}
-        onSignaturePlaced={(sig) =&gt; console.log('Placed:', sig)}
-        onPageChanged={({ page, total }) =&gt; console.log(`Halaman: ${page}/${total}`)}
-      /&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-                <button onclick="copyCode(this)" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white">
-                  <i data-lucide="copy" class="w-4 h-4"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="space-y-2">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400">2. Panggil Dengan Dynamic Import Di Halaman (misal: App/Page.jsx)</h4>
-              <div class="relative">
-                <pre class="rounded-xl overflow-hidden"><code class="language-jsx">"use client";
-
-import dynamic from 'next/dynamic';
-
-// Nonaktifkan Server-Side Rendering (SSR) untuk Komponen PDF Viewer
-const PDFViewerDynamic = dynamic(
-  () =&gt; import('../components/MyPdfViewer'),
-  { ssr: false }
-);
-
-export default function Page() {
-  return (
-    &lt;main className="min-h-screen bg-zinc-950 p-12 text-white"&gt;
-      &lt;h1 className="text-2xl font-bold mb-6"&gt;Dokumen Approval&lt;/h1&gt;
       &lt;div className="border border-zinc-800 rounded-xl p-4 bg-zinc-900/40"&gt;
-        &lt;PDFViewerDynamic /&gt;
+        &lt;PDFViewerDynamic
+          viewerRef={viewerRef}
+          file="https://example.com/sample.pdf"
+          scale={1.5}
+          theme="dark"
+          signatureOptions={signatureOptions}
+          style={{ width: '100%', height: '700px' }}
+          onSignaturePlaced={(sig) =&gt; console.log('Placed:', sig)}
+        /&gt;
       &lt;/div&gt;
     &lt;/main&gt;
   );

@@ -16,6 +16,7 @@ export default defineConfig({
     open: false,
   },
   build: {
+    assetsInlineLimit: 20000,
     target: "es2018",
     outDir: "../dist",
     emptyOutDir: true,

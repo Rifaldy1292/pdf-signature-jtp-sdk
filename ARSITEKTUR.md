@@ -34,10 +34,6 @@ src/
 │   ├── topbar.js     # Navigasi atas (Zoom, Paging, Tombol Aksi)
 │   └── styles.css    # Gaya tampilan terisolasi (namespace .psdk-*)
 │
-├── adapters/         # Wrapper untuk framework modern
-│   ├── react.js      # Komponen & Hooks untuk React
-│   └── vue.js        # Komponen untuk Vue 3
-│
 └── utils/
     └── config.js     # Konfigurasi default & fungsi deep merge
 ```

@@ -403,7 +403,7 @@ export function createViewer(userConfig = {}) {
     /**
      * Register an event listener.
      * Events: documentLoaded, pageChanged, signaturePlaced, eStampPlaced,
-     *         signatureMoved, signatureModeChanged, coordinateCapture
+     *         signatureMoved, signatureRemoved, signaturesCleared, passwordRequested
      */
     on(event, fn) {
       bus.on(event, fn);

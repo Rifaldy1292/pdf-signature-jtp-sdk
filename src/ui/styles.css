@@ -13,10 +13,11 @@
   --psdk-border: rgba(255, 255, 255, 0.08);
   --psdk-border-strong: rgba(255, 255, 255, 0.14);
 
-  --psdk-accent: #6366f1;
-  --psdk-accent-hover: #4f52e0;
-  --psdk-accent-glow: rgba(99, 102, 241, 0.35);
-  --psdk-accent-subtle: rgba(99, 102, 241, 0.12);
+  --psdk-accent: #14a1c5;
+  --psdk-accent-hover: #108ba8;
+  --psdk-accent-glow: rgba(20, 161, 197, 0.35);
+  --psdk-accent-subtle: rgba(20, 161, 197, 0.12);
+  --psdk-dark-blue: #1c2351;
 
   --psdk-danger: #ef4444;
   --psdk-danger-subtle: rgba(239, 68, 68, 0.12);
@@ -140,7 +141,7 @@
 .psdk-topbar__brand-icon {
   width: 28px;
   height: 28px;
-  background: linear-gradient(135deg, var(--psdk-accent), #818cf8);
+  background: linear-gradient(135deg, var(--psdk-accent), var(--psdk-dark-blue));
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -247,15 +248,15 @@
 }
 
 .psdk-btn--accent.psdk-btn--active {
-  background: #4338ca;
-  border-color: #4338ca;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+  background: var(--psdk-dark-blue);
+  border-color: var(--psdk-dark-blue);
+  box-shadow: 0 0 0 3px rgba(20, 161, 197, 0.3);
   animation: psdk-pulse 2s infinite;
 }
 
 @keyframes psdk-pulse {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3); }
-  50% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.1); }
+  0%, 100% { box-shadow: 0 0 0 3px rgba(20, 161, 197, 0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(20, 161, 197, 0.1); }
 }
 
 .psdk-btn--danger {
@@ -1244,7 +1245,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid rgba(255, 255, 255, 0.15);
-  border-top-color: var(--psdk-accent, #6366f1);
+  border-top-color: var(--psdk-accent, #14a1c5);
   border-radius: 50%;
   animation: psdk-skeleton-spin 0.8s linear infinite;
 }

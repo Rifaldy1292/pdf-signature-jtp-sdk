@@ -72,8 +72,6 @@ viewer.loadDocument(newFile);   // Switch documents
 viewer.nextPage();
 viewer.prevPage();
 viewer.goToPage(3);
-viewer.enableSignatureMode();
-viewer.disableSignatureMode();
 viewer.placeSignature({ x: 100, y: 200, page: 1 });
 viewer.placeEStamp({ x: 300, y: 400 });
 viewer.clearSignatures();
@@ -83,52 +81,9 @@ viewer.showSkeleton(false); // Hide loading state
 viewer.destroy();
 ```
 
-### Vue 3 / Nuxt
+### Vue 3 & React
 
-```vue
-<script setup>
-import { PdfViewer } from 'pdf-signature-sdk/vue';
-import 'pdf-signature-sdk/style.css';
-
-const file = ref(null);
-const ui = { sidebar: { thumbnails: true }, topbar: { signature: true } };
-
-function onSignature(sig) {
-  console.log('Signature placed:', sig);
-}
-</script>
-
-<template>
-  <PdfViewer
-    :file="file"
-    :ui="ui"
-    style="height: 700px"
-    @signature-placed="onSignature"
-    @page-changed="({ page }) => console.log(page)"
-  />
-</template>
-```
-
-### React
-
-```jsx
-import { PdfViewer } from 'pdf-signature-sdk/react';
-import 'pdf-signature-sdk/style.css';
-
-function App() {
-  const [file, setFile] = useState(null);
-
-  return (
-    <PdfViewer
-      file={file}
-      ui={{ sidebar: { thumbnails: true } }}
-      style={{ width: '100%', height: '700px' }}
-      onSignaturePlaced={(sig) => console.log(sig)}
-      onPageChanged={({ page, total }) => console.log(page, total)}
-    />
-  );
-}
-```
+Pustaka ini bersifat **framework-agnostic**. Untuk menggunakan SDK ini di Vue 3 atau React, Anda cukup membuat komponen wrapper lokal yang memanggil fungsi vanilla `createViewer`. Contoh kode boilerplate wrapper yang siap pakai (*copy-paste*) dapat dilihat langsung pada file [documentation.html](demo/documentation.html).
 
 ## Configuration Options
 
@@ -173,8 +128,6 @@ function App() {
 | `signaturePlaced` | `{ id, x, y, page, type }` | Signature placed on canvas |
 | `eStampPlaced` | `{ id, x, y, page, type }` | E-Materai placed |
 | `signatureMoved` | `{ id, x, y, page }` | Signature dragged to new position |
-| `signatureModeChanged` | `{ active }` | Signature mode toggled |
-| `coordinateCapture` | `{ x, y, page, canvasWidth, canvasHeight }` | Raw click coordinate captured |
 
 ---
 
@@ -186,8 +139,6 @@ function App() {
 | `nextPage()` | Go to next page |
 | `prevPage()` | Go to previous page |
 | `goToPage(n)` | Go to page n (1-indexed) |
-| `enableSignatureMode()` | Enable click-to-place mode |
-| `disableSignatureMode()` | Disable placement mode |
 | `placeSignature({ x, y, page?, label? })` | Programmatic signature placement |
 | `placeEStamp({ x, y, page? })` | Programmatic e-materai placement |
 | `removeSignature(id)` | Remove specific item by ID |

@@ -453,15 +453,15 @@ export class SignatureManager {
       // Fallback — skip shadowBlur during drag/resize (expensive, causes lag)
       const isActive = !!(this._draggingId || this._resizingId);
       if (!isActive) {
-        ctx.shadowColor = 'rgba(99,102,241,0.4)';
+        ctx.shadowColor = 'rgba(20, 161, 197, 0.4)';
         ctx.shadowBlur = 12;
       }
-      ctx.fillStyle = 'rgba(99, 102, 241, 0.12)';
+      ctx.fillStyle = 'rgba(20, 161, 197, 0.12)';
       this._roundRect(ctx, x, y, width, height, radius);
       ctx.fill();
       ctx.shadowBlur = 0;
       
-      ctx.strokeStyle = 'rgba(99, 102, 241, 0.9)';
+      ctx.strokeStyle = 'rgba(20, 161, 197, 0.9)';
       ctx.lineWidth = 1.5;
       ctx.setLineDash([5, 3]);
       this._roundRect(ctx, x, y, width, height, radius);
@@ -469,7 +469,7 @@ export class SignatureManager {
       ctx.setLineDash([]);
       
       // Label
-      ctx.fillStyle = 'rgba(99, 102, 241, 1)';
+      ctx.fillStyle = 'rgba(20, 161, 197, 1)';
       ctx.font = '600 11px "Inter", system-ui, sans-serif';
       ctx.textBaseline = 'middle';
       ctx.fillText(label, x + 10, y + height / 2);

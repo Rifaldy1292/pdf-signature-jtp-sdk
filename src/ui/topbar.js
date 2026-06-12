@@ -3,6 +3,7 @@
  */
 
 import { el } from './layout.js';
+import defaultLogoUrl from '../assets/logo.png';
 
 // SVG icon library (inline — no external dependency)
 const ICONS = {
@@ -59,12 +60,13 @@ export function buildTopbar(topbarEl, config, viewer) {
       }
     } else {
       brandIcon.classList.remove('psdk-topbar__brand-icon--custom');
-      brandIcon.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="white">
-          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/>
-          <path d="M14 2v6h6" opacity=".5"/>
-        </svg>
-      `;
+      brandIcon.innerHTML = '';
+      const img = el('img', [], {
+        src: defaultLogoUrl,
+        alt: 'Logo',
+        style: 'max-height: 28px; max-width: 120px; object-fit: contain; display: block;'
+      });
+      brandIcon.appendChild(img);
     }
   }
 

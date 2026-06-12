@@ -135,7 +135,6 @@ Control the viewer programmatically through these instance methods:
   ```javascript
   viewer.setPaginationLocked(true);
   ```
-- **`enableSignatureMode()` / `disableSignatureMode()`**: Toggles manual signature insertion mode.
 - **`openSignatureModal()` / `openEStampModal()`**: Opens selection modals programmatically.
 - **`placeSignature(opts)` / `placeEStamp(opts)`**: Programmatically add signatures or stamps.
   ```javascript
@@ -183,11 +182,4 @@ Subscribe to events using the built-in event bus:
     console.log(`id: ${sig.id}, coordinates: x=${sig.x}, y=${sig.y}, size: w=${sig.width}, h=${sig.height}`);
   });
   ```
-- **`coordinateCapture`**: Fired when click/tap coordinates are captured on the page.
-  ```javascript
-  viewer.on('coordinateCapture', ({ x, y, page }) => { ... });
-  ```
-- **`signatureModeChanged`**: Fired when signature mode is toggled.
-  ```javascript
-  viewer.on('signatureModeChanged', ({ active }) => { ... });
-  ```
+

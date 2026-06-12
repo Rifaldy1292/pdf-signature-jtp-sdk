@@ -686,7 +686,6 @@
         <div>
           <div class="demo-config__section-title">🚀 API Actions</div>
           <div style="display: flex; flex-direction: column; gap: 6px">
-            <button class="demo-btn demo-btn--accent" id="btn-api-sig">Enable Signature Mode</button>
             <button class="demo-btn demo-btn--accent" id="btn-api-estamp">Place E-Materai (center)</button>
             <button class="demo-btn" id="btn-api-clear">Clear All Signatures</button>
             <button class="demo-btn" id="btn-api-log">Log Signatures to Console</button>
@@ -873,9 +872,7 @@ estampOptions: [
         console.log(`- Raw Event   :`, sig);
       });
 
-      viewer.on("coordinateCapture", ({ x, y, page }) => {
-        logEvent("sig", `coordinateCapture — page ${page}  x:${Math.round(x)} y:${Math.round(y)}`);
-      });
+
 
       // ── UI Config toggles
       function getToggles() {
@@ -988,19 +985,6 @@ estampOptions: [
       });
 
       // ── API action buttons
-      document.getElementById("btn-api-sig").addEventListener("click", () => {
-        if (viewer.isSignatureModeActive) {
-          viewer.disableSignatureMode();
-          document.getElementById("btn-api-sig").textContent = "Enable Signature Mode";
-        } else {
-          viewer.enableSignatureMode();
-          document.getElementById("btn-api-sig").textContent = "Disable Signature Mode";
-        }
-      });
-
-      viewer.on("signatureModeChanged", ({ active }) => {
-        document.getElementById("btn-api-sig").textContent = active ? "Disable Signature Mode" : "Enable Signature Mode";
-      });
 
       document.getElementById("btn-api-estamp").addEventListener("click", () => {
         const canvas = viewer.getCanvas();
