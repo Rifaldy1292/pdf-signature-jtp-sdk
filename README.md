@@ -91,11 +91,11 @@ For open source projects, say how it is licensed.
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
 
-# pdf-signature-sdk
+# @ezsign-jasuindo/pdf-signature-esign-sdk
 
 A **framework-agnostic** PDF Viewer + Signature SDK. Works with Vanilla JS, Vue 3, React, and Nuxt out of the box.
 
-[![npm](https://img.shields.io/npm/v/pdf-signature-sdk)](https://npmjs.com/package/pdf-signature-sdk)
+[![npm](https://img.shields.io/npm/v/@ezsign-jasuindo/pdf-signature-esign-sdk)](https://www.npmjs.com/package/@ezsign-jasuindo/pdf-signature-esign-sdk)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ---
@@ -116,7 +116,7 @@ A **framework-agnostic** PDF Viewer + Signature SDK. Works with Vanilla JS, Vue 
 ## Installation
 
 ```bash
-npm install pdf-signature-sdk
+npm install @ezsign-jasuindo/pdf-signature-esign-sdk
 ```
 
 ## run repository
@@ -131,7 +131,7 @@ npm run dev
 ### Vanilla JS / HTML
 
 ```js
-import { createViewer } from 'pdf-signature-sdk';
+import { createViewer } from '@ezsign-jasuindo/pdf-signature-esign-sdk';
 
 const viewer = createViewer({
   container: '#app',         // CSS selector or HTMLElement
@@ -321,7 +321,7 @@ For fine-grained control, override specific BEM classes. Use `!important` since 
 Import `SDK_CLASSES` and `SDK_VARIABLES` to get all names with IDE autocomplete:
 
 ```js
-import { SDK_CLASSES, SDK_VARIABLES, SDK_VARIABLE_DEFAULTS } from 'pdf-signature-jtp-sdk';
+import { SDK_CLASSES, SDK_VARIABLES, SDK_VARIABLE_DEFAULTS } from '@ezsign-jasuindo/pdf-signature-esign-sdk';
 
 // Class names — no typos
 SDK_CLASSES.button.accent      // → 'psdk-btn--accent'

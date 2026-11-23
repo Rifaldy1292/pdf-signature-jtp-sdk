@@ -1,6 +1,6 @@
 # PDF Signature SDK AI Skill Reference
 
-This skill file provides the exact specifications, API signatures, options, and methods of the `pdf-signature-jtp-sdk` library. When interacting with this library, use this reference to guide programmatic integration, configuration updates, and event handling. Do not define HTML buttons or trigger UI elements manually; interact with the SDK purely through properties, config parameters, methods, and callbacks on the instantiated viewer object.
+This skill file provides the exact specifications, API signatures, options, and methods of the `@ezsign-jasuindo/pdf-signature-esign-sdk` library. When interacting with this library, use this reference to guide programmatic integration, configuration updates, and event handling. Do not define HTML buttons or trigger UI elements manually; interact with the SDK purely through properties, config parameters, methods, and callbacks on the instantiated viewer object.
 
 ---
 
@@ -9,7 +9,7 @@ This skill file provides the exact specifications, API signatures, options, and 
 To initialize the viewer, use `createViewer(config)`:
 
 ```javascript
-import { createViewer } from 'pdf-signature-jtp-sdk';
+import { createViewer } from '@ezsign-jasuindo/pdf-signature-esign-sdk';
 
 const viewer = createViewer({
   container: '#viewer-container', // CSS selector or HTMLElement
