@@ -1,5 +1,5 @@
 {
-  "name": "@ezsign-jasuindo/pdf-signature-esign-sdk",
+  "name": "pdf-signature-esign-sdk",
   "version": "2.0.0",
   "description": "A framework-agnostic PDF Viewer + Signature SDK. Works with Vanilla JS, Vue 3, and React.",
   "type": "module",
