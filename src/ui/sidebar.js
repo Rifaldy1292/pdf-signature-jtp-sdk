@@ -32,10 +32,18 @@ export function buildSidebar(sidebarEl, config, viewer) {
   let thumbEls = [];
   /** @type {number} */
   let activePageEl = 1;
+  /**
+   * Generation token. Every rebuild/clear bumps it, so an older rebuild loop
+   * that is still awaiting a thumbnail render stops instead of writing into
+   * the sidebar of a newer document.
+   * @type {number}
+   */
+  let buildId = 0;
 
   // ── Helpers
 
   function clearThumbnails() {
+    buildId++;
     scroll.innerHTML = '';
     thumbEls = [];
   }
@@ -56,6 +64,7 @@ export function buildSidebar(sidebarEl, config, viewer) {
    */
   async function rebuild(docManager, totalPages) {
     clearThumbnails();
+    const myBuildId = buildId; // this rebuild's generation
     countBadge.textContent = totalPages;
 
     // BUG-10: Show skeleton placeholders immediately for loading feedback.
@@ -68,6 +77,9 @@ export function buildSidebar(sidebarEl, config, viewer) {
     }
 
     for (let i = 1; i <= totalPages; i++) {
+      // A newer rebuild (or clear) has started — stop touching the sidebar
+      if (myBuildId !== buildId) return;
+
       const thumbWrap = el('div', ['psdk-thumb']);
       thumbWrap.id = `psdk-thumb-${i}`;
       thumbWrap.setAttribute('role', 'button');
@@ -107,6 +119,8 @@ export function buildSidebar(sidebarEl, config, viewer) {
       // Render thumbnail async — await to render sequentially
       await docManager.renderThumbnail(i, canvas, 0.22).catch(() => {});
     }
+
+    if (myBuildId !== buildId) return;
 
     // Set active page highlight
     setActivePage(activePageEl);

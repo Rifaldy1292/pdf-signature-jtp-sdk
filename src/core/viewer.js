@@ -502,6 +502,8 @@ export function createViewer(userConfig = {}) {
         programmaticScrollListener = null;
       }
       if (observer) observer.disconnect();
+      // Stop any thumbnail rebuild loop that is still running
+      sidebarController?.clearThumbnails();
       sigManager.destroy();
       await docManager.destroy();
       pagination.reset();
