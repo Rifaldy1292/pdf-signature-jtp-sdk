@@ -9,6 +9,24 @@ import * as pdfjs from 'pdfjs-dist';
 // This is the most reliable approach in Vite dev mode.
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.mjs`;
 
+/**
+ * Cancel a pdf.js RenderTask. In pdfjs-dist v4, RenderTask.cancel() returns
+ * undefined (not a Promise), so it must not be chained with .catch().
+ */
+function cancelTask(task) {
+  try {
+    task?.cancel();
+  } catch (e) {
+    // ignore — task already finished or cancelled
+  }
+}
+
+/** @returns {{width:number, height:number}} page size in PDF points, rotation applied */
+function pageSizeOf(page) {
+  const vp = page.getViewport({ scale: 1 });
+  return { width: vp.width, height: vp.height };
+}
+
 export class DocumentManager {
   constructor(eventBus) {
     /** @type {import('pdfjs-dist').PDFDocumentProxy|null} */
@@ -20,6 +38,20 @@ export class DocumentManager {
     /** @type {import('../core/events').EventEmitter} */
     this._bus = eventBus;
     this._isPasswordProtected = false;
+    /** @type {Map<number, {width:number, height:number}>} page sizes in PDF points (scale 1) */
+    this._pageSizes = new Map();
+    /** @type {{width:number, height:number}|null} */
+    this._defaultPageSize = null;
+  }
+
+  /**
+   * Size of a page in PDF points (scale 1). Falls back to the first page's size,
+   * then A4, for pages whose size is not known yet.
+   * @param {number} pageNumber
+   * @returns {{width:number, height:number}}
+   */
+  getPageSize(pageNumber) {
+    return this._pageSizes.get(pageNumber) || this._defaultPageSize || { width: 595, height: 842 };
   }
 
   /**
@@ -59,6 +91,15 @@ export class DocumentManager {
 
     this._pdfDoc = await loadingTask.promise;
 
+    // Cache the first page size (PDF points) as the fallback for pages not rendered yet
+    try {
+      const firstPage = await this._pdfDoc.getPage(1);
+      this._defaultPageSize = pageSizeOf(firstPage);
+      this._pageSizes.set(1, this._defaultPageSize);
+    } catch (e) {
+      this._defaultPageSize = null;
+    }
+
     const totalPages = this._pdfDoc.numPages;
     this._bus.emit('documentLoaded', { totalPages });
 
@@ -87,11 +128,12 @@ export class DocumentManager {
 
     // Cancel any in-flight render for this specific page
     if (this._renderTasks.has(pageNumber)) {
-      await this._renderTasks.get(pageNumber).cancel().catch(() => {});
+      cancelTask(this._renderTasks.get(pageNumber));
       this._renderTasks.delete(pageNumber);
     }
 
     const page = await this.getPage(pageNumber);
+    this._pageSizes.set(pageNumber, pageSizeOf(page));
     const viewport = page.getViewport({ scale });
 
     canvas.width = viewport.width;
@@ -133,7 +175,7 @@ export class DocumentManager {
 
     // BUG-06: cancel any in-flight thumbnail render for this page
     if (this._thumbRenderTasks.has(pageNumber)) {
-      this._thumbRenderTasks.get(pageNumber).cancel().catch(() => {});
+      cancelTask(this._thumbRenderTasks.get(pageNumber));
       this._thumbRenderTasks.delete(pageNumber);
     }
 
@@ -179,16 +221,18 @@ export class DocumentManager {
   /** Cancel any in-flight render and destroy the PDF document. */
   async _cleanup() {
     this._isPasswordProtected = false;
-    for (const [page, task] of this._renderTasks.entries()) {
-      await task.cancel().catch(() => {});
+    for (const task of this._renderTasks.values()) {
+      cancelTask(task);
     }
     this._renderTasks.clear();
 
     // BUG-06: also cancel in-flight thumbnail renders before destroying
-    for (const [, task] of this._thumbRenderTasks.entries()) {
-      task.cancel().catch(() => {});
+    for (const task of this._thumbRenderTasks.values()) {
+      cancelTask(task);
     }
     this._thumbRenderTasks.clear();
+    this._pageSizes.clear();
+    this._defaultPageSize = null;
 
     if (this._pdfDoc) {
       await this._pdfDoc.destroy().catch(() => {});

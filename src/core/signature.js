@@ -90,23 +90,8 @@ export class SignatureManager {
     const canvas = this._overlayCanvases.get(page);
     if (!canvas) return;
 
-    const oldDim = this._pageDimensions.get(page);
-    if (oldDim && oldDim.w > 0 && oldDim.h > 0) {
-      const scaleX = width / oldDim.w;
-      const scaleY = height / oldDim.h;
-      
-      if (scaleX !== 1 || scaleY !== 1) {
-        const pageItems = this._items.filter((i) => i.page === page);
-        for (const item of pageItems) {
-          item.x *= scaleX;
-          item.y *= scaleY;
-          item.width *= scaleX;
-          item.height *= scaleY;
-        }
-      }
-    }
-
-    this._pageDimensions.set(page, { w: width, h: height });
+    // Items are stored in PDF points, so no rescaling is needed here —
+    // they are converted to canvas pixels with the current scale on draw.
     canvas.width = width;
     canvas.height = height;
     this._redrawPage(page);
@@ -127,12 +112,8 @@ export class SignatureManager {
    * @param {{x:number, y:number, page?:number, label?:string, image?:string, width?:number, height?:number, disableDrag?:boolean, disableDragging?:boolean, disableResize?:boolean, locked?:boolean}} opts
    */
   placeSignature({ x, y, page = this._currentPage, label, image, width, height, disableDrag, disableDragging, disableResize, locked } = {}) {
-    const scale = this._config?.scale || 1.0;
     const finalLabel = label || 'Signature';
-    const canvasX = x !== undefined ? x * scale : 0;
-    const canvasY = y !== undefined ? y * scale : 0;
-    
-    const item = this._createItem('signature', canvasX, canvasY, page, finalLabel, image, width, height, disableDrag, disableDragging, disableResize, locked);
+    const item = this._createItem('signature', x ?? 0, y ?? 0, page, finalLabel, image, width, height, disableDrag, disableDragging, disableResize, locked);
     this._items.push(item);
     this._redrawPage(page);
     this._bus.emit('signaturePlaced', this._publicItem(item));
@@ -144,11 +125,7 @@ export class SignatureManager {
    * @param {{x:number, y:number, page?:number, image?:string, width?:number, height?:number, disableDrag?:boolean, disableDragging?:boolean, disableResize?:boolean, locked?:boolean}} opts
    */
   placeEStamp({ x, y, page = this._currentPage, image, width, height, disableDrag, disableDragging, disableResize, locked } = {}) {
-    const scale = this._config?.scale || 1.0;
-    const canvasX = x !== undefined ? x * scale : 0;
-    const canvasY = y !== undefined ? y * scale : 0;
-    
-    const item = this._createItem('estamp', canvasX, canvasY, page, 'E-Materai', image, width, height, disableDrag, disableDragging, disableResize, locked);
+    const item = this._createItem('estamp', x ?? 0, y ?? 0, page, 'E-Materai', image, width, height, disableDrag, disableDragging, disableResize, locked);
     this._items.push(item);
     this._redrawPage(page);
     this._bus.emit('eStampPlaced', this._publicItem(item));
@@ -200,7 +177,7 @@ export class SignatureManager {
 
   /** @private */
   _createItem(type, x, y, page, label, imageUrl, customWidth, customHeight, disableDrag, disableDragging, disableResize, locked) {
-    const scale = this._config?.scale || 1.0;
+    // NOTE: x, y, width, height are stored in PDF points (scale 1), independent of zoom.
     const baseWidth = customWidth !== undefined ? customWidth : (type === 'estamp' ? 80 : 160);
     const baseHeight = customHeight !== undefined ? customHeight : (type === 'estamp' ? 80 : 48);
 
@@ -213,8 +190,8 @@ export class SignatureManager {
       label,
       image: imageUrl,
       imgElement: null,
-      width: baseWidth * scale,
-      height: baseHeight * scale,
+      width: baseWidth,
+      height: baseHeight,
       isDragging: false,
       disableDrag: !!disableDrag,
       disableDragging: !!disableDragging,
@@ -246,21 +223,31 @@ export class SignatureManager {
 
   /** @private */
   _publicItem(item) {
-    const scale = this._config?.scale || 1.0;
     return {
       id: item.id,
       type: item.type,
-      x: item.x / scale,
-      y: item.y / scale,
+      x: item.x,
+      y: item.y,
       page: item.page,
       label: item.label,
-      width: item.width / scale,
-      height: item.height / scale,
+      width: item.width,
+      height: item.height,
       disableDrag: item.disableDrag,
       disableDragging: item.disableDragging,
       disableResize: item.disableResize,
       locked: item.locked,
     };
+  }
+
+  /** @private */
+  _scale() {
+    return this._config?.scale || 1.0;
+  }
+
+  /** @private — item rectangle in canvas pixels for the current zoom */
+  _px(item) {
+    const s = this._scale();
+    return { x: item.x * s, y: item.y * s, width: item.width * s, height: item.height * s };
   }
 
   /** @private */
@@ -282,10 +269,11 @@ export class SignatureManager {
     // Iterate in reverse so topmost items are hit first
     for (let i = pageItems.length - 1; i >= 0; i--) {
       const item = pageItems[i];
-      
+      const r = this._px(item);
+
       // Delete handle bounds (top right) — ALWAYS checked and clickable!
-      const dx = item.x + item.width;
-      const dy = item.y;
+      const dx = r.x + r.width;
+      const dy = r.y;
       if (Math.hypot(x - dx, y - dy) <= 24) { // 24px radius for hit area
         return { item, part: 'delete' };
       }
@@ -295,8 +283,8 @@ export class SignatureManager {
 
       // Resize handle bounds (bottom right)
       if (!isResizeDisabled) {
-        const rx = item.x + item.width;
-        const ry = item.y + item.height;
+        const rx = r.x + r.width;
+        const ry = r.y + r.height;
         if (x >= rx - 15 && x <= rx + 10 && y >= ry - 15 && y <= ry + 10) {
           return { item, part: 'resize' };
         }
@@ -305,10 +293,10 @@ export class SignatureManager {
       // Body bounds
       if (!isDragDisabled) {
         if (
-          x >= item.x &&
-          x <= item.x + item.width &&
-          y >= item.y &&
-          y <= item.y + item.height
+          x >= r.x &&
+          x <= r.x + r.width &&
+          y >= r.y &&
+          y <= r.y + r.height
         ) {
           return { item, part: 'body' };
         }
@@ -330,21 +318,23 @@ export class SignatureManager {
         return;
       }
       
+      const r = this._px(hit.item);
+
       if (hit.part === 'resize') {
         this._resizingId = hit.item.id;
         this._resizeStart = {
-          w: hit.item.width,
-          h: hit.item.height,
+          w: r.width,
+          h: r.height,
           px: x,
           py: y
         };
         canvas.setPointerCapture(e.pointerId);
         return;
       }
-      
+
       // Begin drag on existing item
       this._draggingId = hit.item.id;
-      this._dragOffset = { x: x - hit.item.x, y: y - hit.item.y };
+      this._dragOffset = { x: x - r.x, y: y - r.y };
       canvas.setPointerCapture(e.pointerId);
       canvas.style.cursor = 'grabbing';
     }
@@ -372,10 +362,12 @@ export class SignatureManager {
     if (this._resizingId) {
       const item = this._items.find((i) => i.id === this._resizingId);
       if (item && item.page === page) {
+        const s = this._scale();
+        const r = this._px(item);
         const dx = x - this._resizeStart.px;
         const dy = y - this._resizeStart.py;
-        item.width = Math.min(canvas.width - item.x, Math.max(30, this._resizeStart.w + dx));
-        item.height = Math.min(canvas.height - item.y, Math.max(30, this._resizeStart.h + dy));
+        item.width = Math.min(canvas.width - r.x, Math.max(30, this._resizeStart.w + dx)) / s;
+        item.height = Math.min(canvas.height - r.y, Math.max(30, this._resizeStart.h + dy)) / s;
         this._redrawPage(page);
       }
       return;
@@ -384,9 +376,11 @@ export class SignatureManager {
     if (this._draggingId) {
       const item = this._items.find((i) => i.id === this._draggingId);
       if (item && item.page === page) {
-        // Constrain to canvas boundaries
-        item.x = Math.max(0, Math.min(canvas.width - item.width, x - this._dragOffset.x));
-        item.y = Math.max(0, Math.min(canvas.height - item.height, y - this._dragOffset.y));
+        // Constrain to canvas boundaries (computed in pixels, stored in points)
+        const s = this._scale();
+        const r = this._px(item);
+        item.x = Math.max(0, Math.min(canvas.width - r.width, x - this._dragOffset.x)) / s;
+        item.y = Math.max(0, Math.min(canvas.height - r.height, y - this._dragOffset.y)) / s;
         this._redrawPage(page);
       }
     }
@@ -443,7 +437,8 @@ export class SignatureManager {
 
   /** @private */
   _drawSignature(ctx, item) {
-    const { x, y, width, height, label, imgElement } = item;
+    const { label, imgElement } = item;
+    const { x, y, width, height } = this._px(item);
     const radius = 6;
 
     // Draw Image if loaded
@@ -496,7 +491,8 @@ export class SignatureManager {
 
   /** @private */
   _drawEStamp(ctx, item) {
-    const { x, y, width, height, label, imgElement } = item;
+    const { imgElement } = item;
+    const { x, y, width, height } = this._px(item);
     
     if (imgElement && imgElement.complete) {
       ctx.drawImage(imgElement, x, y, width, height);

@@ -366,6 +366,8 @@ export function buildTopbar(topbarEl, config, viewer) {
   }
 
   function updateZoomBadge(scale) {
+    // Keep the local zoom step in sync when scale is changed via the API
+    currentScale = scale;
     const pct = Math.round(scale * 100) + '%';
     if (zoomBadge) zoomBadge.textContent = pct;
     const zs = document.getElementById('psdk-zoom-status');

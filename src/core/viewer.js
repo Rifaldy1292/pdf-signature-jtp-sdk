@@ -84,6 +84,10 @@ export function createViewer(userConfig = {}) {
                 wrap.style.minWidth = `${mainCanvas.width}px`;
                 wrap.style.minHeight = `${mainCanvas.height}px`;
               }
+            }).catch((err) => {
+              // Allow a retry the next time the page scrolls into view
+              entry.target.dataset.rendered = '';
+              console.error(`[pdf-signature-sdk] Failed to render page ${page}:`, err);
             });
           }
         } else {
@@ -145,6 +149,19 @@ export function createViewer(userConfig = {}) {
       sigManager.attach(i, overlayCanvas);
       observer.observe(wrap);
     }
+  }
+
+  /**
+   * Fill in missing x/y so the item is centred on its page. Uses the real page
+   * size in PDF points, so it works even for pages that are not rendered yet.
+   */
+  function _centerIfMissing(opts, defaultWidth, defaultHeight) {
+    if (opts.x !== undefined && opts.y !== undefined) return;
+    const { width: pageW, height: pageH } = docManager.getPageSize(opts.page);
+    const w = opts.width !== undefined ? opts.width : defaultWidth;
+    const h = opts.height !== undefined ? opts.height : defaultHeight;
+    if (opts.x === undefined) opts.x = Math.max(0, pageW / 2 - w / 2);
+    if (opts.y === undefined) opts.y = Math.max(0, pageH / 2 - h / 2);
   }
 
   // ─── Event wiring ─────────────────────────────────────────────────────────
@@ -276,6 +293,9 @@ export function createViewer(userConfig = {}) {
      */
     async setScale(scale) {
       config.scale = Math.min(4, Math.max(0.25, scale));
+      topbarController?.updateZoomBadge(config.scale);
+      // Overlay items are stored in PDF points; redraw them at the new scale right away
+      sigManager.redraw();
       if (docManager.isLoaded) {
         // Reset rendered state and re-render visible pages
         nodes.pagesContainer.querySelectorAll('.psdk-canvas-wrap').forEach(wrap => {
@@ -342,18 +362,8 @@ export function createViewer(userConfig = {}) {
      * @param {{x?:number, y?:number, page?:number, label?:string, image?:string}} opts
      */
     placeSignature(opts = {}) {
-      const page = opts.page || pagination.currentPage;
-      opts.page = page;
-      if (opts.x === undefined || opts.y === undefined) {
-        const canvas = pageMainCanvases.get(page);
-        if (canvas) {
-          const scale = config.scale || 1.0;
-          const pdfWidth = canvas.width / scale;
-          const pdfHeight = canvas.height / scale;
-          opts.x = pdfWidth / 2 - 80; // assume 160 width in 1:1 points
-          opts.y = pdfHeight / 2 - 24; // assume 48 height in 1:1 points
-        }
-      }
+      opts = { ...opts, page: opts.page || pagination.currentPage };
+      _centerIfMissing(opts, 160, 48);
       return sigManager.placeSignature(opts);
     },
 
@@ -362,18 +372,8 @@ export function createViewer(userConfig = {}) {
      * @param {{x?:number, y?:number, page?:number, image?:string}} opts
      */
     placeEStamp(opts = {}) {
-      const page = opts.page || pagination.currentPage;
-      opts.page = page;
-      if (opts.x === undefined || opts.y === undefined) {
-        const canvas = pageMainCanvases.get(page);
-        if (canvas) {
-          const scale = config.scale || 1.0;
-          const pdfWidth = canvas.width / scale;
-          const pdfHeight = canvas.height / scale;
-          opts.x = pdfWidth / 2 - 40; // assume 80 width in 1:1 points
-          opts.y = pdfHeight / 2 - 40; // assume 80 height in 1:1 points
-        }
-      }
+      opts = { ...opts, page: opts.page || pagination.currentPage };
+      _centerIfMissing(opts, 80, 80);
       return sigManager.placeEStamp(opts);
     },
 
@@ -418,6 +418,15 @@ export function createViewer(userConfig = {}) {
 
     /** Update UI config dynamically — shows/hides toolbar and sidebar elements. */
     updateConfig(partialConfig) {
+      // Scale changes must go through setScale() so pages are re-rendered
+      // and the zoom badge stays in sync.
+      let nextScale = null;
+      if (partialConfig && typeof partialConfig.scale === 'number' && partialConfig.scale !== config.scale) {
+        nextScale = partialConfig.scale;
+        partialConfig = { ...partialConfig };
+        delete partialConfig.scale;
+      }
+
       // Deep merge partialConfig into the shared config object in-place
       // so all closures referencing `config` stay in sync
       const merged = deepMerge(config, partialConfig);
@@ -449,6 +458,12 @@ export function createViewer(userConfig = {}) {
 
       // Redraw overlay to reflect changes in disableDragging or scale
       sigManager.redraw();
+
+      if (nextScale !== null) {
+        api.setScale(nextScale).catch((err) => {
+          console.error('[pdf-signature-sdk] updateConfig: failed to apply scale:', err);
+        });
+      }
     },
 
 

@@ -1,4 +1,4 @@
-FROM node:20.19.3-alpine
+FROM node:22.22.2-alpine
 
 WORKDIR /usr/src/pdf-jtp-demo
 
