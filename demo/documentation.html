@@ -864,8 +864,15 @@ export default function Page() {
             <p class="text-sm text-zinc-400">Mengambil data koordinat dari objek yang ditempatkan pengguna untuk dikirim ke backend proses penandatanganan.</p>
             <div class="text-xs text-zinc-500">
               <strong class="text-zinc-400">Returns:</strong>
-              <code class="text-indigo-300">Array&lt;object&gt;</code> — Array berisi objek: <code class="text-zinc-300">{ id, type, x, y, page, label, width, height }</code>.
+              <code class="text-indigo-300">Array&lt;object&gt;</code> — Array berisi objek: <code class="text-zinc-300">{ id, type, x, y, width, height, docWidth, docHeight, viewOrientation, page, label }</code>.
             </div>
+            <ul class="text-xs text-zinc-500 list-disc pl-5 space-y-1">
+              <li><code class="text-zinc-300">x</code>, <code class="text-zinc-300">y</code> — point PDF (tidak terpengaruh zoom), titik 0 di <strong class="text-zinc-400">pojok kiri bawah</strong> halaman seperti yang terlihat.</li>
+              <li><code class="text-zinc-300">width</code>, <code class="text-zinc-300">height</code> — ukuran seperti yang terlihat.</li>
+              <li><code class="text-zinc-300">docWidth</code>, <code class="text-zinc-300">docHeight</code> — ukuran halaman (CropBox) sesuai file PDF, tidak ditukar untuk halaman yang diputar.</li>
+              <li><code class="text-zinc-300">viewOrientation</code> — nilai rotasi halaman dari file PDF (<code class="text-zinc-300">0</code>, <code class="text-zinc-300">90</code>, <code class="text-zinc-300">180</code>, <code class="text-zinc-300">270</code>).</li>
+              <li>Format yang sama dipakai untuk semua event tanda tangan dan untuk input <code class="text-zinc-300">x</code>/<code class="text-zinc-300">y</code> pada <code class="text-zinc-300">placeSignature()</code> / <code class="text-zinc-300">placeEStamp()</code>.</li>
+            </ul>
           </div>
 
           <!-- setPaginationLocked -->
@@ -995,17 +1002,17 @@ export default function Page() {
               </tr>
               <tr class="hover:bg-zinc-900/30 transition">
                 <td class="p-4 font-mono text-indigo-400">signaturePlaced</td>
-                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string, type: 'signature', x: number, y: number, page: number, label: string, width: number, height: number }</td>
+                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string, type: 'signature', x: number, y: number, width: number, height: number, docWidth: number, docHeight: number, viewOrientation: number, page: number, label: string }</td>
                 <td class="p-4">Dipicu ketika tanda tangan berhasil ditaruh ke dalam dokumen (baik lewat modal atau programmatik).</td>
               </tr>
               <tr class="hover:bg-zinc-900/30 transition">
                 <td class="p-4 font-mono text-indigo-400">eStampPlaced</td>
-                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string, type: 'estamp', x: number, y: number, page: number, label: string, width: number, height: number }</td>
+                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string, type: 'estamp', x: number, y: number, width: number, height: number, docWidth: number, docHeight: number, viewOrientation: number, page: number, label: string }</td>
                 <td class="p-4">Dipicu ketika E-Materai berhasil ditaruh ke dalam dokumen.</td>
               </tr>
               <tr class="hover:bg-zinc-900/30 transition">
                 <td class="p-4 font-mono text-indigo-400">signatureMoved</td>
-                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string, type: string, x: number, y: number, page: number, label: string, width: number, height: number }</td>
+                <td class="p-4 font-mono text-xs text-zinc-300">{ id: string, type: string, x: number, y: number, width: number, height: number, docWidth: number, docHeight: number, viewOrientation: number, page: number, label: string }</td>
                 <td class="p-4">Dipicu ketika objek tanda tangan / E-Materai selesai diseret (drag) atau dirubah ukurannya (resize) oleh pengguna.</td>
               </tr>
               <tr class="hover:bg-zinc-900/30 transition">

@@ -36,6 +36,8 @@ export function createViewer(userConfig = {}) {
   const docManager = new DocumentManager(bus);
   const pagination = new PaginationManager(bus);
   const sigManager = new SignatureManager(bus, config);
+  // Lets the signature layer convert to/from the bottom-left (PDF) origin per page
+  sigManager.setPageInfoProvider((page) => docManager.getPageInfo(page));
 
   // ─── Build UI ─────────────────────────────────────────────────────────────
   const nodes = buildLayout(container, config);
@@ -158,6 +160,7 @@ export function createViewer(userConfig = {}) {
   /**
    * Fill in missing x/y so the item is centred on its page. Uses the real page
    * size in PDF points, so it works even for pages that are not rendered yet.
+   * (A centred y is the same whether measured from the top or the bottom.)
    */
   function _centerIfMissing(opts, defaultWidth, defaultHeight) {
     if (opts.x !== undefined && opts.y !== undefined) return;
@@ -363,7 +366,9 @@ export function createViewer(userConfig = {}) {
 
     /**
      * Programmatically place a signature.
-     * @param {{x?:number, y?:number, page?:number, label?:string, image?:string}} opts
+     * x/y: PDF points from the BOTTOM-LEFT of the page as displayed (same format
+     * that getSignatures() returns). Omit them to centre the item on the page.
+     * @param {{x?:number, y?:number, page?:number, label?:string, image?:string, width?:number, height?:number}} opts
      */
     placeSignature(opts = {}) {
       opts = { ...opts, page: opts.page || pagination.currentPage };
@@ -373,7 +378,9 @@ export function createViewer(userConfig = {}) {
 
     /**
      * Programmatically place an e-materai stamp.
-     * @param {{x?:number, y?:number, page?:number, image?:string}} opts
+     * x/y: PDF points from the BOTTOM-LEFT of the page as displayed (same format
+     * that getSignatures() returns). Omit them to centre the item on the page.
+     * @param {{x?:number, y?:number, page?:number, image?:string, width?:number, height?:number}} opts
      */
     placeEStamp(opts = {}) {
       opts = { ...opts, page: opts.page || pagination.currentPage };

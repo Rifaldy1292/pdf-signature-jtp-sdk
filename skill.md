@@ -139,8 +139,8 @@ Control the viewer programmatically through these instance methods:
 - **`placeSignature(opts)` / `placeEStamp(opts)`**: Programmatically add signatures or stamps.
   ```javascript
   viewer.placeSignature({
-    x: 100,             // Pixel coordinates
-    y: 150, 
+    x: 100,             // PDF points from the BOTTOM-LEFT of the page as displayed (omit x/y to centre)
+    y: 150,             // same format as getSignatures() returns
     page: 1,            // Page index (1-based)
     label: "CEO Approved",
     image: "url_to_sig_image",
@@ -153,8 +153,17 @@ Control the viewer programmatically through these instance methods:
 - **`getSignatures()`**: Returns all placed elements.
   ```javascript
   const list = viewer.getSignatures();
-  // Returns: Array<{ id, type, x, y, page, label, width, height }>
+  // Returns: Array<{ id, type, x, y, width, height, docWidth, docHeight, viewOrientation, page, label, ... }>
   ```
+  Coordinate format (same for `getSignatures()`, `getSignaturesByPage()`, all signature events, and the
+  `x`/`y` input of `placeSignature()` / `placeEStamp()`):
+  - `x`, `y`: PDF points (zoom-independent), origin at the **bottom-left** of the page **as displayed**.
+  - `width`, `height`: size **as displayed**.
+  - `docWidth`, `docHeight`: page size (CropBox) **as stored in the PDF file**, i.e. not swapped for rotated pages.
+  - `viewOrientation`: the page's `/Rotate` value from the PDF file (`0`, `90`, `180` or `270`).
+
+  Example — A4 portrait page, signature 160×48 placed in the top-left corner:
+  `{ x: 0, y: 794, width: 160, height: 48, docWidth: 595, docHeight: 842, viewOrientation: 0 }`
 - **`removeSignature(id)`**: Remove a specific signature/stamp by ID.
 - **`destroy()`**: Destroys the viewer, cleans up DOM, events, and observers.
 

@@ -41,6 +41,32 @@ export class SignatureManager {
     this._resizeStart = { w: 0, h: 0, px: 0, py: 0 };
     /** @type {Map<number, {w:number, h:number}>} — page canvas dimensions for coordinate rescaling */
     this._pageDimensions = new Map();
+    /**
+     * Returns page info ({ height, docWidth, docHeight, rotate }) for a page.
+     * Set by the viewer. Without it, coordinates are passed through unchanged.
+     * @type {((page:number) => import('./document').PageInfo)|null}
+     */
+    this._pageInfoProvider = null;
+  }
+
+  /**
+   * Provide page info used to convert between the internal top-left origin
+   * and the public bottom-left origin (PDF convention).
+   * @param {(page:number) => import('./document').PageInfo} fn
+   */
+  setPageInfoProvider(fn) {
+    this._pageInfoProvider = fn;
+  }
+
+  /**
+   * Public API coordinates use the PDF convention: origin at the BOTTOM-LEFT
+   * of the page as it is displayed. Internally items are stored with a
+   * TOP-LEFT origin (canvas convention). The conversion is the same both ways.
+   * @private
+   */
+  _flipY(page, y, height) {
+    const info = this._pageInfoProvider?.(page);
+    return info ? info.height - y - height : y;
   }
 
   /** Pasang overlay canvas ke halaman tertentu dan daftarkan event handler pointer/touch. */
@@ -108,12 +134,14 @@ export class SignatureManager {
   // ─── Placement API ───────────────────────────────────────────────────────────
 
   /**
-   * Programmatically place a signature at given coordinates (in 1:1 PDF points).
+   * Programmatically place a signature. x/y are PDF points (scale 1) measured
+   * from the BOTTOM-LEFT corner of the page as displayed.
    * @param {{x:number, y:number, page?:number, label?:string, image?:string, width?:number, height?:number, disableDrag?:boolean, disableDragging?:boolean, disableResize?:boolean, locked?:boolean}} opts
    */
   placeSignature({ x, y, page = this._currentPage, label, image, width, height, disableDrag, disableDragging, disableResize, locked } = {}) {
     const finalLabel = label || 'Signature';
-    const item = this._createItem('signature', x ?? 0, y ?? 0, page, finalLabel, image, width, height, disableDrag, disableDragging, disableResize, locked);
+    const topY = this._flipY(page, y ?? 0, height !== undefined ? height : 48);
+    const item = this._createItem('signature', x ?? 0, topY, page, finalLabel, image, width, height, disableDrag, disableDragging, disableResize, locked);
     this._items.push(item);
     this._redrawPage(page);
     this._bus.emit('signaturePlaced', this._publicItem(item));
@@ -121,11 +149,13 @@ export class SignatureManager {
   }
 
   /**
-   * Programmatically place an e-materai stamp at given coordinates (in 1:1 PDF points).
+   * Programmatically place an e-materai stamp. x/y are PDF points (scale 1)
+   * measured from the BOTTOM-LEFT corner of the page as displayed.
    * @param {{x:number, y:number, page?:number, image?:string, width?:number, height?:number, disableDrag?:boolean, disableDragging?:boolean, disableResize?:boolean, locked?:boolean}} opts
    */
   placeEStamp({ x, y, page = this._currentPage, image, width, height, disableDrag, disableDragging, disableResize, locked } = {}) {
-    const item = this._createItem('estamp', x ?? 0, y ?? 0, page, 'E-Materai', image, width, height, disableDrag, disableDragging, disableResize, locked);
+    const topY = this._flipY(page, y ?? 0, height !== undefined ? height : 80);
+    const item = this._createItem('estamp', x ?? 0, topY, page, 'E-Materai', image, width, height, disableDrag, disableDragging, disableResize, locked);
     this._items.push(item);
     this._redrawPage(page);
     this._bus.emit('eStampPlaced', this._publicItem(item));
@@ -208,7 +238,11 @@ export class SignatureManager {
         // If height was not custom-defined, calculate it proportionally based on original aspect ratio
         if (customHeight === undefined) {
           const aspect = img.naturalHeight / img.naturalWidth;
-          item.height = item.width * aspect;
+          const newHeight = item.width * aspect;
+          // Keep the BOTTOM-LEFT corner fixed (the public anchor point), so a
+          // signature placed at backend coordinates stays where it was put.
+          item.y = Math.max(0, item.y + item.height - newHeight);
+          item.height = newHeight;
           
           // Emit signatureMoved to notify the parent app of the finalized size
           this._bus.emit('signatureMoved', this._publicItem(item));
@@ -221,17 +255,28 @@ export class SignatureManager {
     return item;
   }
 
-  /** @private */
+  /**
+   * Public shape of an item, in the backend format:
+   * - x, y: PDF points, origin at the BOTTOM-LEFT of the page as displayed
+   * - width, height: as displayed
+   * - docWidth, docHeight: CropBox size from the PDF file (not rotated)
+   * - viewOrientation: page /Rotate from the PDF file (0 | 90 | 180 | 270)
+   * @private
+   */
   _publicItem(item) {
+    const info = this._pageInfoProvider?.(item.page);
     return {
       id: item.id,
       type: item.type,
       x: item.x,
-      y: item.y,
+      y: this._flipY(item.page, item.y, item.height),
       page: item.page,
       label: item.label,
       width: item.width,
       height: item.height,
+      docWidth: info?.docWidth,
+      docHeight: info?.docHeight,
+      viewOrientation: info?.rotate,
       disableDrag: item.disableDrag,
       disableDragging: item.disableDragging,
       disableResize: item.disableResize,

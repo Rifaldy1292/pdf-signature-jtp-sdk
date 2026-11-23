@@ -21,11 +21,31 @@ function cancelTask(task) {
   }
 }
 
-/** @returns {{width:number, height:number}} page size in PDF points, rotation applied */
-function pageSizeOf(page) {
+/**
+ * @typedef {object} PageInfo
+ * @property {number} width      visible page width in PDF points (rotation applied)
+ * @property {number} height     visible page height in PDF points (rotation applied)
+ * @property {number} docWidth   CropBox width as stored in the PDF file (rotation NOT applied)
+ * @property {number} docHeight  CropBox height as stored in the PDF file (rotation NOT applied)
+ * @property {number} rotate     page /Rotate from the PDF file: 0 | 90 | 180 | 270
+ */
+
+/** @returns {PageInfo} */
+function pageInfoOf(page) {
   const vp = page.getViewport({ scale: 1 });
-  return { width: vp.width, height: vp.height };
+  // page.view = CropBox [x0, y0, x1, y1] (pdf.js already intersects it with the MediaBox)
+  const [x0, y0, x1, y1] = page.view;
+  return {
+    width: vp.width,
+    height: vp.height,
+    docWidth: x1 - x0,
+    docHeight: y1 - y0,
+    rotate: ((page.rotate % 360) + 360) % 360,
+  };
 }
+
+/** A4 portrait — only used if page info could not be read at all */
+const FALLBACK_PAGE_INFO = { width: 595, height: 842, docWidth: 595, docHeight: 842, rotate: 0 };
 
 export class DocumentManager {
   constructor(eventBus) {
@@ -38,20 +58,29 @@ export class DocumentManager {
     /** @type {import('../core/events').EventEmitter} */
     this._bus = eventBus;
     this._isPasswordProtected = false;
-    /** @type {Map<number, {width:number, height:number}>} page sizes in PDF points (scale 1) */
-    this._pageSizes = new Map();
-    /** @type {{width:number, height:number}|null} */
-    this._defaultPageSize = null;
+    /** @type {Map<number, PageInfo>} info for every page, filled when the document loads */
+    this._pageInfos = new Map();
   }
 
   /**
-   * Size of a page in PDF points (scale 1). Falls back to the first page's size,
-   * then A4, for pages whose size is not known yet.
+   * Page size, CropBox size and rotation for a page (PDF points, scale 1).
+   * All pages are read when the document loads, so this is exact even for
+   * pages that have not been rendered yet.
+   * @param {number} pageNumber
+   * @returns {PageInfo}
+   */
+  getPageInfo(pageNumber) {
+    return this._pageInfos.get(pageNumber) || this._pageInfos.get(1) || FALLBACK_PAGE_INFO;
+  }
+
+  /**
+   * Visible size of a page in PDF points (scale 1, rotation applied).
    * @param {number} pageNumber
    * @returns {{width:number, height:number}}
    */
   getPageSize(pageNumber) {
-    return this._pageSizes.get(pageNumber) || this._defaultPageSize || { width: 595, height: 842 };
+    const { width, height } = this.getPageInfo(pageNumber);
+    return { width, height };
   }
 
   /**
@@ -91,16 +120,25 @@ export class DocumentManager {
 
     this._pdfDoc = await loadingTask.promise;
 
-    // Cache the first page size (PDF points) as the fallback for pages not rendered yet
-    try {
-      const firstPage = await this._pdfDoc.getPage(1);
-      this._defaultPageSize = pageSizeOf(firstPage);
-      this._pageSizes.set(1, this._defaultPageSize);
-    } catch (e) {
-      this._defaultPageSize = null;
-    }
-
     const totalPages = this._pdfDoc.numPages;
+
+    // Read size, CropBox and rotation of every page up front. Coordinates are
+    // converted to/from the PDF's bottom-left origin per page, so this must be
+    // exact for all pages (mixed sizes / rotations), rendered or not.
+    const pdfDoc = this._pdfDoc;
+    const infos = await Promise.all(
+      Array.from({ length: totalPages }, (_, i) =>
+        pdfDoc.getPage(i + 1).then(pageInfoOf).catch(() => null)
+      )
+    );
+    if (this._pdfDoc !== pdfDoc) {
+      // A newer loadDocument() replaced this document while we were reading pages
+      throw new Error('[pdf-signature-sdk] Document load was superseded by a newer load.');
+    }
+    infos.forEach((info, i) => {
+      if (info) this._pageInfos.set(i + 1, info);
+    });
+
     this._bus.emit('documentLoaded', { totalPages });
 
     return { totalPages };
@@ -133,7 +171,6 @@ export class DocumentManager {
     }
 
     const page = await this.getPage(pageNumber);
-    this._pageSizes.set(pageNumber, pageSizeOf(page));
     const viewport = page.getViewport({ scale });
 
     canvas.width = viewport.width;
@@ -231,8 +268,7 @@ export class DocumentManager {
       cancelTask(task);
     }
     this._thumbRenderTasks.clear();
-    this._pageSizes.clear();
-    this._defaultPageSize = null;
+    this._pageInfos.clear();
 
     if (this._pdfDoc) {
       await this._pdfDoc.destroy().catch(() => {});
