@@ -128,7 +128,7 @@
       <section id="pengenalan" class="scroll-mt-24 space-y-4">
         <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Dokumentasi PDF Signature SDK</h1>
         <p class="text-lg text-zinc-400 leading-relaxed">
-          <strong>pdf-signature-jtp-sdk</strong> adalah pustaka rendering PDF dan penempatan tanda tangan elektronik (dan E-Materai) yang performan dan <strong>framework-agnostic</strong>. SDK ini dirancang agar mudah digunakan secara langsung di HTML murni menggunakan Vanilla JS, maupun menggunakan framework modern seperti Vue 3, React, dan Next.js.
+          <strong>@ezsign-jasuindo/pdf-signature-esign-sdk</strong> adalah pustaka rendering PDF dan penempatan tanda tangan elektronik (dan E-Materai) yang performan dan <strong>framework-agnostic</strong>. SDK ini dirancang agar mudah digunakan secara langsung di HTML murni menggunakan Vanilla JS, maupun menggunakan framework modern seperti Vue 3, React, dan Next.js.
         </p>
         <div class="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-200 text-sm flex gap-3">
           <i data-lucide="info" class="w-5 h-5 text-indigo-400 shrink-0"></i>
@@ -170,8 +170,8 @@
         </h2>
         <p class="text-zinc-400 text-sm">Instal SDK ke dalam project Anda menggunakan package manager:</p>
         <div class="relative">
-          <pre class="rounded-xl overflow-hidden"><code class="language-bash">npm install pdf-signature-jtp-sdk</code></pre>
-          <button onclick="copyToClipboard('npm install pdf-signature-jtp-sdk')" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white" title="Salin kode">
+          <pre class="rounded-xl overflow-hidden"><code class="language-bash">npm install @ezsign-jasuindo/pdf-signature-esign-sdk</code></pre>
+          <button onclick="copyToClipboard('npm install @ezsign-jasuindo/pdf-signature-esign-sdk')" class="absolute top-3 right-3 p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 transition text-zinc-400 hover:text-white" title="Salin kode">
             <i data-lucide="copy" class="w-4 h-4"></i>
           </button>
         </div>
@@ -209,7 +209,7 @@
   &lt;div id="my-pdf-container" style="width: 100%; height: 750px;"&gt;&lt;/div&gt;
 
   &lt;script type="module"&gt;
-    import { createViewer } from './node_modules/pdf-signature-jtp-sdk/dist/pdf-signature-sdk.js';
+    import { createViewer } from './node_modules/@ezsign-jasuindo/pdf-signature-esign-sdk/dist/pdf-signature-sdk.js';
 
     // Inisialisasi Viewer
     const viewer = createViewer({
@@ -253,7 +253,7 @@
               <div class="relative">
                 <pre class="rounded-xl overflow-hidden"><code class="language-vue">&lt;script setup&gt;
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-import { createViewer } from 'pdf-signature-jtp-sdk';
+import { createViewer } from '@ezsign-jasuindo/pdf-signature-esign-sdk';
 
 const props = defineProps({
   file: [String, Object, ArrayBuffer],
@@ -408,7 +408,7 @@ function handleGetSigs() {
                 <pre class="rounded-xl overflow-hidden"><code class="language-jsx">"use client";
 
 import { useEffect, useRef, useImperativeHandle } from 'react';
-import { createViewer } from 'pdf-signature-jtp-sdk';
+import { createViewer } from '@ezsign-jasuindo/pdf-signature-esign-sdk';
 
 export default function PdfViewer({
   file,

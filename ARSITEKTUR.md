@@ -1,6 +1,6 @@
 # Arsitektur PDF Signature SDK
 
-Dokumen ini menjelaskan struktur, pola desain, dan alur kerja utama dari `pdf-signature-sdk`. SDK ini dirancang untuk menjadi **framework-agnostic** (tidak bergantung pada framework tertentu), memiliki performa tinggi, dan mudah diintegrasikan baik menggunakan Vanilla JavaScript, React, maupun Vue.
+Dokumen ini menjelaskan struktur, pola desain, dan alur kerja utama dari `@ezsign-jasuindo/pdf-signature-esign-sdk`. SDK ini dirancang untuk menjadi **framework-agnostic** (tidak bergantung pada framework tertentu), memiliki performa tinggi, dan mudah diintegrasikan baik menggunakan Vanilla JavaScript, React, maupun Vue.
 
 ## Prinsip Desain Utama
 

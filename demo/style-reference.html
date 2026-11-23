@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Style Reference — pdf-signature-jtp-sdk</title>
+    <title>Style Reference — @ezsign-jasuindo/pdf-signature-esign-sdk</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <style>
@@ -945,7 +945,7 @@
       updateSnippet();
 
       // ── JS Import examples ─────────────────────────────
-      const importEx = `import { SDK_CLASSES, SDK_VARIABLES } from 'pdf-signature-jtp-sdk';
+      const importEx = `import { SDK_CLASSES, SDK_VARIABLES } from '@ezsign-jasuindo/pdf-signature-esign-sdk';
 
 // Use class names — no typos, IDE autocomplete
 console.log(SDK_CLASSES.button.accent);     // → 'psdk-btn--accent'
@@ -956,7 +956,7 @@ console.log(SDK_CLASSES.topbar.brand);      // → 'psdk-topbar__brand'
 console.log(SDK_VARIABLES.accent);          // → '--psdk-accent'
 console.log(SDK_VARIABLES.sidebarWidth);    // → '--psdk-sidebar-width'`;
 
-      const jsOverride = `import { SDK_VARIABLES } from 'pdf-signature-jtp-sdk';
+      const jsOverride = `import { SDK_VARIABLES } from '@ezsign-jasuindo/pdf-signature-esign-sdk';
 
 // Override via JS after viewer is created
 const root = document.querySelector('.psdk-root');
