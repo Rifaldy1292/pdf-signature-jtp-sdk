@@ -17,10 +17,11 @@ export function setModeBannerVisible(banner, visible) {
  * Update the status bar text.
  * @param {string} text
  * @param {boolean} [sigMode]
+ * @param {ParentNode} [root] the viewer's root element — pass it so multiple viewers don't collide
  */
-export function setStatus(text, sigMode = false) {
-  const statusEl = document.getElementById('psdk-status-text');
-  const dotEl = document.getElementById('psdk-status-dot');
+export function setStatus(text, sigMode = false, root = document) {
+  const statusEl = root.querySelector('#psdk-status-text');
+  const dotEl = root.querySelector('#psdk-status-dot');
   if (statusEl) statusEl.textContent = text;
   if (dotEl) {
     dotEl.style.background = sigMode

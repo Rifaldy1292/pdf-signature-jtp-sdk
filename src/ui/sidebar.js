@@ -125,7 +125,8 @@ export function buildSidebar(sidebarEl, config, viewer) {
     });
 
     // Scroll active thumb into view
-    const activeEl = document.getElementById(`psdk-thumb-${page}`);
+    // Use this sidebar's own thumbnails (not a global ID lookup) so multiple viewers don't collide
+    const activeEl = thumbEls[page - 1];
     if (activeEl) {
       activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }

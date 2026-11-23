@@ -345,6 +345,16 @@ export function buildTopbar(topbarEl, config, viewer) {
 
   // ─── Helpers ───────────────────────────────────────────────────────────────
 
+  /**
+   * Find an element inside THIS viewer only. Element IDs are repeated when
+   * several viewers are on one page, so a global document lookup would hit
+   * the first viewer instead of this one.
+   */
+  function findInViewer(selector) {
+    const root = topbarEl.closest('.psdk-root') || topbarEl;
+    return root.querySelector(selector);
+  }
+
   function updatePageIndicator(current, total) {
     if (pageCurrentEl) {
       if (pageCurrentEl.tagName === 'INPUT') {
@@ -370,13 +380,13 @@ export function buildTopbar(topbarEl, config, viewer) {
     currentScale = scale;
     const pct = Math.round(scale * 100) + '%';
     if (zoomBadge) zoomBadge.textContent = pct;
-    const zs = document.getElementById('psdk-zoom-status');
+    const zs = findInViewer('#psdk-zoom-status');
     if (zs) zs.textContent = pct;
   }
 
   function updateSigCount(count) {
-    const wrap = document.getElementById('psdk-sig-count-wrap');
-    const countEl = document.getElementById('psdk-sig-count');
+    const wrap = findInViewer('#psdk-sig-count-wrap');
+    const countEl = findInViewer('#psdk-sig-count');
     if (wrap) wrap.style.display = count > 0 ? 'flex' : 'none';
     if (countEl) countEl.textContent = `${count} signature${count !== 1 ? 's' : ''}`;
     btnClear.style.display = count > 0 ? 'inline-flex' : 'none';

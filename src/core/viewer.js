@@ -54,12 +54,15 @@ export function createViewer(userConfig = {}) {
   const pageMainCanvases = new Map();
   /** @type {Map<number, HTMLCanvasElement>} */
   const pageOverlayCanvases = new Map();
+  /** @type {Map<number, HTMLElement>} — page wrappers of THIS viewer (avoid global ID lookups) */
+  const pageWraps = new Map();
 
   // Buat semua elemen canvas (main + overlay) per halaman, lalu mulai observe untuk lazy render
   async function _buildPages(totalPages) {
     nodes.pagesContainer.innerHTML = '';
     pageMainCanvases.clear();
     pageOverlayCanvases.clear();
+    pageWraps.clear();
 
     if (observer) observer.disconnect();
     visiblePages.clear();
@@ -79,7 +82,7 @@ export function createViewer(userConfig = {}) {
               sigManager.syncSize(page, mainCanvas.width, mainCanvas.height);
               
               // Remove the fallback minimums so the wrapper perfectly hugs the actual canvas size
-              const wrap = document.getElementById(`psdk-page-${page}`);
+              const wrap = pageWraps.get(page);
               if (wrap) {
                 wrap.style.minWidth = `${mainCanvas.width}px`;
                 wrap.style.minHeight = `${mainCanvas.height}px`;
@@ -143,6 +146,7 @@ export function createViewer(userConfig = {}) {
 
       nodes.pagesContainer.appendChild(wrap);
       
+      pageWraps.set(i, wrap);
       pageMainCanvases.set(i, mainCanvas);
       pageOverlayCanvases.set(i, overlayCanvas);
       
@@ -176,7 +180,7 @@ export function createViewer(userConfig = {}) {
         nodes.canvasArea.removeEventListener('scroll', programmaticScrollListener);
       }
       
-      const wrap = document.getElementById(`psdk-page-${page}`);
+      const wrap = pageWraps.get(page);
       if (wrap) {
         wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -307,7 +311,7 @@ export function createViewer(userConfig = {}) {
         // BUG-07: wait one animation frame so browser has laid out the new canvas
         // sizes before we calculate scroll position
         await new Promise((r) => requestAnimationFrame(r));
-        const wrap = document.getElementById(`psdk-page-${current}`);
+        const wrap = pageWraps.get(current);
         if (wrap) {
           isProgrammaticScroll = true;
           clearTimeout(scrollTimeout);
